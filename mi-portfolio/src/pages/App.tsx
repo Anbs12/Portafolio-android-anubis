@@ -159,13 +159,13 @@ const Portfolio: React.FC = () => {
   // Datos configurables en ESPAÑOL
   const portfolioDataEs: PortfolioDataType = {
     personal: {
-      nombre: "Tu Nombre",
-      titulo: "Desarrollador Android & Kotlin",
+      nombre: "Anubis Montero",
+      titulo: "Desarrollador Android & Kotlin Jr.",
       descripcion: "Especializado en desarrollo móvil nativo con Kotlin y arquitecturas modernas como MVVM, Clean Architecture y Jetpack Compose.",
       email: "tu@email.com",
       telefono: "+1234567890",
       linkedin: "tu-linkedin",
-      github: "tu-github"
+      github: "Anbs12"
     },
     navItems: [
       { id: 'inicio', displayText: 'Inicio' },
