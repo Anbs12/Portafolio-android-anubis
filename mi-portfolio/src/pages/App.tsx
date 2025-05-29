@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Github, Mail, Linkedin, Code, Smartphone,
+  Github, Linkedin, Code, Smartphone,
   Menu, X
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
