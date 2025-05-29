@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
-    // ESTA LÍNEA ES CLAVE:
     "./src/**/*.{js,ts,jsx,tsx}", // Esto le dice a Tailwind que busque clases en todos estos tipos de archivos dentro de 'src/'
   ],
   theme: {

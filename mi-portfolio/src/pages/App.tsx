@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Github, Linkedin, Code, Smartphone,
-  Menu, X
+  Menu, X, Sun, Moon
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
@@ -12,10 +12,39 @@ import { ProjectCard } from '../components/ProjectCard';
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 const Portfolio: React.FC = () => {
-  // 2. Actualizar useState con tipos explícitos
+  // Actualizar useState con tipos explícitos
   const [activeSection, setActiveSection] = useState<string>('inicio');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [language, setLanguage] = useState<'es' | 'en'>('es'); // 'es' para español, 'en' para inglés
+
+  // --- Logica del modo oscuro ---
+  type Theme = 'light' | 'dark';
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedTheme = window.localStorage.getItem('theme') as Theme;
+      if (storedTheme) {
+        return storedTheme;
+      }
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const isDark = theme === 'dark';
+
+    root.classList.remove(isDark ? 'light' : 'dark');
+    root.classList.add(isDark ? 'dark' : 'light');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+  // --- Fin logica del modo oscuro ---
 
   // Referencias para cada sección para el Intersection Observer
   const sectionRefs = {
@@ -82,14 +111,14 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 text-gray-900 dark:text-white font-inter transition-colors duration-300">
 
       {/* 
       //  ////////////////////////// Navigation ////////////////////////// 
       // 
       // */
       }
-      <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100">
+      <nav className="fixed top-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -106,7 +135,7 @@ const Portfolio: React.FC = () => {
                 <button
                   key={item.id} // Usar item.id como key
                   onClick={() => scrollToSection(item.id)} // Usar item.id para el scroll
-                  className={`capitalize font-medium transition-colors hover:text-green-600 ${activeSection === item.id ? 'text-green-600' : 'text-gray-700'
+                  className={`capitalize font-medium transition-colors hover:text-green-600 ${activeSection === item.id ? 'text-green-600' : 'text-gray-700 dark:text-gray-300'
                     }`}
                 >
                   {item.displayText} {/* Mostrar displayText */}
@@ -114,17 +143,35 @@ const Portfolio: React.FC = () => {
               ))}
             </div>
 
-            {/* Botón de cambio de idioma */}
-            <button
-              onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors"
-            >
-              {language === 'es' ? 'English' : 'Español'}
-            </button>
+            <div className="flex items-center gap-4">
+              {/* Botón de cambio de idioma */}
+              <button
+                onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
+                className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                {language === 'es' ? 'English' : 'Español'}
+              </button>
+
+              {/* Botón de Modo Oscuro/Claro */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 
+                           hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300
+                           focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+                aria-label="Toggle dark mode"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-6 h-6" /> // Icono de sol para modo claro
+                ) : (
+                  <Moon className="w-6 h-6" /> // Icono de luna para modo oscuro
+                )}
+              </button>
+            </div>
+
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 rounded-md text-gray-700 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
+              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -136,12 +183,12 @@ const Portfolio: React.FC = () => {
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-100">
+            <div className="md:hidden py-4 border-t border-gray-100 dark:border-gray-700">
               {currentPortfolioData.navItems.map((item) => (
                 <button
                   key={item.id} // Usar item.id como key
                   onClick={() => scrollToSection(item.id)} // Usar item.id para el scroll
-                  className="block w-full text-left py-2 capitalize font-medium text-gray-700 hover:text-green-600 px-4"
+                  className="block w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4"
                 >
                   {item.displayText} {/* Mostrar displayText */}
                 </button>
@@ -157,21 +204,29 @@ const Portfolio: React.FC = () => {
       // */
       }
       <section id="inicio" ref={sectionRefs.inicio} className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen">
-        
-        
+        {/* Contenedor del video de fondo */}
+        <div className="video-background">
+          <video autoPlay loop muted playsInline>
+            {/* Puedes reemplazar esta URL con tu propio video de fondo. Revisa y arregla. */}
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-code-and-programming-on-a-monitor-1088-large.mp4" type="video/mp4" />
+            Tu navegador no soporta el tag de video.
+          </video>
+          <div className="video-overlay"></div> {/* Capa de superposición para legibilidad */}
+        </div>
+
         <div className={`relative z-10 max-w-6xl mx-auto text-white ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center">
             <div className="mb-8">
               <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
                 <Smartphone className="w-16 h-16 text-white" />
               </div>
-              <h1 className="text-5xl font-bold mb-4 text-gray-700">
+              <h1 className="text-5xl font-bold mb-4 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.personal.nombre}
               </h1>
-              <h2 className="text-2xl mb-6 text-gray-700">
+              <h2 className="text-2xl mb-6 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.personal.titulo}
               </h2>
-              <p className="text-lg max-w-3xl mx-auto leading-relaxed opacity-90 text-gray-700">
+              <p className="text-lg max-w-3xl mx-auto leading-relaxed opacity-90 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.personal.descripcion}
               </p>
             </div>
@@ -179,13 +234,13 @@ const Portfolio: React.FC = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => scrollToSection('proyectos')}
-                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1 dark:from-gray-800 dark:to-gray-900"
               >
                 {currentPortfolioData.hero.buttonProjects}
               </button>
               <button
                 onClick={() => scrollToSection('contacto')}
-                className="border-2 border-green-500 text-green-600 px-8 py-3 rounded-lg font-medium hover:bg-green-50 transition-colors"
+                className="border-2 border-green-500 text-green-600 px-8 py-3 rounded-lg font-medium hover:bg-green-50 transition-colors dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 {currentPortfolioData.hero.buttonContact}
               </button>
@@ -199,17 +254,17 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className={`max-w-6xl mx-auto ${visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">{currentPortfolioData.technologies.title}</h2>
-            <p className="text-xl text-gray-600">{currentPortfolioData.technologies.subtitle}</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.technologies.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.technologies.subtitle}</p>
           </div>
 
           {/* Renderizado de tecnologías por categoría */}
           {currentPortfolioData.tecnologiasCategorizadas.map((categoryGroup, index) => (
             <div key={index} className="mb-12">
-              <h3 className="text-2xl font-bold text-gray-700 mb-8 text-center">{categoryGroup.category}</h3>
+              <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-8 text-center">{categoryGroup.category}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
                 {categoryGroup.items.map((tech, techIndex) => (
                   <TechCard key={techIndex} tech={tech} />
@@ -226,11 +281,11 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">{currentPortfolioData.projects.title}</h2>
-            <p className="text-xl text-gray-600">{currentPortfolioData.projects.subtitle}</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projects.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.projects.subtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -246,11 +301,11 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className="max-w-4xl mx-auto">
           <div className={`text-center mb-16 ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">{currentPortfolioData.experience.title}</h2>
-            <p className="text-xl text-gray-600">{currentPortfolioData.experience.subtitle}</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.experience.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.experience.subtitle}</p>
           </div>
 
           <div className="space-y-8">
@@ -258,16 +313,16 @@ const Portfolio: React.FC = () => {
               <div
                 key={index}
                 // Aplicar animación solo si la sección de experiencia es visible
-                className={`bg-gray-50 rounded-2xl p-8 border-l-4 border-green-500 ${visibleSections.experiencia ? `animate-fadeInLeft animate-delay-${index * 100}` : 'opacity-0'}`}
+                className={`bg-gray-50 dark:bg-gray-700 rounded-2xl p-8 border-l-4 border-green-500 ${visibleSections.experiencia ? `animate-fadeInLeft animate-delay-${index * 100}` : 'opacity-0'}`}
               >
                 <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800">{exp.cargo}</h3>
-                    <p className="text-lg text-green-600 font-medium">{exp.empresa}</p>
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{exp.cargo}</h3>
+                    <p className="text-lg text-green-600 dark:text-green-400 font-medium">{exp.empresa}</p>
                   </div>
-                  <span className="text-gray-500 font-medium mt-2 md:mt-0">{exp.periodo}</span>
+                  <span className="text-gray-500 dark:text-gray-300 font-medium mt-2 md:mt-0">{exp.periodo}</span>
                 </div>
-                <p className="text-gray-600 leading-relaxed">{exp.descripcion}</p>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{exp.descripcion}</p>
               </div>
             ))}
           </div>
@@ -279,42 +334,41 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="contacto" ref={sectionRefs.contacto} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-blue-50" >
+      <section id="contacto" ref={sectionRefs.contacto} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className={`max-w-4xl mx-auto text-center ${visibleSections.contacto ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">{currentPortfolioData.contact.title}</h2>
-          <p className="text-xl text-gray-600 mb-12">{currentPortfolioData.contact.subtitle}</p>
+          <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.contact.title}</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-12">{currentPortfolioData.contact.subtitle}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Mail  */}
+          <div className="flex flex-col md:flex-row justify-center items-center gap-8">
             {/* <a
               href={`mailto:${currentPortfolioData.personal.email}`}
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
-              <Mail className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Email</h3>
-              <p className="text-gray-600">{currentPortfolioData.personal.email}</p>
+              <Mail className="w-12 h-12 text-green-500 dark:text-green-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Email</h3>
+              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.personal.email}</p>
             </a> */}
 
             <a
               href={`https://linkedin.com/in/${currentPortfolioData.personal.linkedin}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white dark:bg-gray-700 p-8 px-24 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
-              <Linkedin className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">LinkedIn</h3>
-              <p className="text-gray-600">{currentPortfolioData.contact.linkedinText}</p>
+              <Linkedin className="w-12 h-12 text-blue-500 dark:text-blue-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">LinkedIn</h3>
+              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.contact.linkedinText}</p>
             </a>
 
             <a
               href={`https://github.com/${currentPortfolioData.personal.github}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="bg-white dark:bg-gray-700 p-8 px-24 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
-              <Github className="w-12 h-12 text-gray-800 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">GitHub</h3>
-              <p className="text-gray-600">{currentPortfolioData.contact.githubText}</p>
+              <Github className="w-12 h-12 text-gray-800 dark:text-gray-100 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">GitHub</h3>
+              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.contact.githubText}</p>
             </a>
           </div>
         </div>
@@ -325,9 +379,9 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <footer className="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-800 dark:bg-gray-900 text-white py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-300">
+          <p className="text-gray-300 dark:text-gray-400">
             © 2025 {currentPortfolioData.personal.nombre}. {currentPortfolioData.footer.text}
           </p>
         </div>

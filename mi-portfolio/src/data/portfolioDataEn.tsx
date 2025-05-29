@@ -1,19 +1,25 @@
 import {
-    Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette, 
-    RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation} from 'lucide-react';
+    Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
+    RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation,
+    Navigation, LucideDatabase
+} from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
 
 // Datos configurables en INGLÉS
 export const portfolioDataEn: PortfolioDataType = {
     personal: {
-        nombre: "Your Name",
-        titulo: "Android & Kotlin Developer",
-        descripcion: "Specialized in native mobile development with Kotlin and modern architectures like MVVM, Clean Architecture, and Jetpack Compose.",
+        nombre: "Anubis Montero",
+        titulo: "Android & Kotlin Jr. Developer",
+        descripcion: ` Junior Android Developer with hands-on experience building native mobile applications using Kotlin, MVVM 
+        architecture, and Jetpack Compose. Skilled in implementing RESTful APIs with Retrofit, developing interfaces with 
+        both XML and Compose, and managing reactive data using Flows and Coroutines. Practical experience with CameraX, 
+        Firebase, and unit testing (JUnit). Associate Degree in Programming with strong problem-solving abilities, team 
+        collaboration skills, and autonomy in development environments.`,
         email: "your@email.com",
         telefono: "+1234567890",
-        linkedin: "your-linkedin",
-        github: "your-github"
+        linkedin: "anubism",
+        github: "anbs12"
     },
     navItems: [
         { id: 'inicio', displayText: 'Home' },
@@ -82,6 +88,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'Firebase', subtitle: 'Google development platform', icon: <Award className="w-8 h-8 text-yellow-600" /> },
                 { name: 'Microsoft SQL Server', subtitle: 'Relational database management', icon: <Database className="w-8 h-8 text-gray-700" /> },
                 { name: 'RESTful APIs with Retrofit 2', subtitle: 'Web service communication', icon: <Globe className="w-8 h-8 text-sky-700" /> },
+                { name: 'Room Database', subtitle: 'Local database for Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> }
             ]
         },
         {
@@ -90,6 +97,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'Jetpack Compose', subtitle: 'Modern UI toolkit for Android', icon: <LayoutGrid className="w-8 h-8 text-sky-600" /> },
                 { name: 'Google Material Design', subtitle: 'Design system for Android', icon: <Palette className="w-8 h-8 text-violet-600" /> },
                 { name: 'Coil', subtitle: 'Image loading library for Android', icon: <Image className="w-8 h-8 text-violet-500" /> },
+                { name: 'Navigation', subtitle: 'Navigation with Jetpack Compose', icon: <Navigation className="w-8 h-8 text-blue-600" /> },
             ]
         },
         {
@@ -116,47 +124,78 @@ export const portfolioDataEn: PortfolioDataType = {
     proyectos: [
         {
             id: 1,
-            titulo: "TaskMaster Pro",
-            descripcion: "Task management application with MVVM architecture, Room Database, and Material Design 3.",
-            tecnologias: ["Kotlin", "Jetpack Compose", "Room", "MVVM"],
-            imagen: "https://via.placeholder.com/400x250/4CAF50/white?text=TaskMaster+Pro",
-            github: "https://github.com/tu-usuario/taskmaster",
-            youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            titulo: "App Prevencion",
+            descripcion: "Alert management application developed during my professional internship, with a focus on occupational risk prevention, profile management, and more.",
+            tecnologias: ["Kotlin", "XML", "Microsoft SQL Server", "Coroutines"],
+            imagen: "https://i.ytimg.com/vi/7P2PxyEzT0o/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4AdwEgAKACooCDAgAEAEYfyATKDAwDw==&rs=AOn4CLCPStVnJdLf1kRnOa5A6dcjzB2vcQ",
+            github: null,
+            youtube: "https://www.youtube.com/watch?v=7P2PxyEzT0o&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=5&pp=gAQBiAQB",
             estado: "Completed"
         },
         {
             id: 2,
-            titulo: "Weather Kotlin",
-            descripcion: "Weather app with REST API consumption, Clean Architecture, and fluid animations.",
-            tecnologias: ["Kotlin", "Retrofit", "Clean Architecture", "Lottie"],
-            imagen: "https://via.placeholder.com/400x250/2196F3/white?text=Weather+App",
-            github: "https://github.com/tu-usuario/weather-kotlin",
+            titulo: "appMovilAlertas",
+            descripcion: "Alert management application V2 improved with a focus on occupational risk prevention, profile management, and more.",
+            tecnologias: ["Kotlin", "Jetpack Compose", "MVVM", "Kotlin Flows", "Coroutines",
+                "Microsoft SQL Server", "XML", "CameraX", "Material Design", "JUnit", "Robolectric", "Mock"
+            ],
+            imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
+            github: "https://github.com/Anbs12/appMovilAlertas.git",
             youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            estado: "Completed"
+            estado: "In development"
         },
         {
             id: 3,
-            titulo: "Crypto Tracker",
-            descripcion: "Real-time cryptocurrency tracking with WebSockets and interactive charts.",
-            tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
-            imagen: "https://via.placeholder.com/400x250/FF9800/white?text=Crypto+Tracker",
-            github: "https://github.com/tu-usuario/crypto-tracker",
+            titulo: "Prc RickMorty",
+            descripcion: "Rick and Morty character management application.",
+            tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
+                "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful"],
+            imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
+            github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
+            youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
+            estado: "Completed"
+        },
+        {
+            id: 4,
+            titulo: "Prc NasaApp",
+            descripcion: "NASA APOD mission tracking application, with information about the Astronomical Photo of the Day and Mars Rover images.",
+            tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt",
+                "Jetpack Compose", "Material Design", "KDocs", "API Restful"],
+            imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
+            github: "https://github.com/Anbs12/Prc_NasaApp.git",
             youtube: null,
-            estado: "In Development"
+            estado: "Completed"
+        },
+        {
+            id: 5,
+            titulo: "Prc eCommerceApp",
+            descripcion: "Product and order management application for a fictional eCommerce, with shopping cart functionalities and user management as a future implementation.",
+            tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
+                "Coroutines", "Kotlin Flows", "Retrofit 2", "Coil", "Material Design 3", "KDocs",
+                "Navigation", "Room Database", "API Restful"],
+            imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
+            github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
+            youtube: null,
+            estado: "In development"
         }
     ],
     experiencia: [
         {
-            empresa: "Tech Solutions",
-            cargo: "Senior Android Developer",
-            periodo: "2022 - Present",
-            descripcion: "Development of mobile applications for corporate clients using Kotlin and modern architectures."
+            empresa: "Freelance",
+            cargo: "Junior Android Developer",
+            periodo: "08/2024 - Present",
+            descripcion: `solid experience in implementing scalable architectures like MVVM, utilizing Kotlin Flows for real-time reactive data. 
+            Proficient in developing user interfaces with both XML 
+            and Jetpack Compose, and integrating third-party APIs and libraries to enhance application functionality, including CameraX for optimized photo capture across multiple devices 
+            and Retrofit 2 for consuming RESTful APIs like "Rick and Morty." Possessing comprehensive knowledge of the mobile development lifecycle, 
+            capable of addressing challenges at each phase and creating custom native solutions, ensuring API compatibility and thorough code documentation with Kotlin KDocs.
+            `
         },
         {
-            empresa: "StartupMobile",
-            cargo: "Kotlin Developer",
-            periodo: "2020 - 2022",
-            descripcion: "Creation of apps from scratch with a focus on UX/UI and performance optimization."
+            empresa: "Magistra Ingeniería - Hardmachine",
+            cargo: "Intern Android Developer",
+            periodo: "05/2024 - 07/2024",
+            descripcion: "Developed an alert management application, focused on occupational risk prevention, profile management, and more."
         }
     ]
 };

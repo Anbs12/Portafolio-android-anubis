@@ -1,6 +1,7 @@
 import {
   Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
-  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Navigation
+  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Navigation,
+  LucideDatabase
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
@@ -86,6 +87,7 @@ export const portfolioDataEs: PortfolioDataType = {
         { name: 'Firebase', subtitle: 'Plataforma de desarrollo de Google', icon: <Award className="w-8 h-8 text-yellow-600" /> },
         { name: 'Microsoft SQL Server', subtitle: 'Gestión de bases de datos relacionales', icon: <Database className="w-8 h-8 text-gray-700" /> },
         { name: 'APIs RESTful con Retrofit 2', subtitle: 'Comunicación con servicios web', icon: <Globe className="w-8 h-8 text-sky-700" /> },
+        { name: 'Room Database', subtitle: 'Base de datos local para Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
       ]
     },
     {
@@ -146,8 +148,7 @@ export const portfolioDataEs: PortfolioDataType = {
       titulo: "Prc RickMorty",
       descripcion: "Aplicacion de gestión de personajes de Rick y Morty.",
       tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
-        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs"
-      ],
+        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful"],
       imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
@@ -157,7 +158,8 @@ export const portfolioDataEs: PortfolioDataType = {
       id: 4,
       titulo: "Prc NasaApp",
       descripcion: "Aplicacion de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
-      tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt", "Jetpack Compose", "Material Design", "KDocs"],
+      tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt", 
+        "Jetpack Compose", "Material Design", "KDocs", "API Restful"],
       imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
       github: "https://github.com/Anbs12/Prc_NasaApp.git",
       youtube: null,
@@ -169,9 +171,9 @@ export const portfolioDataEs: PortfolioDataType = {
       descripcion: "Aplicación de gestión de productos y pedidos para un eCommerce ficticio, con funcionalidades de carrito de compras y gestión de usuarios como futura implementación.",
       tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
         "Coroutines", "Kotlin Flows", "Retrofit 2", "Coil", "Material Design 3", "KDocs",
-        "Navigation"],
+        "Navigation", "Room Database", "API Restful"],
       imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
-      github: "https://github.com/tu-usuario/crypto-tracker",
+      github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
       youtube: null,
       estado: "En desarrollo"
     }

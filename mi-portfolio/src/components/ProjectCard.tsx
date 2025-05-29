@@ -1,5 +1,5 @@
 import type { ProjectCardProps } from "../types/CardProps";
-import {Github, Play} from 'lucide-react'
+import { Github, Play } from 'lucide-react'
 
 
 // Card componente para mostrar cada proyecto de la seccion de Proyectos en un portafolio.
@@ -7,7 +7,7 @@ import {Github, Play} from 'lucide-react'
 // Utiliza Tailwind CSS para el estilo y Lucide Icons para los iconos de GitHub y YouTube.
 export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortfolioData }) => {
     return (
-        <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div className="bg-white dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-600 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
             {/* Siempre muestra la imagen del proyecto */}
             <img
                 src={proyecto.imagen}
@@ -16,16 +16,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
             />
             <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-xl font-bold text-gray-800">{proyecto.titulo}</h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${proyecto.estado === currentPortfolioData.projects.statusCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{proyecto.titulo}</h3>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${proyecto.estado === currentPortfolioData.projects.statusCompleted ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100' : 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100'
                         }`}>
                         {proyecto.estado}
                     </span>
                 </div>
-                <p className="text-gray-600 mb-4">{proyecto.descripcion}</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">{proyecto.descripcion}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
                     {proyecto.tecnologias.map((tech, index) => (
-                        <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                        <span key={index} className="bg-gray-100 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-3 py-1 rounded-full text-sm font-medium">
                             {tech}
                         </span>
                     ))}
@@ -34,13 +34,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                     {/* Botón para ver el código en GitHub */}
                     {proyecto.github && (
                         <a
-                        href={proyecto.github}
-                        target="_blank" // Abrir en nueva pestaña
-                        rel="noopener noreferrer" // Seguridad para target="_blank"
-                        className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                        <Github className="w-4 h-4" /> {currentPortfolioData.projects.buttonCode}
-                    </a>
+                            href={proyecto.github}
+                            target="_blank" // Abrir en nueva pestaña
+                            rel="noopener noreferrer" // Seguridad para target="_blank"
+                            className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                        >
+                            <Github className="w-4 h-4" /> {currentPortfolioData.projects.buttonCode}
+                        </a>
                     )}
                     {/* Botón para ver el video de YouTube */}
                     {proyecto.youtube && (
