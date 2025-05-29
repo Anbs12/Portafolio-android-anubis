@@ -157,29 +157,21 @@ const Portfolio: React.FC = () => {
       // */
       }
       <section id="inicio" ref={sectionRefs.inicio} className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen">
-        {/* Contenedor del video de fondo */}
-        <div className="video-background">
-          <video autoPlay loop muted playsInline>
-            {/* Puedes reemplazar esta URL con tu propio video de fondo */}
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-code-and-programming-on-a-monitor-1088-large.mp4" type="video/mp4" />
-            Tu navegador no soporta el tag de video.
-          </video>
-          <div className="video-overlay"></div> {/* Capa de superposición para legibilidad */}
-        </div>
-
+        
+        
         <div className={`relative z-10 max-w-6xl mx-auto text-white ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center">
             <div className="mb-8">
-              <div className="w-32 h-32 bg-white rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
-                <Smartphone className="w-16 h-16 text-teal-600" />
+              <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
+                <Smartphone className="w-16 h-16 text-white" />
               </div>
-              <h1 className="text-5xl font-bold mb-4">
+              <h1 className="text-5xl font-bold mb-4 text-gray-700">
                 {currentPortfolioData.personal.nombre}
               </h1>
-              <h2 className="text-2xl mb-6">
+              <h2 className="text-2xl mb-6 text-gray-700">
                 {currentPortfolioData.personal.titulo}
               </h2>
-              <p className="text-lg max-w-3xl mx-auto leading-relaxed opacity-90">
+              <p className="text-lg max-w-3xl mx-auto leading-relaxed opacity-90 text-gray-700">
                 {currentPortfolioData.personal.descripcion}
               </p>
             </div>
@@ -187,13 +179,13 @@ const Portfolio: React.FC = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => scrollToSection('proyectos')}
-                className="bg-white text-teal-600 px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 {currentPortfolioData.hero.buttonProjects}
               </button>
               <button
                 onClick={() => scrollToSection('contacto')}
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-medium hover:bg-white hover:text-teal-600 transition-colors"
+                className="border-2 border-green-500 text-green-600 px-8 py-3 rounded-lg font-medium hover:bg-green-50 transition-colors"
               >
                 {currentPortfolioData.hero.buttonContact}
               </button>

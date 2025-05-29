@@ -1,6 +1,6 @@
 import {
   Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
-  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation
+  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Navigation
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
@@ -11,9 +11,9 @@ export const portfolioDataEs: PortfolioDataType = {
     nombre: "Anubis Montero",
     titulo: "Desarrollador Android y Kotlin Jr.",
     descripcion: `Desarrollador Android Junior con experiencia en aplicaciones móviles nativas usando Kotlin, MVVM y Jetpack
- Compose. Especializado en implementación de APIs RESTful con Retrofit, desarrollo de interfaces con XML y 
-Compose, y gestión de datos reactivos con Flows y Coroutines. Analista Programador titulado con capacidad para 
-resolver problemas de forma autónoma y contribuir efectivamente en equipos de desarrollo.`,
+    Compose. Especializado en implementación de APIs RESTful con Retrofit, desarrollo de interfaces con XML y 
+    Compose, y gestión de datos reactivos con Flows y Coroutines. Analista Programador titulado con capacidad para 
+    resolver problemas de forma autónoma y contribuir efectivamente en equipos de desarrollo.`,
     email: "tu@email.com",
     telefono: "+1234567890",
     linkedin: "anubism/",
@@ -94,6 +94,7 @@ resolver problemas de forma autónoma y contribuir efectivamente en equipos de d
         { name: 'Jetpack Compose', subtitle: 'Toolkit moderno para UI de Android', icon: <LayoutGrid className="w-8 h-8 text-sky-600" /> },
         { name: 'Material Design de Google', subtitle: 'Sistema de diseño para Android', icon: <Palette className="w-8 h-8 text-violet-600" /> },
         { name: 'Coil', subtitle: 'Librería de carga de imágenes para Android', icon: <Image className="w-8 h-8 text-violet-500" /> },
+        { name: 'Navigation', subtitle: 'Navegacion con Jetpack Compose', icon: <Navigation className="w-8 h-8 text-blue-600" /> },
       ]
     },
     {
@@ -145,38 +146,30 @@ resolver problemas de forma autónoma y contribuir efectivamente en equipos de d
       titulo: "Prc RickMorty",
       descripcion: "Aplicacion de gestión de personajes de Rick y Morty.",
       tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
-        "Retrofit 2", "Coil", "Jetpack Compose", "Documentacion KDocs"
+        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs"
       ],
       imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
-      github: "https://github.com/tu-usuario/crypto-tracker",
+      github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
       estado: "Completado"
     },
     {
       id: 4,
       titulo: "Prc NasaApp",
-      descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
-      tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
+      descripcion: "Aplicacion de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
+      tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt", "Jetpack Compose", "Material Design", "KDocs"],
       imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
-      github: "https://github.com/tu-usuario/crypto-tracker",
+      github: "https://github.com/Anbs12/Prc_NasaApp.git",
       youtube: null,
       estado: "Completado"
     },
     {
       id: 5,
-      titulo: "Prc MLTaks",
-      descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
-      tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
-      imagen: "https://images.seeklogo.com/logo-png/34/1/google-ml-kit-logo-png_seeklogo-346610.png",
-      github: "https://github.com/tu-usuario/crypto-tracker",
-      youtube: null,
-      estado: "En desarrollo"
-    },
-    {
-      id: 6,
       titulo: "Prc eCommerceApp",
-      descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
-      tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
+      descripcion: "Aplicación de gestión de productos y pedidos para un eCommerce ficticio, con funcionalidades de carrito de compras y gestión de usuarios como futura implementación.",
+      tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
+        "Coroutines", "Kotlin Flows", "Retrofit 2", "Coil", "Material Design 3", "KDocs",
+        "Navigation"],
       imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
       github: "https://github.com/tu-usuario/crypto-tracker",
       youtube: null,
@@ -185,16 +178,21 @@ resolver problemas de forma autónoma y contribuir efectivamente en equipos de d
   ],
   experiencia: [
     {
-      empresa: "Tech Solutions",
-      cargo: "Desarrollador Android Senior",
-      periodo: "2022 - Presente",
-      descripcion: "Desarrollo de aplicaciones móviles para clientes corporativos usando Kotlin y arquitecturas modernas."
+      empresa: "Independiente",
+      cargo: "Desarrollador Android Junior",
+      periodo: "08/2024 - Presente",
+      descripcion: `Sólida experiencia en la implementación de arquitecturas escalables como MVVM, 
+      utilizando Kotlin Flows para datos reactivos en tiempo real. Experto en el desarrollo de interfaces de usuario tanto con XML como con Jetpack Compose, 
+      y en la integración de APIs y bibliotecas de terceros para enriquecer la funcionalidad de las aplicaciones, incluyendo CameraX para optimización de imágenes y 
+      Retrofit 2 para consumo de APIs RESTful como la de "Rick and Morty". Amplio conocimiento del ciclo de vida de desarrollo móvil, capaz de abordar desafíos en cada fase y 
+      crear soluciones nativas personalizadas, 
+      asegurando la compatibilidad entre versiones de API y la documentación exhaustiva del código con Kotlin KDocs.`
     },
     {
-      empresa: "StartupMobile",
-      cargo: "Desarrollador Kotlin",
-      periodo: "2020 - 2022",
-      descripcion: "Creación de apps desde cero con focus en UX/UI y optimización de rendimiento."
+      empresa: "Magistra Ingeniería - Hardmachine",
+      cargo: "Desarrollador Android Practicante",
+      periodo: "05/2024 - 07/2024",
+      descripcion: "Creación de aplicación de gestión de alertas realizada, con enfoque en la prevención de riesgos laborales gestion de perfiles, y mas."
     }
   ]
 };
