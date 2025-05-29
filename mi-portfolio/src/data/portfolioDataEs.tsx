@@ -1,6 +1,6 @@
 import {
-  ChevronDown, Github, ExternalLink, Mail, Linkedin, Phone, Code, Smartphone, Database, Globe, Server, Zap, FileText, TestTube, GitBranch, Camera, Settings, Layers, Terminal, Palette, Play,
-  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Menu, X
+  Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
+  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
@@ -9,11 +9,14 @@ import type { PortfolioDataType } from '../types/Portfolio';
 export const portfolioDataEs: PortfolioDataType = {
   personal: {
     nombre: "Anubis Montero",
-    titulo: "Desarrollador Android & Kotlin Jr.",
-    descripcion: "Especializado en desarrollo móvil nativo con Kotlin y arquitecturas modernas como MVVM, Clean Architecture y Jetpack Compose.",
+    titulo: "Desarrollador Android y Kotlin Jr.",
+    descripcion: `Desarrollador Android Junior con experiencia en aplicaciones móviles nativas usando Kotlin, MVVM y Jetpack
+ Compose. Especializado en implementación de APIs RESTful con Retrofit, desarrollo de interfaces con XML y 
+Compose, y gestión de datos reactivos con Flows y Coroutines. Analista Programador titulado con capacidad para 
+resolver problemas de forma autónoma y contribuir efectivamente en equipos de desarrollo.`,
     email: "tu@email.com",
     telefono: "+1234567890",
-    linkedin: "tu-linkedin",
+    linkedin: "anubism/",
     github: "Anbs12"
   },
   navItems: [
@@ -117,30 +120,64 @@ export const portfolioDataEs: PortfolioDataType = {
   proyectos: [
     {
       id: 1,
-      titulo: "TaskMaster Pro",
-      descripcion: "Aplicación de gestión de tareas con arquitectura MVVM, Room Database y Material Design 3.",
-      tecnologias: ["Kotlin", "Jetpack Compose", "Room", "MVVM"],
-      imagen: "https://via.placeholder.com/400x250/4CAF50/white?text=TaskMaster+Pro",
-      github: "https://github.com/tu-usuario/taskmaster",
-      youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      titulo: "App Prevencion",
+      descripcion: "Aplicación de gestión de alertas realizada en mi practica profesional, con enfoque en la prevención de riesgos laborales gestion de perfiles, y mas.",
+      tecnologias: ["Kotlin", "XML", "Microsoft SQL Server", "Coroutines"],
+      imagen: "https://i.ytimg.com/vi/7P2PxyEzT0o/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4AdwEgAKACooCDAgAEAEYfyATKDAwDw==&rs=AOn4CLCPStVnJdLf1kRnOa5A6dcjzB2vcQ",
+      github: null,
+      youtube: "https://www.youtube.com/watch?v=7P2PxyEzT0o&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=5&pp=gAQBiAQB",
       estado: "Completado"
     },
     {
       id: 2,
-      titulo: "Weather Kotlin",
-      descripcion: "App del clima con consumo de APIs REST, arquitectura Clean y animaciones fluidas.",
-      tecnologias: ["Kotlin", "Retrofit", "Clean Architecture", "Lottie"],
-      imagen: "https://via.placeholder.com/400x250/2196F3/white?text=Weather+App",
-      github: "https://github.com/tu-usuario/weather-kotlin",
-      youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      estado: "Completado"
+      titulo: "appMovilAlertas",
+      descripcion: "Aplicación de gestión de alertas V2 mejorada con enfoque en la prevención de riesgos laborales, gestion de perfiles, y mas.",
+      tecnologias: ["Kotlin", "Jetpack Compose", "MVVM", "Kotlin Flows", "Coroutines",
+        "Microsoft SQL Server", "XML", "CameraX", "Material Design", "JUnit", "Robolectric", "Mock"
+      ],
+      imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
+      github: "https://github.com/Anbs12/appMovilAlertas.git",
+      youtube: "https://www.youtube.com/watch?v=cC5F1RxznQE&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=3&pp=gAQBiAQB0gcJCbAJAYcqIYzv",
+      estado: "En desarrollo"
     },
     {
       id: 3,
-      titulo: "Crypto Tracker",
+      titulo: "Prc RickMorty",
+      descripcion: "Aplicacion de gestión de personajes de Rick y Morty.",
+      tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
+        "Retrofit 2", "Coil", "Jetpack Compose", "Documentacion KDocs"
+      ],
+      imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
+      github: "https://github.com/tu-usuario/crypto-tracker",
+      youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
+      estado: "Completado"
+    },
+    {
+      id: 4,
+      titulo: "Prc NasaApp",
       descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
       tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
-      imagen: "https://via.placeholder.com/400x250/FF9800/white?text=Crypto+Tracker",
+      imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
+      github: "https://github.com/tu-usuario/crypto-tracker",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 5,
+      titulo: "Prc MLTaks",
+      descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
+      tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
+      imagen: "https://images.seeklogo.com/logo-png/34/1/google-ml-kit-logo-png_seeklogo-346610.png",
+      github: "https://github.com/tu-usuario/crypto-tracker",
+      youtube: null,
+      estado: "En desarrollo"
+    },
+    {
+      id: 6,
+      titulo: "Prc eCommerceApp",
+      descripcion: "Seguimiento de criptomonedas en tiempo real con WebSockets y gráficos interactivos.",
+      tecnologias: ["Kotlin", "WebSocket", "MPAndroidChart", "Hilt"],
+      imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
       github: "https://github.com/tu-usuario/crypto-tracker",
       youtube: null,
       estado: "En desarrollo"

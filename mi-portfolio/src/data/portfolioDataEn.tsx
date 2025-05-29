@@ -1,7 +1,6 @@
 import {
-    ChevronDown, Github, ExternalLink, Mail, Linkedin, Phone, Code, Smartphone, Database, Globe, Server, Zap, FileText, TestTube, GitBranch, Camera, Settings, Layers, Terminal, Palette, Play,
-    RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Menu, X
-} from 'lucide-react';
+    Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette, 
+    RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation} from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
 

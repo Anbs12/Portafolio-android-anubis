@@ -1,18 +1,15 @@
-import React, { useState, useEffect, useRef, type JSX } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-  ChevronDown, Github, ExternalLink, Mail, Linkedin, Phone, Code, Smartphone, Database, Globe, Server, Zap, FileText, TestTube, GitBranch, Camera, Settings, Layers, Terminal, Palette, Play,
-  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Menu, X
+  Github, Mail, Linkedin, Code, Smartphone,
+  Menu, X
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
-import type { TechnologyItem, TechnologyCategory } from '../types/Technologies';
 import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
-import type { Project } from '../types/Project';
+import { TechCard } from '../components/TechCard';
+import { ProjectCard } from '../components/ProjectCard';
 
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
-
-
+//-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 const Portfolio: React.FC = () => {
   // 2. Actualizar useState con tipos explícitos
@@ -72,10 +69,6 @@ const Portfolio: React.FC = () => {
     };
   }, []); // El array vacío asegura que el efecto se ejecute solo una vez al montar
 
-
-
-
-
   // Seleccionar los datos del portafolio según el idioma actual
   const currentPortfolioData: PortfolioDataType = language === 'es' ? portfolioDataEs : portfolioDataEn;
 
@@ -88,171 +81,14 @@ const Portfolio: React.FC = () => {
     }
   };
 
-  // 3. Tipar los props de TechCard
-  interface TechCardProps {
-    tech: TechnologyItem;
-  }
-
-  const TechCard: React.FC<TechCardProps> = ({ tech }) => {
-    return (
-      <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group aspect-square flex flex-col justify-center">
-        <div className="flex flex-col items-center text-center">
-          <div className="bg-gradient-to-br from-green-100 to-blue-100 p-3 rounded-full mb-3 group-hover:from-green-200 group-hover:to-blue-200 transition-all duration-300 flex items-center justify-center">
-            {tech.icon}
-          </div>
-          <h3 className="font-bold text-gray-800 text-sm mb-1 leading-tight">{tech.name}</h3>
-          <p className="text-xs text-gray-500 leading-relaxed">{tech.subtitle}</p>
-        </div>
-      </div>
-    );
-  };
-
-  // 4. Tipar los props de ProjectCard
-  interface ProjectCardProps {
-    proyecto: Project;
-  }
-
-  const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto }) => {
-    return (
-      <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-        {/* Siempre muestra la imagen del proyecto */}
-        <img
-          src={proyecto.imagen}
-          alt={proyecto.titulo}
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-6">
-          <div className="flex justify-between items-start mb-3">
-            <h3 className="text-xl font-bold text-gray-800">{proyecto.titulo}</h3>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${proyecto.estado === currentPortfolioData.projects.statusCompleted ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-              }`}>
-              {proyecto.estado}
-            </span>
-          </div>
-          <p className="text-gray-600 mb-4">{proyecto.descripcion}</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {proyecto.tecnologias.map((tech, index) => (
-              <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                {tech}
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-3 flex-wrap">
-            <a
-              href={proyecto.github}
-              target="_blank" // Abrir en nueva pestaña
-              rel="noopener noreferrer" // Seguridad para target="_blank"
-              className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              <Github className="w-4 h-4" /> {currentPortfolioData.projects.buttonCode}
-            </a>
-            {/* Botón para ver el video de YouTube */}
-            {proyecto.youtube && (
-              <a
-                href={proyecto.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
-              >
-                <Play className="w-4 h-4" /> {currentPortfolioData.projects.buttonViewVideo}
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 font-inter">
-      {/* Estilos CSS personalizados para animaciones */}
-      <style>
-        {`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        body {
-          font-family: 'Inter', sans-serif;
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .animate-fadeInUp {
-          animation: fadeInUp 1s ease-out forwards;
-        }
-
-        .animate-fadeInLeft {
-          animation: fadeInLeft 0.8s ease-out forwards;
-        }
-
-        /* Clases para retrasos de animación */
-        .animate-delay-0 { animation-delay: 0s; }
-        .animate-delay-100 { animation-delay: 0.1s; }
-        .animate-delay-200 { animation-delay: 0.2s; }
-        .animate-delay-300 { animation-delay: 0.3s; }
-        .animate-delay-400 { animation-delay: 0.4s; }
-        .animate-delay-500 { animation-delay: 0.5s; }
-        .animate-delay-600 { animation-delay: 0.6s; }
-        .animate-delay-700 { animation-delay: 0.7s; }
-        .animate-delay-800 { animation-delay: 0.8s; }
-        .animate-delay-900 { animation-delay: 0.9s; }
-        .animate-delay-1000 { animation-delay: 1s; }
-
-        /* Estilos para el video de fondo */
-        .video-background {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          z-index: -1; /* Envía el video al fondo */
-        }
-
-        .video-background video {
-          min-width: 100%;
-          min-height: 100%;
-          width: auto;
-          height: auto;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          object-fit: cover; /* Asegura que el video cubra todo el espacio */
-        }
-
-        .video-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.4); /* Capa semitransparente oscura */
-          z-index: 0; /* Por encima del video, por debajo del contenido */
-        }
-        `}
-      </style>
-
-      {/* Navigation */}
+      {/* 
+      //  ////////////////////////// Navigation ////////////////////////// 
+      // 
+      // */
+      }
       <nav className="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
@@ -315,7 +151,11 @@ const Portfolio: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section (formerly Tittle Section) */}
+      {/* 
+      //  ////////////////////////// Hero Section ////////////////////////// 
+      // 
+      // */
+      }
       <section id="inicio" ref={sectionRefs.inicio} className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen">
         {/* Contenedor del video de fondo */}
         <div className="video-background">
@@ -362,7 +202,11 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Technologies Section */}
+      {/* 
+      //  ////////////////////////// Technologies Section////////////////////////// 
+      // 
+      // */
+      }
       <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className={`max-w-6xl mx-auto ${visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
@@ -384,7 +228,12 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
+
+      {/* 
+      //  ////////////////////////// Projects Section ////////////////////////// 
+      // 
+      // */
+      }
       <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8">
         <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
@@ -394,13 +243,17 @@ const Portfolio: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentPortfolioData.proyectos.map((proyecto) => (
-              <ProjectCard key={proyecto.id} proyecto={proyecto} />
+              <ProjectCard key={proyecto.id} proyecto={proyecto} currentPortfolioData={currentPortfolioData} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
+      {/* 
+      //  ////////////////////////// Experience Section ////////////////////////// 
+      // 
+      // */
+      }
       <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className={`text-center mb-16 ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
@@ -429,21 +282,26 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contacto" ref={sectionRefs.contacto} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-blue-50">
+      {/* 
+      //  ////////////////////////// Contact Section ///////////////////////// 
+      // 
+      // */
+      }
+      <section id="contacto" ref={sectionRefs.contacto} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-blue-50" >
         <div className={`max-w-4xl mx-auto text-center ${visibleSections.contacto ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <h2 className="text-4xl font-bold text-gray-800 mb-4">{currentPortfolioData.contact.title}</h2>
           <p className="text-xl text-gray-600 mb-12">{currentPortfolioData.contact.subtitle}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <a
+            {/* Mail  */}
+            {/* <a
               href={`mailto:${currentPortfolioData.personal.email}`}
               className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
             >
               <Mail className="w-12 h-12 text-green-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Email</h3>
               <p className="text-gray-600">{currentPortfolioData.personal.email}</p>
-            </a>
+            </a> */}
 
             <a
               href={`https://linkedin.com/in/${currentPortfolioData.personal.linkedin}`}
@@ -470,7 +328,11 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* 
+      //  ////////////////////////// Footer ////////////////////////// 
+      // 
+      // */
+      }
       <footer className="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-300">
