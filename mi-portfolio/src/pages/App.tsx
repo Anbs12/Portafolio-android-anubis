@@ -78,7 +78,7 @@ const Portfolio: React.FC = () => {
               observer.unobserve(entry.target);
             }
           },
-          { threshold: 0.2 } // El 20% del elemento debe ser visible para activar
+          { threshold: 0.1 } // El 20% del elemento debe ser visible para activar
         );
         observer.observe(ref.current);
         observers.push(observer);
