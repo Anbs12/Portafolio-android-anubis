@@ -41,7 +41,9 @@ export const portfolioDataEs: PortfolioDataType = {
     buttonCode: "Código",
     buttonViewVideo: "Ver Video",
     statusCompleted: "Completado",
-    statusInProgress: "En desarrollo"
+    statusInProgress: "En desarrollo",
+    buttonViewMakingVideo: "Video en desarrollo"
+
   },
   experience: {
     title: "Experiencia",
@@ -129,7 +131,8 @@ export const portfolioDataEs: PortfolioDataType = {
       imagen: "https://i.ytimg.com/vi/7P2PxyEzT0o/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4AdwEgAKACooCDAgAEAEYfyATKDAwDw==&rs=AOn4CLCPStVnJdLf1kRnOa5A6dcjzB2vcQ",
       github: null,
       youtube: "https://www.youtube.com/watch?v=7P2PxyEzT0o&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=5&pp=gAQBiAQB",
-      estado: "Completado"
+      estado: "Completado",
+      makingVideo: null
     },
     {
       id: 2,
@@ -141,7 +144,8 @@ export const portfolioDataEs: PortfolioDataType = {
       imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
       github: "https://github.com/Anbs12/appMovilAlertas.git",
       youtube: "https://www.youtube.com/watch?v=cC5F1RxznQE&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=3&pp=gAQBiAQB0gcJCbAJAYcqIYzv",
-      estado: "En desarrollo"
+      estado: "En desarrollo",
+      makingVideo: null
     },
     {
       id: 3,
@@ -152,7 +156,8 @@ export const portfolioDataEs: PortfolioDataType = {
       imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
-      estado: "Completado"
+      estado: "Completado",
+      makingVideo: null
     },
     {
       id: 4,
@@ -163,7 +168,8 @@ export const portfolioDataEs: PortfolioDataType = {
       imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
       github: "https://github.com/Anbs12/Prc_NasaApp.git",
       youtube: null,
-      estado: "Completado"
+      estado: "Completado",
+      makingVideo: "Si"
     },
     {
       id: 5,
@@ -175,7 +181,8 @@ export const portfolioDataEs: PortfolioDataType = {
       imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
       github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
       youtube: null,
-      estado: "En desarrollo"
+      estado: "En desarrollo",
+      makingVideo: null
     }
   ],
   experiencia: [

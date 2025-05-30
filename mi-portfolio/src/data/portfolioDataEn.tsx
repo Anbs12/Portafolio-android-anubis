@@ -42,7 +42,8 @@ export const portfolioDataEn: PortfolioDataType = {
         buttonCode: "Code",
         buttonViewVideo: "Watch Video",
         statusCompleted: "Completed",
-        statusInProgress: "In Development"
+        statusInProgress: "In Development",
+        buttonViewMakingVideo: "Video in Development"
     },
     experience: {
         title: "Experience",
@@ -164,7 +165,8 @@ export const portfolioDataEn: PortfolioDataType = {
             imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
             github: "https://github.com/Anbs12/Prc_NasaApp.git",
             youtube: null,
-            estado: "Completed"
+            estado: "Completed",
+            makingVideo: "In dev"
         },
         {
             id: 5,
@@ -176,7 +178,8 @@ export const portfolioDataEn: PortfolioDataType = {
             imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
             github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
             youtube: null,
-            estado: "In development"
+            estado: "In development",
+            makingVideo: null
         }
     ],
     experiencia: [

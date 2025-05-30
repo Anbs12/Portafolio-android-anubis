@@ -14,6 +14,7 @@ export interface Project {
   github: string | null;
   youtube: string | null;
   estado: string;
+  makingVideo?: string | null; // Indica si se está desarrollando un video para este proyecto
 }
 
 // Definición de datos para la sección de Proyectos en un portafolio.
@@ -26,4 +27,5 @@ export interface ProjectsData {
   buttonViewVideo: string;
   statusCompleted: string;
   statusInProgress: string;
+  buttonViewMakingVideo: string;
 }

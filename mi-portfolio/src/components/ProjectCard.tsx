@@ -1,5 +1,5 @@
 import type { ProjectCardProps } from "../types/CardProps";
-import { Github, Play } from 'lucide-react'
+import { Github, Play, CircleEllipsis } from 'lucide-react'
 
 
 // Card componente para mostrar cada proyecto de la seccion de Proyectos en un portafolio.
@@ -52,6 +52,12 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                         >
                             <Play className="w-4 h-4" /> {currentPortfolioData.projects.buttonViewVideo}
                         </a>
+                    )}
+                    {/* Botón para afirmar si se esta desarrollando un video para el proyecto */}
+                    {proyecto.makingVideo && (
+                        <span className="flex items-center gap-2 bg-yellow-200 text-yellow-800 px-4 py-2 rounded-lg">
+                            <CircleEllipsis className="w-4 h-4" /> {currentPortfolioData.projects.buttonViewMakingVideo}
+                        </span>
                     )}
                 </div>
             </div>
