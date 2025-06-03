@@ -128,7 +128,7 @@ const Portfolio: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950 text-gray-900 dark:text-white font-inter transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 dark:from-gray-900 dark:to-blue-950 text-gray-900 dark:text-white font-inter transition-colors duration-300">
 
       {/* 
       //  ////////////////////////// Navigation ////////////////////////// 
@@ -237,9 +237,13 @@ const Portfolio: React.FC = () => {
               {/* Título dinámico */}
               <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.hero.staticHeroTitlePartOne}
+              </h2>
+              <h2 className="text-5xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
                 <span key={currentDynamicPhraseIndex} className="inline-block whitespace-nowrap animate-fade-in-out-single text-green-600 dark:text-green-400">
                   {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
                 </span>
+              </h2>
+              <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.hero.staticHeroTitlePartTwo}
               </h2>
 
