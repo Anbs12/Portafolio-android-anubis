@@ -11,7 +11,7 @@ export const portfolioDataEs: PortfolioDataType = {
   personal: {
     nombre: "Anubis Montero",
     titulo: "Desarrollador Android y Kotlin Jr.",
-    descripcion: `Desarrollador Android Junior con experiencia en aplicaciones móviles nativas usando Kotlin, MVVM y Jetpack
+    descripcion: `Soy desarrollador Android Junior con experiencia en aplicaciones móviles nativas usando Kotlin, MVVM y Jetpack
     Compose. Especializado en implementación de APIs RESTful con Retrofit, desarrollo de interfaces con XML y 
     Compose, y gestión de datos reactivos con Flows y Coroutines. Analista Programador titulado con capacidad para 
     resolver problemas de forma autónoma y contribuir efectivamente en equipos de desarrollo.`,
@@ -22,6 +22,7 @@ export const portfolioDataEs: PortfolioDataType = {
   },
   navItems: [
     { id: 'inicio', displayText: 'Inicio' },
+    { id: 'sobre-mi', displayText: 'Sobre Mí' },
     { id: 'tecnologias', displayText: 'Tecnologías' },
     { id: 'proyectos', displayText: 'Proyectos' },
     { id: 'experiencia', displayText: 'Experiencia' },
@@ -29,7 +30,26 @@ export const portfolioDataEs: PortfolioDataType = {
   ],
   hero: {
     buttonProjects: "Ver Proyectos",
-    buttonContact: "Contactar"
+    buttonContact: "Contactar",
+    staticHeroTitlePartOne: "Llevando tus conceptos a la vida: Experiencias Android ", // Parte 1 estática del título
+    dynamicPhrases: ["Innovadoras",
+      "Funcionales",
+      "Intuitivas",
+      "Creativas",
+      "Avanzadas",
+      "Transformadoras",
+      "Atractivas",
+      "Eficientes",
+      "Excepcionales",
+      "Modernas",
+      "Pioneras",
+      "Únicas"],
+    staticHeroTitlePartTwo: " para el mundo digital." // Parte 2 estática del título
+  },
+  aboutMe: { // New section data
+    title: "Sobre Mí",
+    subtitle: "Mi trayectoria y lo que me impulsa",
+    androidSvgDescription: "Ilustración abstracta de un robot Android, representando el desarrollo móvil."
   },
   technologies: {
     title: "Tecnologías",
@@ -42,7 +62,7 @@ export const portfolioDataEs: PortfolioDataType = {
     buttonViewVideo: "Ver Video",
     statusCompleted: "Completado",
     statusInProgress: "En desarrollo",
-    buttonViewMakingVideo: "Video en desarrollo"
+    buttonViewMakingVideo: "Video en producción"
 
   },
   experience: {
@@ -152,7 +172,7 @@ export const portfolioDataEs: PortfolioDataType = {
       titulo: "Prc RickMorty",
       descripcion: "Aplicacion de gestión de personajes de Rick y Morty.",
       tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
-        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful"],
+        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
       imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
@@ -163,7 +183,7 @@ export const portfolioDataEs: PortfolioDataType = {
       id: 4,
       titulo: "Prc NasaApp",
       descripcion: "Aplicacion de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
-      tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt", 
+      tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt",
         "Jetpack Compose", "Material Design", "KDocs", "API Restful"],
       imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
       github: "https://github.com/Anbs12/Prc_NasaApp.git",

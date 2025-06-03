@@ -1,4 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Lato:wght@400;700&display=swap');
+/* Nuevas fuentes artísticas para el Hero Section */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +11,24 @@
 /* Estilos CSS personalizados para animaciones */
 body {
     font-family: 'Inter', sans-serif;
+}
+
+.font-heading {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.font-body {
+    font-family: 'Lato', sans-serif;
+}
+
+/* Fuentes específicas para el Hero Section */
+.font-hero-name {
+    font-family: 'Playfair Display', serif;
+}
+
+.font-hero-title {
+    /* font-family: 'Dancing Script', cursive; */
+    font-family: "Indie Flower", cursive;
 }
 
 @keyframes fadeInUp {
@@ -33,12 +55,40 @@ body {
     }
 }
 
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
 .animate-fadeInUp {
     animation: fadeInUp 1s ease-out forwards;
 }
 
 .animate-fadeInLeft {
     animation: fadeInLeft 0.8s ease-out forwards;
+}
+
+/* Apply fadeInOut animation once per phrase */
+.animate-fade-in-out-single {
+    animation: fadeInOut 3s ease-in-out infinite;
+    /* Adjusted duration to 8s and added infinite */
 }
 
 /* Clases para retrasos de animación */

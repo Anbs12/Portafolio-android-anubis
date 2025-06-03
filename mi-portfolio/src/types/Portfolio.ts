@@ -1,4 +1,4 @@
-import type { ContactData, PersonalData, ExperienceItem, ExperienceData } from './Personal';
+import type { ContactData, PersonalData, ExperienceItem, ExperienceData,AboutMeData } from './Personal';
 import type { TechnologiesData, TechnologyCategory } from './Technologies';
 import type { ProjectsData, Project } from './Project';
 
@@ -25,6 +25,9 @@ export interface NavItem {
 export interface HeroData {
   buttonProjects: string;
   buttonContact: string;
+  dynamicPhrases: string[]; // Frases dinámicas que se mostrarán en la sección "Hero"
+  staticHeroTitlePartOne: string;
+  staticHeroTitlePartTwo: string;
 }
 
 // Definición de datos para el Footer del portfolio.
@@ -41,6 +44,7 @@ export interface PortfolioDataType {
   personal: PersonalData;
   navItems: NavItem[];
   hero: HeroData;
+  aboutMe: AboutMeData;
   technologies: TechnologiesData;
   projects: ProjectsData;
   experience: ExperienceData;

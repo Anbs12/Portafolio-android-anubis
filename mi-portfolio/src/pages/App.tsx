@@ -49,6 +49,7 @@ const Portfolio: React.FC = () => {
   // Referencias para cada sección para el Intersection Observer
   const sectionRefs = {
     inicio: useRef<HTMLElement>(null),
+    sobreMi: useRef<HTMLElement>(null),
     tecnologias: useRef<HTMLElement>(null),
     proyectos: useRef<HTMLElement>(null),
     experiencia: useRef<HTMLElement>(null),
@@ -58,6 +59,7 @@ const Portfolio: React.FC = () => {
   // Estado para controlar la visibilidad de cada sección
   const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({
     inicio: false,
+    sobreMi: false,
     tecnologias: false,
     proyectos: false,
     experiencia: false,
@@ -87,6 +89,7 @@ const Portfolio: React.FC = () => {
 
     // Crear un observador para cada sección
     createObserver(sectionRefs.inicio, 'inicio');
+    createObserver(sectionRefs.sobreMi, 'sobreMi');
     createObserver(sectionRefs.tecnologias, 'tecnologias');
     createObserver(sectionRefs.proyectos, 'proyectos');
     createObserver(sectionRefs.experiencia, 'experiencia');
@@ -100,6 +103,20 @@ const Portfolio: React.FC = () => {
 
   // Seleccionar los datos del portafolio según el idioma actual
   const currentPortfolioData: PortfolioDataType = language === 'es' ? portfolioDataEs : portfolioDataEn;
+
+  // --- Dynamic Text Animation Logic ---
+  const [currentDynamicPhraseIndex, setCurrentDynamicPhraseIndex] = useState(0);
+  useEffect(() => {
+    // This interval will trigger the phrase change
+    const interval = setInterval(() => {
+      setCurrentDynamicPhraseIndex(
+        (prevIndex) => (prevIndex + 1) % currentPortfolioData.hero.dynamicPhrases.length
+      );
+    }, 3000); // Changed to 8 seconds, matching animation duration
+
+    return () => clearInterval(interval);
+  }, [currentPortfolioData.hero.dynamicPhrases.length]); // Re-run if phrases change (e.g., language switch)
+  // --- End Dynamic Text Animation Logic ---
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -205,32 +222,30 @@ const Portfolio: React.FC = () => {
       }
       <section id="inicio" ref={sectionRefs.inicio} className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen">
         {/* Contenedor del video de fondo */}
-        <div className="video-background">
-          <video autoPlay loop muted playsInline>
-            {/* Puedes reemplazar esta URL con tu propio video de fondo. Revisa y arregla. */}
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-code-and-programming-on-a-monitor-1088-large.mp4" type="video/mp4" />
-            Tu navegador no soporta el tag de video.
-          </video>
-          <div className="video-overlay"></div> {/* Capa de superposición para legibilidad */}
-        </div>
 
         <div className={`relative z-10 max-w-6xl mx-auto text-white ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center">
             <div className="mb-8">
+
               <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
                 <Smartphone className="w-16 h-16 text-white" />
               </div>
-              <h1 className="text-5xl font-bold mb-4 text-gray-900 dark:text-gray-100">
+
+              <h1 className="text-7xl font-bold font-hero-name mb-4 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.personal.nombre}
               </h1>
-              <h2 className="text-2xl mb-6 text-gray-900 dark:text-gray-100">
-                {currentPortfolioData.personal.titulo}
+              {/* Título dinámico */}
+              <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
+                {currentPortfolioData.hero.staticHeroTitlePartOne}
+                <span key={currentDynamicPhraseIndex} className="inline-block whitespace-nowrap animate-fade-in-out-single text-green-600 dark:text-green-400">
+                  {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
+                </span>
+                {currentPortfolioData.hero.staticHeroTitlePartTwo}
               </h2>
-              <p className="text-lg max-w-3xl mx-auto leading-relaxed opacity-90 text-gray-900 dark:text-gray-100">
-                {currentPortfolioData.personal.descripcion}
-              </p>
+
             </div>
 
+            {/* Botones */}
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => scrollToSection('proyectos')}
@@ -249,12 +264,44 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
+
+      {/* 
+      //  ////////////////////////// "Sobre mi" Section ////////////////////////// 
+      // 
+      // */
+      }
+      <section id="sobre-mi" ref={sectionRefs.sobreMi} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+        <div className={`max-w-6xl mx-auto ${visibleSections.sobreMi ? 'animate-fadeInUp' : 'opacity-0'}`}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold font-heading text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.aboutMe.title}</h2>
+            <p className="text-xl font-body text-gray-600 dark:text-gray-300">{currentPortfolioData.aboutMe.subtitle}</p>
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-12">
+            <div className="md:w-1/2 text-center md:text-left">
+              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-body">
+                {currentPortfolioData.personal.descripcion}
+              </p>
+            </div>
+            <div className="md:w-1/2 flex justify-center items-center p-4">
+              {/* Abstract Android Shape (SVG) */}
+              <img
+                src="https://developer.android.com/images/cluster-illustrations/mad-hero.svg" // URL de imagen de ejemplo
+                alt={currentPortfolioData.aboutMe.androidSvgDescription} // Usamos la misma descripción para accesibilidad
+                className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-contain rounded-full shadow-lg" // Estilos para la imagen
+                onError={(e) => { e.currentTarget.src='https://placehold.co/300x300/4CAF50/white?text=Error+Loading+Image'; }} // Fallback en caso de error
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 
       //  ////////////////////////// Technologies Section////////////////////////// 
       // 
       // */
       }
-      <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+      <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className={`max-w-6xl mx-auto ${visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.technologies.title}</h2>
@@ -281,7 +328,7 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
+      <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projects.title}</h2>
@@ -301,7 +348,7 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+      <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className="max-w-4xl mx-auto">
           <div className={`text-center mb-16 ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
             <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.experience.title}</h2>

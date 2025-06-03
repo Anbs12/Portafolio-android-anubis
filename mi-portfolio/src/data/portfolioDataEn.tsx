@@ -11,7 +11,7 @@ export const portfolioDataEn: PortfolioDataType = {
     personal: {
         nombre: "Anubis Montero",
         titulo: "Android & Kotlin Jr. Developer",
-        descripcion: ` Junior Android Developer with hands-on experience building native mobile applications using Kotlin, MVVM 
+        descripcion: `I´m a junior Android Developer with hands-on experience building native mobile applications using Kotlin, MVVM 
         architecture, and Jetpack Compose. Skilled in implementing RESTful APIs with Retrofit, developing interfaces with 
         both XML and Compose, and managing reactive data using Flows and Coroutines. Practical experience with CameraX, 
         Firebase, and unit testing (JUnit). Associate Degree in Programming with strong problem-solving abilities, team 
@@ -23,6 +23,7 @@ export const portfolioDataEn: PortfolioDataType = {
     },
     navItems: [
         { id: 'inicio', displayText: 'Home' },
+        { id: 'sobre-mi', displayText: 'About Me' },
         { id: 'tecnologias', displayText: 'Technologies' },
         { id: 'proyectos', displayText: 'Projects' },
         { id: 'experiencia', displayText: 'Experience' },
@@ -30,7 +31,26 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     hero: {
         buttonProjects: "View Projects",
-        buttonContact: "Contact Me"
+        buttonContact: "Contact Me",
+        staticHeroTitlePartOne: "Bringing Your Concepts to Life: ",
+        dynamicPhrases: ["Innovative",
+            "Functional",
+            "Intuitive",
+            "Creative",
+            "Cutting-edge",
+            "Transformative",
+            "Engaging",
+            "Efficient",
+            "Exceptional",
+            "Modern",
+            "Pioneering",
+            "Unique"],
+        staticHeroTitlePartTwo: " Android Experiences for the Digital World."
+    },
+    aboutMe: { // New section data
+        title: "About Me",
+        subtitle: "My journey and what drives me",
+        androidSvgDescription: "Abstract illustration of an Android robot, representing mobile development."
     },
     technologies: {
         title: "Technologies",
@@ -43,7 +63,7 @@ export const portfolioDataEn: PortfolioDataType = {
         buttonViewVideo: "Watch Video",
         statusCompleted: "Completed",
         statusInProgress: "In Development",
-        buttonViewMakingVideo: "Video in Development"
+        buttonViewMakingVideo: "Video in production"
     },
     experience: {
         title: "Experience",
@@ -150,7 +170,7 @@ export const portfolioDataEn: PortfolioDataType = {
             titulo: "Prc RickMorty",
             descripcion: "Rick and Morty character management application.",
             tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
-                "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful"],
+                "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
             imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
             github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
             youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",

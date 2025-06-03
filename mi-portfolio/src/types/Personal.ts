@@ -37,3 +37,11 @@ export interface ExperienceData {
   title: string;
   subtitle: string;
 }
+
+// Nueva interfaz para la sección "Sobre Mí"
+// Contiene un título, subtítulo y una descripción en formato SVG para Android.
+export interface AboutMeData {
+  title: string;
+  subtitle: string;
+  androidSvgDescription: string;
+}
