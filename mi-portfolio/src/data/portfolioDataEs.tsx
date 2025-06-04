@@ -163,7 +163,7 @@ export const portfolioDataEs: PortfolioDataType = {
       ],
       imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
       github: "https://github.com/Anbs12/appMovilAlertas.git",
-      youtube: "https://www.youtube.com/watch?v=cC5F1RxznQE&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=3&pp=gAQBiAQB0gcJCbAJAYcqIYzv",
+      youtube: "https://youtu.be/cC5F1RxznQE",
       estado: "En desarrollo",
       makingVideo: null
     },
@@ -175,7 +175,7 @@ export const portfolioDataEs: PortfolioDataType = {
         "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
       imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
-      youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
+      youtube: "https://youtu.be/HEPNMiL9fDU",
       estado: "Completado",
       makingVideo: null
     },
@@ -184,12 +184,12 @@ export const portfolioDataEs: PortfolioDataType = {
       titulo: "Prc NasaApp",
       descripcion: "Aplicacion de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
       tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt",
-        "Jetpack Compose", "Material Design", "KDocs", "API Restful"],
+        "Jetpack Compose", "Material Design", "KDocs", "API Restful", "JUnit"],
       imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
       github: "https://github.com/Anbs12/Prc_NasaApp.git",
-      youtube: null,
+      youtube: "https://youtu.be/YVVXdYj48k4",
       estado: "Completado",
-      makingVideo: "Si"
+      makingVideo: null
     },
     {
       id: 5,

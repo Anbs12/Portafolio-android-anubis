@@ -47,7 +47,7 @@ export const portfolioDataEn: PortfolioDataType = {
             "Unique"],
         staticHeroTitlePartTwo: " Android Experiences for the Digital World."
     },
-    aboutMe: { // New section data
+    aboutMe: {
         title: "About Me",
         subtitle: "My journey and what drives me",
         androidSvgDescription: "Abstract illustration of an Android robot, representing mobile development."
@@ -162,7 +162,7 @@ export const portfolioDataEn: PortfolioDataType = {
             ],
             imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
             github: "https://github.com/Anbs12/appMovilAlertas.git",
-            youtube: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            youtube: "https://youtu.be/5mw4I_J1-eg",
             estado: "In development"
         },
         {
@@ -173,7 +173,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
             imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
             github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
-            youtube: "https://www.youtube.com/watch?v=HEPNMiL9fDU&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=1&pp=gAQBiAQB",
+            youtube: "https://youtu.be/SofuhP2qKIs",
             estado: "Completed"
         },
         {
@@ -181,12 +181,12 @@ export const portfolioDataEn: PortfolioDataType = {
             titulo: "Prc NasaApp",
             descripcion: "NASA APOD mission tracking application, with information about the Astronomical Photo of the Day and Mars Rover images.",
             tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt",
-                "Jetpack Compose", "Material Design", "KDocs", "API Restful"],
+                "Jetpack Compose", "Material Design", "KDocs", "API Restful", "JUnit"],
             imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
             github: "https://github.com/Anbs12/Prc_NasaApp.git",
-            youtube: null,
+            youtube: "https://youtu.be/_QikS0dC2fM",
             estado: "Completed",
-            makingVideo: "In dev"
+            makingVideo: null
         },
         {
             id: 5,
