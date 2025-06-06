@@ -8,6 +8,8 @@ import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
 import { TechCard } from '../components/TechCard';
 import { ProjectCard } from '../components/ProjectCard';
+import { EducationCard } from '../components/EducationCard';
+import { ExperienceCard } from '../components/ExperienceCard';
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -53,6 +55,7 @@ const Portfolio: React.FC = () => {
     tecnologias: useRef<HTMLElement>(null),
     proyectos: useRef<HTMLElement>(null),
     experiencia: useRef<HTMLElement>(null),
+    educacion: useRef<HTMLElement>(null),
     contacto: useRef<HTMLElement>(null),
   };
 
@@ -63,6 +66,7 @@ const Portfolio: React.FC = () => {
     tecnologias: false,
     proyectos: false,
     experiencia: false,
+    educacion: false,
     contacto: false,
   });
 
@@ -93,6 +97,7 @@ const Portfolio: React.FC = () => {
     createObserver(sectionRefs.tecnologias, 'tecnologias');
     createObserver(sectionRefs.proyectos, 'proyectos');
     createObserver(sectionRefs.experiencia, 'experiencia');
+    createObserver(sectionRefs.educacion, 'educacion');
     createObserver(sectionRefs.contacto, 'contacto');
 
     // Función de limpieza para desconectar los observadores
@@ -138,6 +143,8 @@ const Portfolio: React.FC = () => {
       <nav className="fixed top-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
+
+            {/* Logo y nombre */}
             <div className="flex items-center">
               <div className="bg-gradient-to-r from-green-500 to-blue-500 p-2 rounded-lg mr-3">
                 <Code className="w-6 h-6 text-white" />
@@ -147,6 +154,7 @@ const Portfolio: React.FC = () => {
               </span>
             </div>
 
+            {/* Menú de navegación */}
             <div className="hidden md:flex space-x-8">
               {currentPortfolioData.navItems.map((item) => (
                 <button
@@ -160,7 +168,8 @@ const Portfolio: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex items-center gap-4">
+            {/* Botones de idioma y modo oscuro */}
+            <div className="flex items-center gap-4 ">
               {/* Botón de cambio de idioma */}
               <button
                 onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
@@ -293,7 +302,7 @@ const Portfolio: React.FC = () => {
                 src="https://developer.android.com/images/cluster-illustrations/mad-hero.svg" // URL de imagen de ejemplo
                 alt={currentPortfolioData.aboutMe.androidSvgDescription} // Usamos la misma descripción para accesibilidad
                 className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-contain rounded-full shadow-lg" // Estilos para la imagen
-                onError={(e) => { e.currentTarget.src='https://placehold.co/300x300/4CAF50/white?text=Error+Loading+Image'; }} // Fallback en caso de error
+                onError={(e) => { e.currentTarget.src = 'https://placehold.co/300x300/4CAF50/white?text=Error+Loading+Image'; }} // Fallback en caso de error
               />
             </div>
           </div>
@@ -308,8 +317,8 @@ const Portfolio: React.FC = () => {
       <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className={`max-w-6xl mx-auto ${visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.technologies.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.technologies.subtitle}</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.technologiesTitle.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.technologiesTitle.subtitle}</p>
           </div>
 
           {/* Renderizado de tecnologías por categoría */}
@@ -335,8 +344,8 @@ const Portfolio: React.FC = () => {
       <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projects.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.projects.subtitle}</p>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projectsSettings.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.projectsSettings.subtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -353,28 +362,15 @@ const Portfolio: React.FC = () => {
       // */
       }
       <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
-        <div className="max-w-4xl mx-auto">
-          <div className={`text-center mb-16 ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.experience.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.experience.subtitle}</p>
+        <div className={`max-w-4xl mx-auto ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
+          <div className={`text-center mb-16`}>
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.experienceTitle.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.experienceTitle.subtitle}</p>
           </div>
 
           <div className="space-y-8">
             {currentPortfolioData.experiencia.map((exp, index) => (
-              <div
-                key={index}
-                // Aplicar animación solo si la sección de experiencia es visible
-                className={`bg-gray-50 dark:bg-gray-700 rounded-2xl p-8 border-l-4 border-green-500 ${visibleSections.experiencia ? `animate-fadeInLeft animate-delay-${index * 100}` : 'opacity-0'}`}
-              >
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{exp.cargo}</h3>
-                    <p className="text-lg text-green-600 dark:text-green-400 font-medium">{exp.empresa}</p>
-                  </div>
-                  <span className="text-gray-500 dark:text-gray-300 font-medium mt-2 md:mt-0">{exp.periodo}</span>
-                </div>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{exp.descripcion}</p>
-              </div>
+              <ExperienceCard key={index} exp={exp} />
             ))}
           </div>
         </div>
@@ -385,7 +381,20 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      
+      <section id="educacion" ref={sectionRefs.educacion} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+        <div className={`max-w-4xl mx-auto ${visibleSections.educacion ? 'animate-fadeInUp' : 'opacity-0'}`}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.educationTitle.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.educationTitle.subtitle}</p>
+          </div>
+
+          <div className="space-y-8">
+            {currentPortfolioData.educationItems.map((edu, index) => (
+              <EducationCard key={index} edu={edu} />
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* 
       //  ////////////////////////// Contact Section ///////////////////////// 

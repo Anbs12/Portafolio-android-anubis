@@ -1,19 +1,23 @@
 import type { TechnologyItem } from './Technologies';
 import type { PortfolioDataType } from "./Portfolio";
-import type { Project } from './Project';
+import type { ProjectItem } from './Project';
+import type { EducationItem, ExperienceItem } from './Personal';
 
-//Tipar los props de ProjectCard de la sección de proyectos
-// Definición de propiedades para el componente ProjectCard.
-// Este componente recibe un proyecto y los datos del portafolio actual.
-// Se utiliza para mostrar información detallada de un proyecto específico en el portafolio.
+//Tipar los props de cada Card.
+
 export interface ProjectCardProps {
-  proyecto: Project;
+  proyecto: ProjectItem;
   currentPortfolioData: PortfolioDataType;
 }
 
-//Tipar los props de TechCard de la sección de tecnologías
-// Definición de propiedades para el componente TechCard.
-// Este componente recibe un elemento de tecnología y se utiliza para mostrar información sobre una tecnología específica en el portafolio.
 export interface TechCardProps {
-    tech: TechnologyItem;
+  tech: TechnologyItem;
+}
+
+export interface EducationCardProps {
+  edu: EducationItem;
+}
+
+export interface ExperienceCardProps {
+  exp: ExperienceItem;
 }

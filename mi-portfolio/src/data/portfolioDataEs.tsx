@@ -4,7 +4,12 @@ import {
   LucideDatabase
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
-
+import Logo_UST from '../assets/Logo_UST.png';
+import appprevencion_img from '../assets/img_appprevencion.png';
+import appmovilalertas_img from '../assets/img_appmovilalerta.png';
+import prc_rickmorty_img from '../assets/img_prc_rickmorty.png';
+import prc_nasaapp_img from '../assets/img_prc_nasaapp.png';
+import prc_ecommerceapp_img from '../assets/img_prc_ecommerceapp.png';
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -26,6 +31,7 @@ export const portfolioDataEs: PortfolioDataType = {
     { id: 'tecnologias', displayText: 'Tecnologías' },
     { id: 'proyectos', displayText: 'Proyectos' },
     { id: 'experiencia', displayText: 'Experiencia' },
+    { id: 'educacion', displayText: 'Educación' },
     { id: 'contacto', displayText: 'Contacto' }
   ],
   hero: {
@@ -51,11 +57,11 @@ export const portfolioDataEs: PortfolioDataType = {
     subtitle: "Mi trayectoria y lo que me impulsa",
     androidSvgDescription: "Ilustración abstracta de un robot Android, representando el desarrollo móvil."
   },
-  technologies: {
+  technologiesTitle: {
     title: "Tecnologías",
     subtitle: "Stack tecnológico y herramientas que domino"
   },
-  projects: {
+  projectsSettings: {
     title: "Proyectos",
     subtitle: "Algunos de mis trabajos más destacados",
     buttonCode: "Código",
@@ -65,9 +71,13 @@ export const portfolioDataEs: PortfolioDataType = {
     buttonViewMakingVideo: "Video en producción"
 
   },
-  experience: {
+  experienceTitle: {
     title: "Experiencia",
     subtitle: "Mi trayectoria profesional"
+  },
+  educationTitle: {
+    title: "Educación",
+    subtitle: "Mi formación académica",
   },
   contact: {
     title: "Contacto",
@@ -146,9 +156,9 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       id: 1,
       titulo: "App Prevencion",
-      descripcion: "Aplicación de gestión de alertas realizada en mi practica profesional, con enfoque en la prevención de riesgos laborales gestion de perfiles, y mas.",
+      descripcion: "Aplicación de gestión de alertas desarrollada en mi práctica profesional, centrada en la prevención de riesgos laborales, la gestión de perfiles, etc.",
       tecnologias: ["Kotlin", "XML", "Microsoft SQL Server", "Coroutines"],
-      imagen: "https://i.ytimg.com/vi/7P2PxyEzT0o/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4AdwEgAKACooCDAgAEAEYfyATKDAwDw==&rs=AOn4CLCPStVnJdLf1kRnOa5A6dcjzB2vcQ",
+      imagen: appprevencion_img,
       github: null,
       youtube: "https://www.youtube.com/watch?v=7P2PxyEzT0o&list=PL-DzkWcV11qsjKc-UWFknNcKSprQBWAVW&index=5&pp=gAQBiAQB",
       estado: "Completado",
@@ -157,11 +167,11 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       id: 2,
       titulo: "appMovilAlertas",
-      descripcion: "Aplicación de gestión de alertas V2 mejorada con enfoque en la prevención de riesgos laborales, gestion de perfiles, y mas.",
+      descripcion: "Aplicación mejorada de gestión de alertas V2 centrada en la prevención de riesgos laborales, la gestión de perfiles, etc.",
       tecnologias: ["Kotlin", "Jetpack Compose", "MVVM", "Kotlin Flows", "Coroutines",
         "Microsoft SQL Server", "XML", "CameraX", "Material Design", "JUnit", "Robolectric", "Mock"
       ],
-      imagen: "https://i.ytimg.com/vi/cC5F1RxznQE/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYOSBMKHIwDw==&rs=AOn4CLDuMJijPuu_oBRIcjb4cqg-FWJ1PQ",
+      imagen: appmovilalertas_img,
       github: "https://github.com/Anbs12/appMovilAlertas.git",
       youtube: "https://youtu.be/cC5F1RxznQE",
       estado: "En desarrollo",
@@ -170,10 +180,10 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       id: 3,
       titulo: "Prc RickMorty",
-      descripcion: "Aplicacion de gestión de personajes de Rick y Morty.",
+      descripcion: "Aplicación de gestión de personajes de Rick y Morty.",
       tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
         "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
-      imagen: "https://i.ytimg.com/vi/HEPNMiL9fDU/hqdefault.jpg?sqp=-oaymwFACKgBEF5IWvKriqkDMwgBFQAAiEIYAdgBAeIBCggYEAIYBjgBQAHwAQH4Af4JgALQBYoCDAgAEAEYTSBdKGUwDw==&rs=AOn4CLAXdo5T4pjSB8Npgm2MVtX9gU2wOg",
+      imagen: prc_rickmorty_img,
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://youtu.be/HEPNMiL9fDU",
       estado: "Completado",
@@ -182,10 +192,10 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       id: 4,
       titulo: "Prc NasaApp",
-      descripcion: "Aplicacion de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
+      descripcion: "Aplicación de seguimiento de la mision APOD de la NASA, con información sobre la foto astronomica del dia y imágenes del Mars Rover.",
       tecnologias: ["Kotlin", "Mockito", "MVVM", "Coroutines", "Navigation", "Retrofit", "Coil", "Dagger Hilt",
         "Jetpack Compose", "Material Design", "KDocs", "API Restful", "JUnit"],
-      imagen: "https://graffica.info/wp-content/uploads/2017/08/LogoNasaSpotB-1200x675.jpg",
+      imagen: prc_nasaapp_img,
       github: "https://github.com/Anbs12/Prc_NasaApp.git",
       youtube: "https://youtu.be/YVVXdYj48k4",
       estado: "Completado",
@@ -198,7 +208,7 @@ export const portfolioDataEs: PortfolioDataType = {
       tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
         "Coroutines", "Kotlin Flows", "Retrofit 2", "Coil", "Material Design 3", "KDocs",
         "Navigation", "Room Database", "API Restful"],
-      imagen: "https://img.pikbest.com/png-images/ecommerce-logo-vector-graphics-element--e-commerce-logo-icon-design-online-store-logo-icon_1726010.png!sw800",
+      imagen: prc_ecommerceapp_img,
       github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
       youtube: null,
       estado: "En desarrollo",
@@ -222,6 +232,15 @@ export const portfolioDataEs: PortfolioDataType = {
       cargo: "Desarrollador Android Practicante",
       periodo: "05/2024 - 07/2024",
       descripcion: "Creación de aplicación de gestión de alertas realizada, con enfoque en la prevención de riesgos laborales gestion de perfiles, y mas."
+    }
+  ],
+  educationItems: [
+    {
+      institucion: "Instituto Profesional Santo Tomás",
+      titulo: "Técnico Superior Analista Programador",
+      periodo: "2022 - 2024",
+      descripcion: "Formación integral en desarrollo de software, bases de datos, redes y gestión de proyectos.",
+      logo: Logo_UST
     }
   ]
 };

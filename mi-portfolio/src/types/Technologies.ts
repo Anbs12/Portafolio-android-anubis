@@ -5,7 +5,7 @@ import type { JSX } from "react";
 // Definición de tipos para la sección de Tecnologías en un portafolio.
 // Cada tecnología tiene un título y un subtítulo que describen la sección de tecnologías en el portafolio.
 // Estos datos se utilizan para mostrar información general sobre las tecnologías utilizadas en los proyectos del portafolio.
-export interface TechnologiesData {
+export interface TechnologiesTitle {
   title: string;
   subtitle: string;
 }

@@ -1,6 +1,6 @@
-import type { ContactData, PersonalData, ExperienceItem, ExperienceData,AboutMeData } from './Personal';
-import type { TechnologiesData, TechnologyCategory } from './Technologies';
-import type { ProjectsData, Project } from './Project';
+import type { ContactData, PersonalData, ExperienceItem, AboutMeData, ExperienceTitle, EducationTitle, EducationItem } from './Personal';
+import type { TechnologiesTitle, TechnologyCategory } from './Technologies';
+import type { ProjectItem, ProjectSettings } from './Project';
 
 // 1. Definición de interfaces para los datos del portafolio
 // Estas interfaces definen la estructura de los datos que se utilizarán en el portafolio.
@@ -45,12 +45,14 @@ export interface PortfolioDataType {
   navItems: NavItem[];
   hero: HeroData;
   aboutMe: AboutMeData;
-  technologies: TechnologiesData;
-  projects: ProjectsData;
-  experience: ExperienceData;
+  technologiesTitle: TechnologiesTitle;   //TItulo y subtitulo de la seccion tecnologias
+  projectsSettings: ProjectSettings;              // Titulo y subtitulo de la seccion proyectos
+  experienceTitle: ExperienceTitle;       // Titulo y subtitulo de la seccion experiencia
+  educationTitle: EducationTitle;
   contact: ContactData;
   footer: FooterData;
   tecnologiasCategorizadas: TechnologyCategory[];
-  proyectos: Project[];
+  proyectos: ProjectItem[];
   experiencia: ExperienceItem[];
+  educationItems: EducationItem[];
 }

@@ -17,7 +17,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
             <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                     <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{proyecto.titulo}</h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${proyecto.estado === currentPortfolioData.projects.statusCompleted ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100' : 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100'
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${proyecto.estado === currentPortfolioData.projectsSettings.statusCompleted ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100' : 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100'
                         }`}>
                         {proyecto.estado}
                     </span>
@@ -39,7 +39,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                             rel="noopener noreferrer" // Seguridad para target="_blank"
                             className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
                         >
-                            <Github className="w-4 h-4" /> {currentPortfolioData.projects.buttonCode}
+                            <Github className="w-4 h-4" /> {currentPortfolioData.projectsSettings.buttonCode}
                         </a>
                     )}
                     {/* Botón para ver el video de YouTube */}
@@ -50,13 +50,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
                         >
-                            <Play className="w-4 h-4" /> {currentPortfolioData.projects.buttonViewVideo}
+                            <Play className="w-4 h-4" /> {currentPortfolioData.projectsSettings.buttonViewVideo}
                         </a>
                     )}
                     {/* Botón para afirmar si se esta desarrollando un video para el proyecto */}
                     {proyecto.makingVideo && (
                         <span className="flex items-center gap-2 bg-yellow-200 text-yellow-800 px-4 py-2 rounded-lg">
-                            <CircleEllipsis className="w-4 h-4" /> {currentPortfolioData.projects.buttonViewMakingVideo}
+                            <CircleEllipsis className="w-4 h-4" /> {currentPortfolioData.projectsSettings.buttonViewMakingVideo}
                         </span>
                     )}
                 </div>
