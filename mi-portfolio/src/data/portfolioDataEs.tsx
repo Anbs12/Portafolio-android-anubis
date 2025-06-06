@@ -237,7 +237,7 @@ export const portfolioDataEs: PortfolioDataType = {
   educationItems: [
     {
       institucion: "Instituto Profesional Santo Tomás",
-      titulo: "Técnico Superior Analista Programador",
+      titulo: "Técnico Superior - Analista Programador",
       periodo: "2022 - 2024",
       descripcion: "Formación integral en desarrollo de software, bases de datos, redes y gestión de proyectos.",
       logo: Logo_UST

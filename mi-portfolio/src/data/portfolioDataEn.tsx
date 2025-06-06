@@ -235,7 +235,7 @@ export const portfolioDataEn: PortfolioDataType = {
     educationItems: [
         {
             institucion: "Professional Institute of Santo Tomás",
-            titulo: "Associate Degree in Analyst Programmer",
+            titulo: "Associate Degree - Programmer Analyst",
             periodo: "2022 - 2024",
             descripcion: "Comprehensive training in software development, databases, networking and project management.",
             logo: Logo_UST
