@@ -10,6 +10,7 @@ import { TechCard } from '../components/TechCard';
 import { ProjectCard } from '../components/ProjectCard';
 import { EducationCard } from '../components/EducationCard';
 import { ExperienceCard } from '../components/ExperienceCard';
+import { PersonalSkillCard } from '../components/PersonalSkillCard';
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -56,6 +57,7 @@ const Portfolio: React.FC = () => {
     proyectos: useRef<HTMLElement>(null),
     experiencia: useRef<HTMLElement>(null),
     educacion: useRef<HTMLElement>(null),
+    habilidadesPersonales: useRef<HTMLElement>(null),
     contacto: useRef<HTMLElement>(null),
   };
 
@@ -67,6 +69,7 @@ const Portfolio: React.FC = () => {
     proyectos: false,
     experiencia: false,
     educacion: false,
+    habilidadesPersonales: false,
     contacto: false,
   });
 
@@ -98,6 +101,7 @@ const Portfolio: React.FC = () => {
     createObserver(sectionRefs.proyectos, 'proyectos');
     createObserver(sectionRefs.experiencia, 'experiencia');
     createObserver(sectionRefs.educacion, 'educacion');
+    createObserver(sectionRefs.habilidadesPersonales, 'habilidadesPersonales');
     createObserver(sectionRefs.contacto, 'contacto');
 
     // Función de limpieza para desconectar los observadores
@@ -142,7 +146,7 @@ const Portfolio: React.FC = () => {
       }
       <nav className="fixed top-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex justify-evenly items-center py-4">
 
             {/* Logo y nombre */}
             <div className="flex items-center">
@@ -155,7 +159,7 @@ const Portfolio: React.FC = () => {
             </div>
 
             {/* Menú de navegación */}
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden md:flex space-x-12">
               {currentPortfolioData.navItems.map((item) => (
                 <button
                   key={item.id} // Usar item.id como key
@@ -391,6 +395,22 @@ const Portfolio: React.FC = () => {
           <div className="space-y-8">
             {currentPortfolioData.educationItems.map((edu, index) => (
               <EducationCard key={index} edu={edu} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Personal Skills Section - NEW */}
+      <section id="habilidades-personales" ref={sectionRefs.habilidadesPersonales} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
+        <div className={`max-w-6xl mx-auto ${visibleSections.habilidadesPersonales ? 'animate-fadeInUp' : 'opacity-0'}`}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold font-heading text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.personalSkillsTitle.title}</h2>
+            <p className="text-xl font-body text-gray-600 dark:text-gray-300">{currentPortfolioData.personalSkillsTitle.subtitle}</p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 max-w-5xl mx-auto">
+            {currentPortfolioData.personalSkillItem.map((skill, index) => (
+              <PersonalSkillCard key={index} skill={skill} isVisible={visibleSections.habilidadesPersonales} />
             ))}
           </div>
         </div>

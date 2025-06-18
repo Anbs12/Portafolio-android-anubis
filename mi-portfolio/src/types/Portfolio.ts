@@ -1,4 +1,5 @@
-import type { ContactData, PersonalData, ExperienceItem, AboutMeData, ExperienceTitle, EducationTitle, EducationItem } from './Personal';
+import type { ContactData, PersonalData, ExperienceItem, AboutMeData, ExperienceTitle, 
+  EducationTitle, EducationItem, PersonalSkillsTitle, PersonalSkillItem } from './Personal';
 import type { TechnologiesTitle, TechnologyCategory } from './Technologies';
 import type { ProjectItem, ProjectSettings } from './Project';
 
@@ -49,10 +50,12 @@ export interface PortfolioDataType {
   projectsSettings: ProjectSettings;              // Titulo y subtitulo de la seccion proyectos
   experienceTitle: ExperienceTitle;       // Titulo y subtitulo de la seccion experiencia
   educationTitle: EducationTitle;
+  personalSkillsTitle: PersonalSkillsTitle;
   contact: ContactData;
   footer: FooterData;
   tecnologiasCategorizadas: TechnologyCategory[];
   proyectos: ProjectItem[];
   experiencia: ExperienceItem[];
   educationItems: EducationItem[];
+  personalSkillItem: PersonalSkillItem[];
 }

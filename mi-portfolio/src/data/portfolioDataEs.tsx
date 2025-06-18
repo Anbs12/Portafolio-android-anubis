@@ -1,7 +1,15 @@
 import {
   Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
   RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Navigation,
-  LucideDatabase
+  LucideDatabase,
+  Brain,
+  Handshake,
+  Lightbulb,
+  MessageSquare,
+  Shield,
+  TestTube,
+  User,
+  Users
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
@@ -32,6 +40,7 @@ export const portfolioDataEs: PortfolioDataType = {
     { id: 'proyectos', displayText: 'Proyectos' },
     { id: 'experiencia', displayText: 'Experiencia' },
     { id: 'educacion', displayText: 'Educación' },
+    { id: 'habilidades-personales', displayText: 'Habilidades Personales' },
     { id: 'contacto', displayText: 'Contacto' }
   ],
   hero: {
@@ -78,6 +87,10 @@ export const portfolioDataEs: PortfolioDataType = {
   educationTitle: {
     title: "Educación",
     subtitle: "Mi formación académica",
+  },
+  personalSkillsTitle: {
+    title: "Habilidades Personales",
+    subtitle: "Lo que me define como profesional"
   },
   contact: {
     title: "Contacto",
@@ -242,5 +255,15 @@ export const portfolioDataEs: PortfolioDataType = {
       descripcion: "Formación integral en desarrollo de software, bases de datos, redes y gestión de proyectos.",
       logo: Logo_UST
     }
+  ],
+  personalSkillItem: [
+    { name: "Inteligencia Emocional", icon: <Lightbulb className="w-8 h-8 text-yellow-500" /> },
+    { name: "Comunicación Asertiva", icon: <MessageSquare className="w-8 h-8 text-blue-500" /> },
+    { name: "Colaboración Efectiva", icon: <Handshake className="w-8 h-8 text-teal-500" /> },
+    { name: "Resiliencia en el lugar de trabajo", icon: <Shield className="w-8 h-8 text-gray-500" /> },
+    { name: "Pensamiento Crítico", icon: <Brain className="w-8 h-8 text-purple-500" /> },
+    { name: "Autonomía Profesional", icon: <User className="w-8 h-8 text-green-500" /> },
+    { name: "Capacitación del Personal", icon: <Users className="w-8 h-8 text-indigo-500" /> },
+    { name: "Capacidad Diagnóstica", icon: <TestTube className="w-8 h-8 text-red-500" /> }
   ]
 };

@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 // Definición de datos personales y de contacto para un portafolio.
 
 
@@ -56,6 +57,16 @@ export interface EducationItem {
   periodo: string;
   descripcion: string;
   logo?: string; // Propiedad opcional para la URL del logo
+}
+
+export interface PersonalSkillsTitle {
+  title: string;
+  subtitle: string;
+}
+
+export interface PersonalSkillItem {
+  name: string;
+  icon: JSX.Element;
 }
 
 
