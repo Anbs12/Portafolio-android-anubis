@@ -9,7 +9,8 @@ import {
   Shield,
   TestTube,
   User,
-  Users
+  Users,
+  Server
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
@@ -18,6 +19,8 @@ import appmovilalertas_img from '../assets/img_appmovilalerta.png';
 import prc_rickmorty_img from '../assets/img_prc_rickmorty.png';
 import prc_nasaapp_img from '../assets/img_prc_nasaapp.png';
 import prc_ecommerceapp_img from '../assets/img_prc_ecommerceapp.png';
+import img_en_desarrollo_esp from '../assets/img_en_desarrollo_esp.png';
+import android_icon from '../assets/android-studio-icon.svg';
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -35,12 +38,18 @@ export const portfolioDataEs: PortfolioDataType = {
   },
   navItems: [
     { id: 'inicio', displayText: 'Inicio' },
-    { id: 'sobre-mi', displayText: 'Sobre Mí' },
+    {
+      id: 'informacion',
+      displayText: 'Información',
+      subItems: [
+        { id: 'sobre-mi', displayText: 'Sobre Mí' },
+        { id: 'habilidades-personales', displayText: 'Habilidades Personales' },
+      ]
+    },
     { id: 'tecnologias', displayText: 'Tecnologías' },
     { id: 'proyectos', displayText: 'Proyectos' },
     { id: 'experiencia', displayText: 'Experiencia' },
     { id: 'educacion', displayText: 'Educación' },
-    { id: 'habilidades-personales', displayText: 'Habilidades Personales' },
     { id: 'contacto', displayText: 'Contacto' }
   ],
   hero: {
@@ -61,7 +70,7 @@ export const portfolioDataEs: PortfolioDataType = {
       "Únicas"],
     staticHeroTitlePartTwo: " para el mundo digital." // Parte 2 estática del título
   },
-  aboutMe: { // New section data
+  aboutMe: {
     title: "Sobre Mí",
     subtitle: "Mi trayectoria y lo que me impulsa",
     androidSvgDescription: "Ilustración abstracta de un robot Android, representando el desarrollo móvil."
@@ -90,7 +99,7 @@ export const portfolioDataEs: PortfolioDataType = {
   },
   personalSkillsTitle: {
     title: "Habilidades Personales",
-    subtitle: "Lo que me define como profesional"
+    subtitle: "Lo rasgos y cualidades que me definen como profesional"
   },
   contact: {
     title: "Contacto",
@@ -105,7 +114,7 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       category: "Lenguajes y Fundamentos",
       items: [
-        { name: 'Kotlin', subtitle: 'Lenguaje de programación principal para Android', icon: <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/640px-Kotlin_Icon.svg.png" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Kotlin', subtitle: 'Lenguaje de programación principal para Android', icon: <img src="https://www.svgrepo.com/show/303617/kotlin-1-logo.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'XML', subtitle: 'Lenguaje de marcado para interfaces', icon: <FileCode className="w-8 h-8 text-lime-600" /> },
         { name: 'Android SDK', subtitle: 'Kit de desarrollo de software para Android', icon: <Smartphone className="w-8 h-8 text-emerald-600" /> },
         { name: 'Android Lifecycle', subtitle: 'Manejo de estados de componentes', icon: <RefreshCw className="w-8 h-8 text-emerald-500" /> },
@@ -129,18 +138,19 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       category: "Bases de Datos y Backend",
       items: [
-        { name: 'Firebase', subtitle: 'Plataforma de desarrollo de Google', icon: <Award className="w-8 h-8 text-yellow-600" /> },
+        { name: 'Firebase', subtitle: 'Plataforma de desarrollo de Google', icon: <img src="https://www.svgrepo.com/show/373595/firebase.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Microsoft SQL Server', subtitle: 'Gestión de bases de datos relacionales', icon: <Database className="w-8 h-8 text-gray-700" /> },
         { name: 'APIs RESTful con Retrofit 2', subtitle: 'Comunicación con servicios web', icon: <Globe className="w-8 h-8 text-sky-700" /> },
         { name: 'Room Database', subtitle: 'Base de datos local para Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
+        { name: 'GraphQL', subtitle: 'Lenguaje de consulta de datos para APIs', icon: <img src='https://graphql.org/_next/static/media/logo.ad338028.svg' alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
     {
       category: "UI/UX y Diseño",
       items: [
-        { name: 'Jetpack Compose', subtitle: 'Toolkit moderno para UI de Android', icon: <LayoutGrid className="w-8 h-8 text-sky-600" /> },
-        { name: 'Material Design de Google', subtitle: 'Sistema de diseño para Android', icon: <Palette className="w-8 h-8 text-violet-600" /> },
-        { name: 'Coil', subtitle: 'Librería de carga de imágenes para Android', icon: <Image className="w-8 h-8 text-violet-500" /> },
+        { name: 'Jetpack Compose', subtitle: 'Toolkit moderno para UI de Android', icon: <img src="https://avatars.githubusercontent.com/u/71742764?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Material Design de Google', subtitle: 'Sistema de diseño para Android', icon: <img src="https://www.svgrepo.com/show/342017/material-design.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Coil', subtitle: 'Librería de carga de imágenes para Android', icon: <img src="https://avatars.githubusercontent.com/u/52722434?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Navigation', subtitle: 'Navegacion con Jetpack Compose', icon: <Navigation className="w-8 h-8 text-blue-600" /> },
       ]
     },
@@ -148,20 +158,20 @@ export const portfolioDataEs: PortfolioDataType = {
       category: "Testing",
       items: [
         { name: 'JUnit', subtitle: 'Framework para pruebas unitarias', icon: <CheckCircle className="w-8 h-8 text-teal-600" /> },
-        { name: 'Robolectric', subtitle: 'Framework para pruebas unitarias de Android', icon: <Bot className="w-8 h-8 text-emerald-600" /> },
+        { name: 'Robolectric', subtitle: 'Framework para pruebas unitarias de Android', icon: <img src="https://avatars.githubusercontent.com/u/3988212?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Mock', subtitle: 'Simulación de objetos para pruebas', icon: <FileQuestion className="w-8 h-8 text-amber-600" /> },
       ]
     },
     {
       category: "Herramientas y Productividad",
       items: [
-        { name: 'Control de versiones Git', subtitle: 'Sistema de control de versiones distribuido', icon: <GitBranch className="w-8 h-8 text-gray-800" /> },
+        { name: 'Control de versiones Git', subtitle: 'Sistema de control de versiones distribuido', icon: <img src="https://www.svgrepo.com/show/452210/git.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'GitHub', subtitle: 'Plataforma para control de versiones', icon: <Github className="w-8 h-8 text-gray-800" /> },
-        { name: 'Android Studio', subtitle: 'IDE oficial para desarrollo Android', icon: <Monitor className="w-8 h-8 text-emerald-700" /> },
-        { name: 'CameraX', subtitle: 'API para desarrollo de cámara', icon: <Camera className="w-8 h-8 text-pink-600" /> },
+        { name: 'Android Studio', subtitle: 'IDE oficial para desarrollo Android', icon: <img src={android_icon} alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'CameraX', subtitle: 'API para desarrollo de cámara en Android', icon: <Camera className="w-8 h-8 text-pink-600" /> },
         { name: 'Documentación KDocs', subtitle: 'Generación de documentación en Kotlin', icon: <FileText className="w-8 h-8 text-cyan-600" /> },
-        { name: 'Microsoft Word', subtitle: 'Procesador de texto', icon: <FileText className="w-8 h-8 text-blue-500" /> },
-        { name: 'Microsoft PowerPoint', subtitle: 'Software de presentaciones', icon: <Presentation className="w-8 h-8 text-red-500" /> },
+        { name: 'Microsoft Word', subtitle: 'Procesador de texto', icon: <img src="https://www.svgrepo.com/show/374187/word.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Microsoft PowerPoint', subtitle: 'Software de presentaciones', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
   ],
@@ -223,6 +233,19 @@ export const portfolioDataEs: PortfolioDataType = {
         "Navigation", "Room Database", "API Restful"],
       imagen: prc_ecommerceapp_img,
       github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
+      youtube: null,
+      estado: "En desarrollo",
+      makingVideo: null
+    },
+    {
+      id: 6,
+      titulo: "Prc Animelist",
+      descripcion: "Aplicación de gestión de animes, con funcionalidades de búsqueda, filtrado y gestión de listas de seguimiento.",
+      tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
+        "Coroutines", "Kotlin Flows", "Coil", "Material Design 3", "KDocs",
+        "Navigation", "Room Database", "GraphQL", "OkHttp"],
+      imagen: img_en_desarrollo_esp,
+      github: null,
       youtube: null,
       estado: "En desarrollo",
       makingVideo: null

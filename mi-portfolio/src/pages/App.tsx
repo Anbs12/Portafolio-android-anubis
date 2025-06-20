@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Github, Linkedin, Code, Smartphone,
-  Menu, X, Sun, Moon
+  Menu, X, Sun, Moon,
+  ChevronDown
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
@@ -19,6 +20,7 @@ const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('inicio');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [language, setLanguage] = useState<'es' | 'en'>('es'); // 'es' para español, 'en' para inglés
+  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null); // State for mobile submenu
 
   // --- Logica del modo oscuro ---
   type Theme = 'light' | 'dark';
@@ -129,7 +131,8 @@ const Portfolio: React.FC = () => {
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Close mobile menu when a section is clicked
+    setOpenMobileSubmenu(null); // Close any open mobile submenus
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -146,7 +149,7 @@ const Portfolio: React.FC = () => {
       }
       <nav className="fixed top-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-evenly items-center py-4">
+          <div className="flex justify-between items-center py-4">
 
             {/* Logo y nombre */}
             <div className="flex items-center">
@@ -158,17 +161,40 @@ const Portfolio: React.FC = () => {
               </span>
             </div>
 
-            {/* Menú de navegación */}
-            <div className="hidden md:flex space-x-12">
+            {/* Menú de navegación Desktop*/}
+            <div className="hidden lg:flex items-center space-x-7">
               {currentPortfolioData.navItems.map((item) => (
-                <button
-                  key={item.id} // Usar item.id como key
-                  onClick={() => scrollToSection(item.id)} // Usar item.id para el scroll
-                  className={`capitalize font-medium transition-colors hover:text-green-600 ${activeSection === item.id ? 'text-green-600' : 'text-gray-700 dark:text-gray-300'
-                    }`}
-                >
-                  {item.displayText} {/* Mostrar displayText */}
-                </button>
+                item.subItems ? (
+                  <div key={item.id} className="relative group">
+                    <button
+                      onClick={() => scrollToSection(item.id)} // Added onClick to parent for scrolling
+                      className="capitalize font-semibold transition-colors hover:text-green-600 text-gray-700 dark:text-gray-300 font-body flex items-center"
+                    >
+                      {item.displayText} <ChevronDown className="inline w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
+                    </button>
+                    <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1
+                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out z-10">
+                      {item.subItems.map(subItem => (
+                        <button
+                          key={subItem.id}
+                          onClick={() => scrollToSection(subItem.id)}
+                          className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-body"
+                        >
+                          {subItem.displayText}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`capitalize font-semibold transition-colors hover:text-green-600 ${activeSection === item.id ? 'text-green-600' : 'text-gray-700 dark:text-gray-300'
+                      } font-body`}
+                  >
+                    {item.displayText}
+                  </button>
+                )
               ))}
             </div>
 
@@ -198,10 +224,9 @@ const Portfolio: React.FC = () => {
               </button>
             </div>
 
-
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
+              className="lg:hidden p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -212,16 +237,45 @@ const Portfolio: React.FC = () => {
             </button>
           </div>
 
+          {/* Mobile Navigation Menu */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-gray-100 dark:border-gray-700">
+            <div className="lg:hidden py-4 border-t border-gray-100 dark:border-gray-700">
               {currentPortfolioData.navItems.map((item) => (
-                <button
-                  key={item.id} // Usar item.id como key
-                  onClick={() => scrollToSection(item.id)} // Usar item.id para el scroll
-                  className="block w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4"
-                >
-                  {item.displayText} {/* Mostrar displayText */}
-                </button>
+                item.subItems ? (
+                  <div key={item.id} className="relative">
+                    <button
+                      onClick={() => {
+                        // For mobile, this button only toggles the submenu visibility
+                        setOpenMobileSubmenu(openMobileSubmenu === item.id ? null : item.id);
+                      }}
+                      className="flex w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4 font-body  justify-between items-center"
+                    >
+                      {item.displayText}
+                      <ChevronDown className={`w-5 h-5 transition-transform ${openMobileSubmenu === item.id ? 'rotate-180' : ''}`} />
+                    </button>
+                    {openMobileSubmenu === item.id && (
+                      <div className="pl-6 pt-2 pb-2 space-y-2"> {/* Indent submenu */}
+                        {item.subItems.map(subItem => (
+                          <button
+                            key={subItem.id}
+                            onClick={() => scrollToSection(subItem.id)} // Submenu items scroll to section
+                            className="block w-full text-left py-2 capitalize font-medium text-gray-600 dark:text-gray-400 hover:text-green-500 font-body"
+                          >
+                            {subItem.displayText}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="block w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4 font-body"
+                  >
+                    {item.displayText}
+                  </button>
+                )
               ))}
             </div>
           )}
@@ -400,7 +454,11 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* Personal Skills Section - NEW */}
+      {/* 
+      
+        ////////////////////////// Personal Skills Section ////////////////////////// 
+        // 
+        // */}
       <section id="habilidades-personales" ref={sectionRefs.habilidadesPersonales} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
         <div className={`max-w-6xl mx-auto ${visibleSections.habilidadesPersonales ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center mb-16">

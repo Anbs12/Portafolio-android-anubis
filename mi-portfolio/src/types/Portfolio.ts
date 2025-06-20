@@ -19,6 +19,7 @@ import type { ProjectItem, ProjectSettings } from './Project';
 export interface NavItem {
   id: string;
   displayText: string;
+  subItems?: NavItem[];
 }
 
 // Definicion de datos para las seccion "Hero" del portafolio.

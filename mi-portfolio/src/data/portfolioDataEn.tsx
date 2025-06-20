@@ -9,7 +9,8 @@ import {
     Shield,
     TestTube,
     User,
-    Users
+    Users,
+    Server
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
@@ -18,6 +19,8 @@ import appmovilalertas_img from '../assets/img_appmovilalerta.png';
 import prc_rickmorty_img from '../assets/img_prc_rickmorty.png';
 import prc_nasaapp_img from '../assets/img_prc_nasaapp.png';
 import prc_ecommerceapp_img from '../assets/img_prc_ecommerceapp.png';
+import img_en_desarrollo_eng from '../assets/img_en_desarrollo_eng.png';
+import android_icon from '../assets/android-studio-icon.svg';
 
 
 // Datos configurables en INGLÉS
@@ -37,12 +40,18 @@ export const portfolioDataEn: PortfolioDataType = {
     },
     navItems: [
         { id: 'inicio', displayText: 'Home' },
-        { id: 'sobre-mi', displayText: 'About Me' },
+        {
+            id: 'informacion',
+            displayText: 'Information',
+            subItems: [
+                { id: 'sobre-mi', displayText: 'About Me' },
+                { id: 'habilidades-personales', displayText: 'Personal Skills' },
+            ]
+        },
         { id: 'tecnologias', displayText: 'Technologies' },
         { id: 'proyectos', displayText: 'Projects' },
         { id: 'experiencia', displayText: 'Experience' },
         { id: 'educacion', displayText: 'Education' },
-        { id: 'habilidades-personales', displayText: 'Personal Skills' },
         { id: 'contacto', displayText: 'Contact' }
     ],
     hero: {
@@ -91,7 +100,7 @@ export const portfolioDataEn: PortfolioDataType = {
     },
     personalSkillsTitle: {
         title: "Personal Skills",
-        subtitle: "Skills that define my work ethic",
+        subtitle: "Traits and qualities that define me as a professional",
     },
     contact: {
         title: "Contact",
@@ -106,7 +115,7 @@ export const portfolioDataEn: PortfolioDataType = {
         {
             category: "Languages and Fundamentals",
             items: [
-                { name: 'Kotlin', subtitle: 'Main programming language for Android', icon: <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kotlin_Icon.svg/640px-Kotlin_Icon.svg.png" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Kotlin', subtitle: 'Main programming language for Android', icon: <img src="https://www.svgrepo.com/show/303617/kotlin-1-logo.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'XML', subtitle: 'Markup language for interfaces', icon: <FileCode className="w-8 h-8 text-lime-600" /> },
                 { name: 'Android SDK', subtitle: 'Software Development Kit for Android', icon: <Smartphone className="w-8 h-8 text-emerald-600" /> },
                 { name: 'Android Lifecycle', subtitle: 'Component lifecycle management', icon: <RefreshCw className="w-8 h-8 text-emerald-500" /> },
@@ -130,18 +139,19 @@ export const portfolioDataEn: PortfolioDataType = {
         {
             category: "Databases and Backend",
             items: [
-                { name: 'Firebase', subtitle: 'Google development platform', icon: <Award className="w-8 h-8 text-yellow-600" /> },
+                { name: 'Firebase', subtitle: 'Google development platform', icon: <img src="https://www.svgrepo.com/show/373595/firebase.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Microsoft SQL Server', subtitle: 'Relational database management', icon: <Database className="w-8 h-8 text-gray-700" /> },
                 { name: 'RESTful APIs with Retrofit 2', subtitle: 'Web service communication', icon: <Globe className="w-8 h-8 text-sky-700" /> },
-                { name: 'Room Database', subtitle: 'Local database for Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> }
+                { name: 'Room Database', subtitle: 'Local database for Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
+                { name: 'GraphQL', subtitle: 'Data query language for APIs', icon: <img src='https://graphql.org/_next/static/media/logo.ad338028.svg' alt="Kotlin Icon" className="w-8 h-8" /> },
             ]
         },
         {
             category: "UI/UX and Design",
             items: [
-                { name: 'Jetpack Compose', subtitle: 'Modern UI toolkit for Android', icon: <LayoutGrid className="w-8 h-8 text-sky-600" /> },
-                { name: 'Google Material Design', subtitle: 'Design system for Android', icon: <Palette className="w-8 h-8 text-violet-600" /> },
-                { name: 'Coil', subtitle: 'Image loading library for Android', icon: <Image className="w-8 h-8 text-violet-500" /> },
+                { name: 'Jetpack Compose', subtitle: 'Modern UI toolkit for Android', icon: <img src="https://avatars.githubusercontent.com/u/71742764?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Google Material Design', subtitle: 'Design system for Android', icon: <img src="https://www.svgrepo.com/show/342017/material-design.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Coil', subtitle: 'Image loading library for Android', icon: <img src="https://avatars.githubusercontent.com/u/52722434?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" />},
                 { name: 'Navigation', subtitle: 'Navigation with Jetpack Compose', icon: <Navigation className="w-8 h-8 text-blue-600" /> },
             ]
         },
@@ -149,20 +159,20 @@ export const portfolioDataEn: PortfolioDataType = {
             category: "Testing",
             items: [
                 { name: 'JUnit', subtitle: 'Unit testing framework', icon: <CheckCircle className="w-8 h-8 text-teal-600" /> },
-                { name: 'Robolectric', subtitle: 'Unit testing framework for Android', icon: <Bot className="w-8 h-8 text-emerald-600" /> },
+                { name: 'Robolectric', subtitle: 'Unit testing framework for Android', icon: <img src="https://avatars.githubusercontent.com/u/3988212?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Mock', subtitle: 'Object simulation for testing', icon: <FileQuestion className="w-8 h-8 text-amber-600" /> },
             ]
         },
         {
             category: "Tools and Productivity",
             items: [
-                { name: 'Git Version Control', subtitle: 'Distributed version control system', icon: <GitBranch className="w-8 h-8 text-gray-800" /> },
+                { name: 'Git Version Control', subtitle: 'Distributed version control system', icon: <img src="https://www.svgrepo.com/show/452210/git.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'GitHub', subtitle: 'Platform for version control', icon: <Github className="w-8 h-8 text-gray-800" /> },
-                { name: 'Android Studio', subtitle: 'Official IDE for Android development', icon: <Monitor className="w-8 h-8 text-emerald-700" /> },
-                { name: 'CameraX', subtitle: 'API for camera development', icon: <Camera className="w-8 h-8 text-pink-600" /> },
+                { name: 'Android Studio', subtitle: 'Official IDE for Android development', icon: <img src={android_icon} alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'CameraX', subtitle: 'API for camera development in Android', icon: <Camera className="w-8 h-8 text-pink-600" /> },
                 { name: 'KDocs Documentation', subtitle: 'Documentation generation in Kotlin', icon: <FileText className="w-8 h-8 text-cyan-600" /> },
-                { name: 'Microsoft Word', subtitle: 'Word processor', icon: <FileText className="w-8 h-8 text-blue-500" /> },
-                { name: 'Microsoft PowerPoint', subtitle: 'Presentation software', icon: <Presentation className="w-8 h-8 text-red-500" /> },
+                { name: 'Microsoft Word', subtitle: 'Word processor', icon: <img src="https://www.svgrepo.com/show/374187/word.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Microsoft PowerPoint', subtitle: 'Presentation software', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
             ]
         },
     ],
@@ -224,6 +234,19 @@ export const portfolioDataEn: PortfolioDataType = {
             youtube: null,
             estado: "In development",
             makingVideo: null
+        },
+        {
+            id: 6,
+            titulo: "Prc Animelist",
+            descripcion: "Anime management application, with search, filtering and watchlist management functionalities.",
+            tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
+                "Coroutines", "Kotlin Flows", "Coil", "Material Design 3", "KDocs",
+                "Navigation", "Room Database", "GraphQL", "OkHttp"],
+            imagen: img_en_desarrollo_eng,
+            github: null,
+            youtube: null,
+            estado: "In development",
+            makingVideo: null
         }
     ],
     experiencia: [
@@ -255,13 +278,13 @@ export const portfolioDataEn: PortfolioDataType = {
         }
     ],
     personalSkillItem: [
-      { name: "Emotional Intelligence", icon: <Lightbulb className="w-8 h-8 text-yellow-500" /> },
-      { name: "Assertive Communication", icon: <MessageSquare className="w-8 h-8 text-blue-500" /> },
-      { name: "Effective Collaboration", icon: <Handshake className="w-8 h-8 text-teal-500" /> },
-      { name: "Workplace Resilience", icon: <Shield className="w-8 h-8 text-gray-500" /> },
-      { name: "Critical Thinking", icon: <Brain className="w-8 h-8 text-purple-500" /> },
-      { name: "Professional Autonomy", icon: <User className="w-8 h-8 text-green-500" /> },
-      { name: "Staff Training", icon: <Users className="w-8 h-8 text-indigo-500" /> },
-      { name: "Diagnostic Ability", icon: <TestTube className="w-8 h-8 text-red-500" /> }
+        { name: "Emotional Intelligence", icon: <Lightbulb className="w-8 h-8 text-yellow-500" /> },
+        { name: "Assertive Communication", icon: <MessageSquare className="w-8 h-8 text-blue-500" /> },
+        { name: "Effective Collaboration", icon: <Handshake className="w-8 h-8 text-teal-500" /> },
+        { name: "Workplace Resilience", icon: <Shield className="w-8 h-8 text-gray-500" /> },
+        { name: "Critical Thinking", icon: <Brain className="w-8 h-8 text-purple-500" /> },
+        { name: "Professional Autonomy", icon: <User className="w-8 h-8 text-green-500" /> },
+        { name: "Staff Training", icon: <Users className="w-8 h-8 text-indigo-500" /> },
+        { name: "Diagnostic Ability", icon: <TestTube className="w-8 h-8 text-red-500" /> }
     ]
 };

@@ -7,7 +7,7 @@ export const PersonalSkillCard: React.FC<PersonalSkillCardProps> = ({ skill, isV
                   hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group 
                   flex flex-col items-center text-center `}
     >
-      <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-3 rounded-full mb-3 group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-300 flex items-center justify-center">
+      <div className="bg-gradient-to-r from-emerald-50 to-blue-100 p-3 rounded-full mb-3 group-hover:from-emerald-200 group-hover:to-blue-300 transition-all duration-300 flex items-center justify-center">
         {skill.icon}
       </div>
       <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm mb-1 leading-tight">{skill.name}</h3>
