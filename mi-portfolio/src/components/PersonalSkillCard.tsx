@@ -1,6 +1,6 @@
 import type { PersonalSkillCardProps } from "../types/CardProps";
 
-export const PersonalSkillCard: React.FC<PersonalSkillCardProps> = ({ skill, isVisible }) => {
+export const PersonalSkillCard: React.FC<PersonalSkillCardProps> = ({ skill }) => {
   return (
     <div
       className={`bg-white dark:bg-gray-700 rounded-xl p-4 shadow-lg border border-gray-100 dark:border-gray-600 

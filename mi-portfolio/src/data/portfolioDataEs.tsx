@@ -1,6 +1,6 @@
 import {
-  Github, Smartphone, Database, Globe, FileText, GitBranch, Camera, Layers, Palette,
-  RefreshCw, ArrowRightCircle, LayoutGrid, Award, Plug, CheckCircle, Bot, FileQuestion, FileCode, Monitor, Image, Presentation, Navigation,
+  Github, Smartphone, Database, Globe, FileText, Camera, Layers, 
+  RefreshCw, ArrowRightCircle, LayoutGrid, Plug, CheckCircle, FileQuestion, FileCode, Navigation,
   LucideDatabase,
   Brain,
   Handshake,
@@ -9,9 +9,7 @@ import {
   Shield,
   TestTube,
   User,
-  Users,
-  Server
-} from 'lucide-react';
+  Users} from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
 import appprevencion_img from '../assets/img_appprevencion.png';
