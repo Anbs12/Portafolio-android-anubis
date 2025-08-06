@@ -1,5 +1,5 @@
 import {
-  Github, Smartphone, Database, Globe, FileText, Camera, Layers, 
+  Github, Smartphone, Database, Globe, FileText, Camera, Layers,
   RefreshCw, ArrowRightCircle, LayoutGrid, Plug, CheckCircle, FileQuestion, FileCode, Navigation,
   LucideDatabase,
   Brain,
@@ -9,7 +9,8 @@ import {
   Shield,
   TestTube,
   User,
-  Users} from 'lucide-react';
+  Users
+} from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
 import appprevencion_img from '../assets/img_appprevencion.png';
@@ -19,6 +20,11 @@ import prc_nasaapp_img from '../assets/img_prc_nasaapp.png';
 import prc_ecommerceapp_img from '../assets/img_prc_ecommerceapp.png';
 import img_en_desarrollo_esp from '../assets/img_en_desarrollo_esp.png';
 import android_icon from '../assets/android-studio-icon.svg';
+import calculadoraPropinas_img from '../assets/img_calculadora_propina_eng.png';
+import toDoList_img from '../assets/img_toDo_list.png';
+import appNotas_img from '../assets/img_noteApp.png';
+import gestorContactos_img from '../assets/img_contactApp.png';
+import chatApp_img from '../assets/img_chatApp.png';
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -80,6 +86,16 @@ export const portfolioDataEs: PortfolioDataType = {
   projectsSettings: {
     title: "Proyectos",
     subtitle: "Algunos de mis trabajos más destacados",
+    buttonCode: "Código",
+    buttonViewVideo: "Ver Video",
+    statusCompleted: "Completado",
+    statusInProgress: "En desarrollo",
+    buttonViewMakingVideo: "Video en producción"
+
+  },
+  subProjectsSettings: {
+    title: "Otros Proyectos",
+    subtitle: "Sub proyectos y trabajos adicionales",
     buttonCode: "Código",
     buttonViewVideo: "Ver Video",
     statusCompleted: "Completado",
@@ -170,6 +186,7 @@ export const portfolioDataEs: PortfolioDataType = {
         { name: 'Documentación KDocs', subtitle: 'Generación de documentación en Kotlin', icon: <FileText className="w-8 h-8 text-cyan-600" /> },
         { name: 'Microsoft Word', subtitle: 'Procesador de texto', icon: <img src="https://www.svgrepo.com/show/374187/word.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Microsoft PowerPoint', subtitle: 'Software de presentaciones', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Jetbrains IntelliJ IDEA', subtitle: 'Entorno de desarrollo integrado para Java y Kotlin', icon: <img src="https://www.svgrepo.com/show/353906/intellij-idea.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
   ],
@@ -248,6 +265,59 @@ export const portfolioDataEs: PortfolioDataType = {
       estado: "En desarrollo",
       makingVideo: null
     }
+  ],
+  subProyectos: [
+    {
+      id: 1,
+      titulo: "Calculadora de Propinas",
+      descripcion: "Una aplicación simple y elegante para Android que calcula propinas de forma rápida y sencilla, construida con Kotlin.",
+      tecnologias: ["Kotlin", "XML", "SharedPreferences"],
+      imagen: calculadoraPropinas_img,
+      github: "https://github.com/Anbs12/DefLatam_CalculadoraPropinas.git",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 2,
+      titulo: "Lista de Tareas (To-Do List)",
+      descripcion: "Una aplicación intuitiva y eficiente para gestionar tus tareas diarias en Android, desarrollada con Kotlin.",
+      tecnologias: ["Kotlin", "XML", "SharedPreferences", "RecyclerView"],
+      imagen: toDoList_img,
+      github: "https://github.com/Anbs12/DefLatam_ToDoList.git",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 3,
+      titulo: "Aplicación de Notas",
+      descripcion: "Una aplicación de notas completa para Android, diseñada para ayudarte a organizar tus pensamientos y tareas con facilidad, construida con Kotlin.",
+      tecnologias: ["Kotlin", "XML", "SharedPreferences"],
+      imagen: appNotas_img,
+      github: "https://github.com/Anbs12/DefLatam_NoteApp.git",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 4,
+      titulo: "Gestor de Contactos",
+      descripcion: "Una aplicación robusta para Android diseñada para una gestión eficiente de tus contactos, implementando una arquitectura moderna y persistencia de datos fiable con Kotlin.",
+      tecnologias: ["Kotlin", "XML", "ViewModel", "LiveData", "Room Database", "RecyclerView", "Coroutines", "Gson"],
+      imagen: gestorContactos_img,
+      github: "https://github.com/Anbs12/DefLatam_ContactApp.git",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 5,
+      titulo: "Chat en Tiempo Real",
+      descripcion: "Una aplicación de chat avanzada para Android que permite la comunicación en tiempo real a través de múltiples salas, construida con Kotlin y diseñada con una arquitectura limpia y técnicas de desarrollo avanzadas.",
+      tecnologias: ["Kotlin", "XML", "ViewModel", "Room Database", "RecyclerView", "Coroutines", "Gson", "Firebase",
+        "Firebase Authentication", "Firebase Analytics", "Cloud Firestore", "Retrofit 2", "Glide", "Dagger Hilt"],
+      imagen: chatApp_img,
+      github: "https://github.com/Anbs12/DefLatam_ChatApp.git",
+      youtube: null,
+      estado: "Completado"
+    },
   ],
   experiencia: [
     {

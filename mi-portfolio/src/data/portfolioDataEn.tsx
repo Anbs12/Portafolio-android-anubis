@@ -1,6 +1,6 @@
 import {
-    Github, Smartphone, Database, Globe, FileText, Camera, Layers, 
-    RefreshCw, ArrowRightCircle, LayoutGrid, Plug, CheckCircle, FileQuestion, FileCode, 
+    Github, Smartphone, Database, Globe, FileText, Camera, Layers,
+    RefreshCw, ArrowRightCircle, LayoutGrid, Plug, CheckCircle, FileQuestion, FileCode,
     Navigation, LucideDatabase,
     Lightbulb,
     Brain,
@@ -9,7 +9,8 @@ import {
     Shield,
     TestTube,
     User,
-    Users} from 'lucide-react';
+    Users
+} from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
 import appprevencion_img from '../assets/img_appprevencion.png';
@@ -19,6 +20,11 @@ import prc_nasaapp_img from '../assets/img_prc_nasaapp.png';
 import prc_ecommerceapp_img from '../assets/img_prc_ecommerceapp.png';
 import img_en_desarrollo_eng from '../assets/img_en_desarrollo_eng.png';
 import android_icon from '../assets/android-studio-icon.svg';
+import calculadoraPropinas_img from '../assets/img_calculadora_propina.jpg';
+import toDoList_img from '../assets/img_toDo_list_eng.png';
+import notasApp_img from '../assets/img_noteApp_eng.png';
+import contactApp_img from '../assets/img_contactApp_eng.png';
+import chatApp_img from '../assets/img_chatApp_eng.png';
 
 
 // Datos configurables en INGLÉS
@@ -88,6 +94,16 @@ export const portfolioDataEn: PortfolioDataType = {
         statusInProgress: "In Development",
         buttonViewMakingVideo: "Video in production"
     },
+    subProjectsSettings: {
+        title: "Other Projects",
+        subtitle: "Sub projects and additional works",
+        buttonCode: "Código",
+        buttonViewVideo: "Ver Video",
+        statusCompleted: "Completado",
+        statusInProgress: "En desarrollo",
+        buttonViewMakingVideo: "Video en producción"
+
+    },
     experienceTitle: {
         title: "Experience",
         subtitle: "My professional journey"
@@ -149,7 +165,7 @@ export const portfolioDataEn: PortfolioDataType = {
             items: [
                 { name: 'Jetpack Compose', subtitle: 'Modern UI toolkit for Android', icon: <img src="https://avatars.githubusercontent.com/u/71742764?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Google Material Design', subtitle: 'Design system for Android', icon: <img src="https://www.svgrepo.com/show/342017/material-design.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
-                { name: 'Coil', subtitle: 'Image loading library for Android', icon: <img src="https://avatars.githubusercontent.com/u/52722434?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" />},
+                { name: 'Coil', subtitle: 'Image loading library for Android', icon: <img src="https://avatars.githubusercontent.com/u/52722434?s=200&v=4" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Navigation', subtitle: 'Navigation with Jetpack Compose', icon: <Navigation className="w-8 h-8 text-blue-600" /> },
             ]
         },
@@ -171,6 +187,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'KDocs Documentation', subtitle: 'Documentation generation in Kotlin', icon: <FileText className="w-8 h-8 text-cyan-600" /> },
                 { name: 'Microsoft Word', subtitle: 'Word processor', icon: <img src="https://www.svgrepo.com/show/374187/word.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Microsoft PowerPoint', subtitle: 'Presentation software', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Jetbrains IntelliJ IDEA', subtitle: 'Integrated development environment for Java and Kotlin.', icon: <img src="https://www.svgrepo.com/show/353906/intellij-idea.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
             ]
         },
     ],
@@ -246,6 +263,59 @@ export const portfolioDataEn: PortfolioDataType = {
             estado: "In development",
             makingVideo: null
         }
+    ],
+    subProyectos: [
+        {
+            id: 1,
+            titulo: "Tip Calculator",
+            descripcion: "An application that allows you to calculate tips based on the total amount of a bill, with options for different percentages.",
+            tecnologias: ["Kotlin", "XML", "SharedPreferences"],
+            imagen: calculadoraPropinas_img,
+            github: "https://github.com/Anbs12/DefLatam_CalculadoraPropinas.git",
+            youtube: null,
+            estado: "Completed"
+        },
+        {
+            id: 2,
+            titulo: "To-Do List App",
+            descripcion: "An application that allows you to manage tasks with options to add, edit, and delete items.",
+            tecnologias: ["Kotlin", "XML", "SharedPreferences", "RecyclerView"],
+            imagen: toDoList_img,
+            github: "https://github.com/Anbs12/DefLatam_ToDoList.git",
+            youtube: null,
+            estado: "Completed"
+        },
+        {
+            id: 3,
+            titulo: "Note Taking App",
+            descripcion: "An application that allows users to create, edit, and delete notes, with options to categorize and search them.",
+            tecnologias: ["Kotlin", "XML", "SharedPreferences"],
+            imagen: notasApp_img,
+            github: "https://github.com/Anbs12/DefLatam_NoteApp.git",
+            youtube: null,
+            estado: "Completed"
+        },
+        {
+            id: 4,
+            titulo: "Contact Management App",
+            descripcion: "An application that allows users to manage contacts, with options to add, edit, and delete contact information.",
+            tecnologias: ["Kotlin", "XML", "ViewModel", "LiveData", "Room Database", "RecyclerView", "Coroutines", "Gson"],
+            imagen: contactApp_img,
+            github: "https://github.com/Anbs12/DefLatam_ContactApp.git",
+            youtube: null,
+            estado: "Completed"
+        },
+        {
+            id: 5,
+            titulo: "Chat App",
+            descripcion: "A chat application that allows users to send and receive messages in real-time, with user authentication and message history.",
+            tecnologias: ["Kotlin", "XML", "ViewModel", "Room Database", "RecyclerView", "Coroutines", "Gson", "Firebase",
+                "Firebase Authentication", "Firebase Analytics", "Cloud Firestore", "Retrofit 2", "Glide", "Dagger Hilt"],
+            imagen: chatApp_img,
+            github: "https://github.com/Anbs12/DefLatam_ChatApp.git",
+            youtube: null,
+            estado: "Completed"
+        },
     ],
     experiencia: [
         {

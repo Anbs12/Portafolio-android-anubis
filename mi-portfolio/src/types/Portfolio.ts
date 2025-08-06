@@ -49,6 +49,7 @@ export interface PortfolioDataType {
   aboutMe: AboutMeData;
   technologiesTitle: TechnologiesTitle;   //TItulo y subtitulo de la seccion tecnologias
   projectsSettings: ProjectSettings;              // Titulo y subtitulo de la seccion proyectos
+  subProjectsSettings: ProjectSettings; // Titulo y subtitulo de la seccion subproyectos
   experienceTitle: ExperienceTitle;       // Titulo y subtitulo de la seccion experiencia
   educationTitle: EducationTitle;
   personalSkillsTitle: PersonalSkillsTitle;
@@ -56,6 +57,7 @@ export interface PortfolioDataType {
   footer: FooterData;
   tecnologiasCategorizadas: TechnologyCategory[];
   proyectos: ProjectItem[];
+  subProyectos: ProjectItem[];
   experiencia: ExperienceItem[];
   educationItems: EducationItem[];
   personalSkillItem: PersonalSkillItem[];

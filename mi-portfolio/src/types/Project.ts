@@ -29,3 +29,18 @@ export interface ProjectItem {
   estado: string;
   makingVideo?: string | null; // Indica si se está desarrollando un video para este proyecto
 }
+
+// Definición de tipos para la sección de Sub Proyectos en un portafolio.
+// Cada proyecto tiene un id, título, descripción, tecnologías utilizadas, imagen, enlace a GitHub y enlace a YouTube (opcional).
+// Además, cada proyecto tiene un estado que indica si está completado o en progreso.
+export interface SubProjectItem {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  tecnologias: string[];
+  imagen: string;
+  github: string | null;
+  youtube: string | null;
+  estado: string;
+  makingVideo?: string | null; // Indica si se está desarrollando un video para este proyecto
+}

@@ -89,7 +89,7 @@ const Portfolio: React.FC = () => {
               observer.unobserve(entry.target);
             }
           },
-          { threshold: 0.1 } // El 20% del elemento debe ser visible para activar
+          { threshold: 0.09 } // El 20% del elemento debe ser visible para activar
         );
         observer.observe(ref.current);
         observers.push(observer);
@@ -400,18 +400,41 @@ const Portfolio: React.FC = () => {
       // */
       }
       <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+
         <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
+
+          {/*Titulo y subtitulo de la sección*/}
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projectsSettings.title}</h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.projectsSettings.subtitle}</p>
           </div>
 
+          {/*Renderizado de tarjetas de proyectos*/}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {currentPortfolioData.proyectos.map((proyecto) => (
               <ProjectCard key={proyecto.id} proyecto={proyecto} currentPortfolioData={currentPortfolioData} />
             ))}
           </div>
         </div>
+
+        {/* Subproyectos abajo ⬇️⬇️⬇️⬇️*/}
+
+        <div className={`py-20 max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
+
+          {/*Titulo y subtitulo de la sección*/}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.subProjectsSettings.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.subProjectsSettings.subtitle}</p>
+          </div>
+
+          {/*Renderizado de tarjetas de proyectos*/}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {currentPortfolioData.subProyectos.map((proyecto) => (
+              <ProjectCard key={proyecto.id} proyecto={proyecto} currentPortfolioData={currentPortfolioData} />
+            ))}
+          </div>
+        </div>
+
       </section>
 
       {/* 
