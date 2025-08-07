@@ -338,10 +338,13 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     educationItems: [
         {
-            institucion: "Professional Institute of Santo Tomás",
-            titulo: "Associate Degree - Programmer Analyst",
+            institucion: "Santo Tomás Professional Institute",
+            titulo: "Associate of Applied Science (AAS) in Computer Programming and Analysis",
             periodo: "2022 - 2024",
-            descripcion: "Comprehensive training in software development, databases, networking and project management.",
+            descripcion: `Associate Degree in Computer Programming and Analysis with a solid background in software analysis and design.
+            Skilled in data structures, databases, and operating systems.
+            Developed projects in Java, Python, .NET, Android, web applications, and IoT.
+            Completed a professional internship where I applied my knowledge in a real-world setting.`,
             logo: Logo_UST
         }
     ],

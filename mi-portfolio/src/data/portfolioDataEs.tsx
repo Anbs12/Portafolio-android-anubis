@@ -343,7 +343,10 @@ export const portfolioDataEs: PortfolioDataType = {
       institucion: "Instituto Profesional Santo Tomás",
       titulo: "Técnico Superior - Analista Programador",
       periodo: "2022 - 2024",
-      descripcion: "Formación integral en desarrollo de software, bases de datos, redes y gestión de proyectos.",
+      descripcion: `Técnico Superior en Analista Programador con sólida formación en análisis, arquitectura de sistemas y diseño de software.
+      Dominio de estructuras de datos, bases de datos y sistemas operativos.
+      Desarrollo de proyectos en Java, Python, .NET, Android, aplicaciones web e IoT.
+      La formación concluyó con una práctica laboral en la que apliqué mis conocimientos en un entorno real.`,
       logo: Logo_UST
     }
   ],
