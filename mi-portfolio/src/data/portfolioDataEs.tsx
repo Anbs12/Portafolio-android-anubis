@@ -346,7 +346,7 @@ export const portfolioDataEs: PortfolioDataType = {
       descripcion: `Técnico Superior en Analista Programador con sólida formación en análisis, arquitectura de sistemas y diseño de software.
       Dominio de estructuras de datos, bases de datos y sistemas operativos.
       Desarrollo de proyectos en Java, Python, .NET, Android, aplicaciones web e IoT.
-      La formación concluyó con una práctica laboral en la que apliqué mis conocimientos en un entorno real.`,
+      La formación concluyó con una práctica profesional en la que apliqué mis conocimientos en un entorno real.`,
       logo: Logo_UST
     }
   ],
