@@ -9,7 +9,8 @@ import {
     Shield,
     TestTube,
     User,
-    Users
+    Users,
+    GraduationCap
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
@@ -25,6 +26,7 @@ import toDoList_img from '../assets/img_toDo_list_eng.png';
 import notasApp_img from '../assets/img_noteApp_eng.png';
 import contactApp_img from '../assets/img_contactApp_eng.png';
 import chatApp_img from '../assets/img_chatApp_eng.png';
+import ml_kit_img from '../assets/ml_kit_img.png';
 
 
 // Datos configurables en INGLÉS
@@ -35,7 +37,8 @@ export const portfolioDataEn: PortfolioDataType = {
         descripcion: `I´m a junior Android Developer with hands-on experience building native mobile applications using Kotlin, MVVM 
         architecture, and Jetpack Compose. Skilled in implementing RESTful APIs with Retrofit, developing interfaces with 
         both XML and Compose, and managing reactive data using Flows and Coroutines. Practical experience with CameraX, 
-        Firebase, and unit testing (JUnit). Associate Degree in Programming with strong problem-solving abilities, team 
+        Firebase, and unit testing (JUnit). Associate of Applied Science (AAS) in Computer Programming and Analysis
+         with strong problem-solving abilities, team 
         collaboration skills, and autonomy in development environments.`,
         email: "your@email.com",
         telefono: "+1234567890",
@@ -112,9 +115,13 @@ export const portfolioDataEn: PortfolioDataType = {
         title: "Education",
         subtitle: "My academic background",
     },
+    certificationTitle: {
+        title: 'Certifications',
+        subtitle: 'My achievements and certifications'
+    },
     personalSkillsTitle: {
         title: "Personal Skills",
-        subtitle: "Traits and qualities that define me as a professional",
+        subtitle: "The skills that make us a great team and more human" /* "Traits and qualities that define me as a professional" */
     },
     contact: {
         title: "Contact",
@@ -158,6 +165,9 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'RESTful APIs with Retrofit 2', subtitle: 'Web service communication', icon: <Globe className="w-8 h-8 text-sky-700" /> },
                 { name: 'Room Database', subtitle: 'Local database for Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
                 { name: 'GraphQL', subtitle: 'Data query language for APIs', icon: <img src='https://graphql.org/_next/static/media/logo.ad338028.svg' alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Ktor', subtitle: 'Create asynchronous client and server applications', icon: <img src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTQ2IDQ4IiB3aWR0aD0iMTQ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48bGluZWFyR3JhZGllbnQgaWQ9ImEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMSIgeDI9IjMxIiB5MT0iMTciIHkyPSI0NyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNmI1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNDk5IiBzdG9wLWNvbG9yPSIjZmY0NWVkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGQxMjY1Ii8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBkPSJtOTEuOTc3IDkuMDFoLTYuNGwtMTIuMzcgMTMuNTl2LTEzLjU5aC01LjJ2MjkuOTZoNS4ydi0xNC4zbDEyLjQ2IDE0LjNoNi41OWwtMTMuNDQtMTUuNTIgMTMuMTYtMTQuNDV6bTguMTQgMi42OWgtNC43MXYzLjU1YzAgLjUzLS4xNi45Ni0uNDkgMS4yOXMtLjc2LjUtMS4zMS41aC0yLjRsLS4wMiA0LjM5aDMuODVsLjAyIDExLjcxYzAgMS4xMS4yNiAyLjExLjc4IDMgLjUyLjg4IDEuMjUgMS41OCAyLjE4IDIuMDhzMS45OS43NSAzLjE2Ljc1aDQuNzN2LTQuMzloLTMuNzJjLS42IDAtMS4xLS4yLTEuNDktLjU5cy0uNTktLjg5LS41OS0xLjQ5bC0uMDItMTEuMDZoNS44MmwuMDItNC4zOWgtNS44MnYtNS4zNXptMjQuNTMgNi4zNGMtMS43NS0xLTMuNzEtMS41LTUuODYtMS41cy00LjEzLjUtNS45IDEuNWMtMS43NiAxLTMuMTQgMi4zNy00LjE0IDQuMTJzLTEuNSAzLjctMS41IDUuODUuNSA0LjExIDEuNTEgNS44NSAyLjM5IDMuMTIgNC4xNCA0LjEyIDMuNzEgMS41IDUuODYgMS41IDQuMTMtLjUgNS44OS0xLjVjMS43NS0xIDMuMTQtMi4zNyA0LjE0LTQuMTJzMS41MS0zLjcgMS41MS01Ljg1LS41LTQuMTEtMS41MS01Ljg1YTEwLjk5IDEwLjk5IDAgMCAwIC00LjE0LTQuMTJ6bS0uNCAxMy41OWMtLjUyIDEuMDYtMS4yNiAxLjg4LTIuMjEgMi40Ni0uOTYuNTgtMi4wNS44OC0zLjI3Ljg4cy0yLjMyLS4yOS0zLjI2LS44OC0xLjY4LTEuNDEtMi4yLTIuNDZjLS41Mi0xLjA2LS43OC0yLjI2LS43OC0zLjYycy4yNi0yLjU4Ljc4LTMuNjQgMS4yNi0xLjg4IDIuMi0yLjQ2Yy45NS0uNTggMi4wNC0uODggMy4yNi0uODhzMi4zMS4zIDMuMjYuODkgMS42OSAxLjQxIDIuMjEgMi40NmMuNTMgMS4wNS43OSAyLjI2Ljc5IDMuNjNzLS4yNiAyLjU2LS43OCAzLjYyem0yMC44OS0xNC43M2MtMS41NiAwLTIuOTIuNC00LjA5IDEuMjEtLjgzLjU3LTEuNTMgMS4zMy0yLjEgMi4yNnYtMy4zMmgtNS4wMXYyMS45Mmg1LjA1di0xMS44M2MwLTEuMDYuMjItMS45Ny42Ny0yLjc0czEuMDktMS4zNiAxLjkzLTEuNzhjLjgzLS40MSAxLjgyLS42MiAyLjk0LS42MmgxLjQxdi01LjA5aC0uODF6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTQ4IDMxLjk5OC0xNi4wMDQgMTYuMDAyLTMxLjk5Ni0zMi4wMDQgMTYuMDAyLTE1Ljk5NiAzMS45OTcgMzEuOTk4eiIgZmlsbD0idXJsKCNhKSIvPjxwYXRoIGQ9Im0zMi4wMSAxNS45OTZoLTE2LjAwMnYxNi4wMDJoMTYuMDAyeiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Postgresql ', subtitle: 'Advanced relational database', icon: <img src="https://www.svgrepo.com/show/439268/postgresql.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+                { name: 'Exposed', subtitle: 'A Kotlin SQL library', icon: <img src="https://plugins.jetbrains.com/files/24367/809208/icon/default.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
             ]
         },
         {
@@ -189,7 +199,17 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'Microsoft PowerPoint', subtitle: 'Presentation software', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
                 { name: 'Jetbrains IntelliJ IDEA', subtitle: 'Integrated development environment for Java and Kotlin.', icon: <img src="https://www.svgrepo.com/show/353906/intellij-idea.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
             ]
-        },
+        }, {
+            category: "Possibly what could come...",
+            items: [
+                { name: 'Modelos TensorFlow Lite', subtitle: 'Intelligence models on Android devices', icon: <img src="https://www.svgrepo.com/show/354440/tensorflow.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+                {
+                    name: 'ML Kit', subtitle: 'Brings Google`s machine learning expertise to mobile developers in a powerful and easy-to-use package',
+                    icon: <img src={ml_kit_img} alt="Kotlin Icon" className="w-8 h-8" />
+                },
+                { name: 'Koog', subtitle: 'Kotlin-based framework designed to build and run AI agents', icon: <img src='https://blog.jetbrains.com/wp-content/uploads/2024/10/IMG_2404.png' className="w-8 h-8" /> },
+            ]
+        }
     ],
     proyectos: [
         {
@@ -346,6 +366,20 @@ export const portfolioDataEn: PortfolioDataType = {
             Developed projects in Java, Python, .NET, Android, web applications, and IoT.
             Completed a professional internship where I applied my knowledge in a real-world setting.`,
             logo: Logo_UST
+        }
+    ],
+    certificationItems: [
+        {
+            institucion: "Desafío Latam",
+            titulo: "Kotlin Development Specialization Program",
+            periodo: "August/2025",
+            descripcion: `Certification obtained after completing a series of specialized courses in mobile development with Android.
+      The specialization covered everything from the fundamentals of Kotlin and user interface development to API integration.
+      This achievement reflects my commitment to excellence and my ability to apply advanced knowledge to real-world projects.`,
+            logo: 'https://ugc.production.linktr.ee/NULe9wg4R3SSCyLIDCFI_54hpaIhfZgx1wb1f?io=true&size=avatar-v3_0',
+            url: "https://empieza.desafiolatam.com/v/gDNgvA5QXWNA9BWENq8EPTrX",
+            urlText: "View Certificate",
+            icon: <GraduationCap className="w-8 h-8 text-black dark:text-white" />
         }
     ],
     personalSkillItem: [

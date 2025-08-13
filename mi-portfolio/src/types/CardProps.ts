@@ -1,7 +1,7 @@
 import type { TechnologyItem } from './Technologies';
 import type { PortfolioDataType } from "./Portfolio";
 import type { ProjectItem } from './Project';
-import type { EducationItem, ExperienceItem, PersonalSkillItem } from './Personal';
+import type { CertificationItem, EducationItem, ExperienceItem, PersonalSkillItem } from './Personal';
 
 //Tipar los props de cada Card.
 
@@ -16,6 +16,10 @@ export interface TechCardProps {
 
 export interface EducationCardProps {
   edu: EducationItem;
+}
+
+export interface CertificationCardProps {
+  cert: CertificationItem;
 }
 
 export interface ExperienceCardProps {

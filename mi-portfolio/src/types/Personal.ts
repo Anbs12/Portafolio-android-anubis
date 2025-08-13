@@ -48,6 +48,22 @@ export interface EducationTitle {
   subtitle: string;
 }
 
+export interface CertificationTitle {
+  title: string;
+  subtitle: string;
+}
+
+export interface CertificationItem {
+  institucion: string;
+  titulo: string;
+  periodo: string;
+  descripcion: string;
+  logo?: string; // Propiedad opcional para la URL del logo
+  url?: string; // Propiedad opcional para la URL del certificado
+  urlText?: string; // Texto para el enlace del certificado
+  icon?: JSX.Element; // Icono opcional para el certificado
+}
+
 // Nuevo objeto para un elemento de educación
 // Contiene información sobre la institución, título obtenido, periodo de estudio y una breve descripción.
 // Esta información se utiliza para mostrar la formación académica del usuario en el portafolio.

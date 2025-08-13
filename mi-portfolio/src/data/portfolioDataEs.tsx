@@ -9,7 +9,8 @@ import {
   Shield,
   TestTube,
   User,
-  Users
+  Users,
+  GraduationCap
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import Logo_UST from '../assets/Logo_UST.png';
@@ -25,6 +26,7 @@ import toDoList_img from '../assets/img_toDo_list.png';
 import appNotas_img from '../assets/img_noteApp.png';
 import gestorContactos_img from '../assets/img_contactApp.png';
 import chatApp_img from '../assets/img_chatApp.png';
+import ml_kit_img from '../assets/ml_kit_img.png';
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -111,9 +113,13 @@ export const portfolioDataEs: PortfolioDataType = {
     title: "Educación",
     subtitle: "Mi formación académica",
   },
+  certificationTitle: {
+    title: 'Certificaciones',
+    subtitle: 'Mis logros y certificaciones'
+  },
   personalSkillsTitle: {
     title: "Habilidades Personales",
-    subtitle: "Lo rasgos y cualidades que me definen como profesional"
+    subtitle: "Las habilidades que nos hacen un gran equipo y mas humanos" /* "Lo rasgos y cualidades que me definen como profesional" */
   },
   contact: {
     title: "Contacto",
@@ -157,6 +163,9 @@ export const portfolioDataEs: PortfolioDataType = {
         { name: 'APIs RESTful con Retrofit 2', subtitle: 'Comunicación con servicios web', icon: <Globe className="w-8 h-8 text-sky-700" /> },
         { name: 'Room Database', subtitle: 'Base de datos local para Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
         { name: 'GraphQL', subtitle: 'Lenguaje de consulta de datos para APIs', icon: <img src='https://graphql.org/_next/static/media/logo.ad338028.svg' alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Ktor', subtitle: 'Crear aplicaciones asíncronas de cliente y servidor', icon: <img src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTQ2IDQ4IiB3aWR0aD0iMTQ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48bGluZWFyR3JhZGllbnQgaWQ9ImEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMSIgeDI9IjMxIiB5MT0iMTciIHkyPSI0NyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNmI1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNDk5IiBzdG9wLWNvbG9yPSIjZmY0NWVkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGQxMjY1Ii8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBkPSJtOTEuOTc3IDkuMDFoLTYuNGwtMTIuMzcgMTMuNTl2LTEzLjU5aC01LjJ2MjkuOTZoNS4ydi0xNC4zbDEyLjQ2IDE0LjNoNi41OWwtMTMuNDQtMTUuNTIgMTMuMTYtMTQuNDV6bTguMTQgMi42OWgtNC43MXYzLjU1YzAgLjUzLS4xNi45Ni0uNDkgMS4yOXMtLjc2LjUtMS4zMS41aC0yLjRsLS4wMiA0LjM5aDMuODVsLjAyIDExLjcxYzAgMS4xMS4yNiAyLjExLjc4IDMgLjUyLjg4IDEuMjUgMS41OCAyLjE4IDIuMDhzMS45OS43NSAzLjE2Ljc1aDQuNzN2LTQuMzloLTMuNzJjLS42IDAtMS4xLS4yLTEuNDktLjU5cy0uNTktLjg5LS41OS0xLjQ5bC0uMDItMTEuMDZoNS44MmwuMDItNC4zOWgtNS44MnYtNS4zNXptMjQuNTMgNi4zNGMtMS43NS0xLTMuNzEtMS41LTUuODYtMS41cy00LjEzLjUtNS45IDEuNWMtMS43NiAxLTMuMTQgMi4zNy00LjE0IDQuMTJzLTEuNSAzLjctMS41IDUuODUuNSA0LjExIDEuNTEgNS44NSAyLjM5IDMuMTIgNC4xNCA0LjEyIDMuNzEgMS41IDUuODYgMS41IDQuMTMtLjUgNS44OS0xLjVjMS43NS0xIDMuMTQtMi4zNyA0LjE0LTQuMTJzMS41MS0zLjcgMS41MS01Ljg1LS41LTQuMTEtMS41MS01Ljg1YTEwLjk5IDEwLjk5IDAgMCAwIC00LjE0LTQuMTJ6bS0uNCAxMy41OWMtLjUyIDEuMDYtMS4yNiAxLjg4LTIuMjEgMi40Ni0uOTYuNTgtMi4wNS44OC0zLjI3Ljg4cy0yLjMyLS4yOS0zLjI2LS44OC0xLjY4LTEuNDEtMi4yLTIuNDZjLS41Mi0xLjA2LS43OC0yLjI2LS43OC0zLjYycy4yNi0yLjU4Ljc4LTMuNjQgMS4yNi0xLjg4IDIuMi0yLjQ2Yy45NS0uNTggMi4wNC0uODggMy4yNi0uODhzMi4zMS4zIDMuMjYuODkgMS42OSAxLjQxIDIuMjEgMi40NmMuNTMgMS4wNS43OSAyLjI2Ljc5IDMuNjNzLS4yNiAyLjU2LS43OCAzLjYyem0yMC44OS0xNC43M2MtMS41NiAwLTIuOTIuNC00LjA5IDEuMjEtLjgzLjU3LTEuNTMgMS4zMy0yLjEgMi4yNnYtMy4zMmgtNS4wMXYyMS45Mmg1LjA1di0xMS44M2MwLTEuMDYuMjItMS45Ny42Ny0yLjc0czEuMDktMS4zNiAxLjkzLTEuNzhjLjgzLS40MSAxLjgyLS42MiAyLjk0LS42MmgxLjQxdi01LjA5aC0uODF6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTQ4IDMxLjk5OC0xNi4wMDQgMTYuMDAyLTMxLjk5Ni0zMi4wMDQgMTYuMDAyLTE1Ljk5NiAzMS45OTcgMzEuOTk4eiIgZmlsbD0idXJsKCNhKSIvPjxwYXRoIGQ9Im0zMi4wMSAxNS45OTZoLTE2LjAwMnYxNi4wMDJoMTYuMDAyeiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Postgresql ', subtitle: 'Base de datos relacional avanzada', icon: <img src="https://www.svgrepo.com/show/439268/postgresql.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Exposed', subtitle: 'Biblioteca SQL de Kotlin', icon: <img src="https://plugins.jetbrains.com/files/24367/809208/icon/default.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
     {
@@ -189,6 +198,15 @@ export const portfolioDataEs: PortfolioDataType = {
         { name: 'Jetbrains IntelliJ IDEA', subtitle: 'Entorno de desarrollo integrado para Java y Kotlin', icon: <img src="https://www.svgrepo.com/show/353906/intellij-idea.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
+    {
+      category: "Posiblemente lo que podria venir...",
+      items: [
+        { name: 'Modelos TensorFlow Lite', subtitle: 'Modelos de inteligencia en dispositivos Android', icon: <img src="https://www.svgrepo.com/show/354440/tensorflow.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'ML Kit', subtitle: 'Aporta la experiencia de Google en aprendizaje automático a los desarrolladores móviles en un paquete potente y fácil de usar.', 
+          icon: <img src= {ml_kit_img} alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Koog', subtitle: 'Framework en Kotlin diseñado para crear y ejecutar agentes de IA.', icon: <img src='https://blog.jetbrains.com/wp-content/uploads/2024/10/IMG_2404.png' className="w-8 h-8"/> },
+      ]
+    }
   ],
   proyectos: [
     {
@@ -348,6 +366,20 @@ export const portfolioDataEs: PortfolioDataType = {
       Desarrollo de proyectos en Java, Python, .NET, Android, aplicaciones web e IoT.
       La formación concluyó con una práctica profesional en la que apliqué mis conocimientos en un entorno real.`,
       logo: Logo_UST
+    }
+  ],
+  certificationItems: [
+    {
+      institucion: "Desafío Latam",
+      titulo: "Programa de Especialización en Desarrollo con Kotlin",
+      periodo: "Agosto/2025",
+      descripcion: `Certificación obtenida tras completar una serie de cursos especializados en desarrollo móvil con Android.
+      La especialización abarcó desde los fundamentos de Kotlin y el desarrollo de interfaces de usuario, hasta la integración de APIs.
+      Este logro refleja mi compromiso con la excelencia y mi capacidad para aplicar conocimientos avanzados en proyectos reales.`,
+      logo: 'https://ugc.production.linktr.ee/NULe9wg4R3SSCyLIDCFI_54hpaIhfZgx1wb1f?io=true&size=avatar-v3_0',
+      url: "https://empieza.desafiolatam.com/v/gDNgvA5QXWNA9BWENq8EPTrX",
+      urlText: "Ver Certificado",
+      icon: <GraduationCap className="w-8 h-8 text-black dark:text-white" />
     }
   ],
   personalSkillItem: [

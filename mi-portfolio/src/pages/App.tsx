@@ -12,6 +12,7 @@ import { ProjectCard } from '../components/ProjectCard';
 import { EducationCard } from '../components/EducationCard';
 import { ExperienceCard } from '../components/ExperienceCard';
 import { PersonalSkillCard } from '../components/PersonalSkillCard';
+import { CertificationCard } from '../components/CertificationCard';
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -294,6 +295,7 @@ const Portfolio: React.FC = () => {
           <div className="text-center">
             <div className="mb-8">
 
+              {/* Icono smartphone */}
               <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
                 <Smartphone className="w-16 h-16 text-white" />
               </div>
@@ -301,6 +303,7 @@ const Portfolio: React.FC = () => {
               <h1 className="text-7xl font-bold font-hero-name mb-4 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.personal.nombre}
               </h1>
+
               {/* Título dinámico */}
               <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
                 {currentPortfolioData.hero.staticHeroTitlePartOne}
@@ -331,8 +334,10 @@ const Portfolio: React.FC = () => {
                 {currentPortfolioData.hero.buttonContact}
               </button>
             </div>
+
           </div>
         </div>
+
       </section>
 
 
@@ -475,6 +480,21 @@ const Portfolio: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Certificaciones abajo ⬇️ */}
+
+        <div className={`py-20 max-w-4xl mx-auto ${visibleSections.educacion ? 'animate-fadeInUp' : 'opacity-0'}`}>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.certificationTitle.title}</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.certificationTitle.subtitle}</p>
+          </div>
+
+          <div className="space-y-8">
+            {currentPortfolioData.certificationItems.map((cert, index) => (
+              <CertificationCard key={index} cert={cert} />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* 
@@ -540,6 +560,7 @@ const Portfolio: React.FC = () => {
             </a>
           </div>
         </div>
+
       </section>
 
       {/* 
@@ -554,6 +575,7 @@ const Portfolio: React.FC = () => {
           </p>
         </div>
       </footer>
+
     </div>
   );
 };
