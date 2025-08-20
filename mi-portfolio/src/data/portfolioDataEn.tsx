@@ -339,6 +339,12 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     experiencia: [
         {
+            empresa: "Globant",
+            cargo: "Kotlin and Java Trainee Developer",
+            periodo: "08/2025 - Present",
+            descripcion: `Currently undergoing training in Kotlin and Java development, focusing on building scalable and efficient applications.`,
+        },
+        {
             empresa: "Freelance",
             cargo: "Junior Android Developer",
             periodo: "08/2024 - Present",

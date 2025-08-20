@@ -202,9 +202,11 @@ export const portfolioDataEs: PortfolioDataType = {
       category: "Posiblemente lo que podria venir...",
       items: [
         { name: 'Modelos TensorFlow Lite', subtitle: 'Modelos de inteligencia en dispositivos Android', icon: <img src="https://www.svgrepo.com/show/354440/tensorflow.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
-        { name: 'ML Kit', subtitle: 'Aporta la experiencia de Google en aprendizaje automático a los desarrolladores móviles en un paquete potente y fácil de usar.', 
-          icon: <img src= {ml_kit_img} alt="Kotlin Icon" className="w-8 h-8" /> },
-        { name: 'Koog', subtitle: 'Framework en Kotlin diseñado para crear y ejecutar agentes de IA.', icon: <img src='https://blog.jetbrains.com/wp-content/uploads/2024/10/IMG_2404.png' className="w-8 h-8"/> },
+        {
+          name: 'ML Kit', subtitle: 'Aporta la experiencia de Google en aprendizaje automático a los desarrolladores móviles en un paquete potente y fácil de usar.',
+          icon: <img src={ml_kit_img} alt="Kotlin Icon" className="w-8 h-8" />
+        },
+        { name: 'Koog', subtitle: 'Framework en Kotlin diseñado para crear y ejecutar agentes de IA.', icon: <img src='https://blog.jetbrains.com/wp-content/uploads/2024/10/IMG_2404.png' className="w-8 h-8" /> },
       ]
     }
   ],
@@ -338,6 +340,12 @@ export const portfolioDataEs: PortfolioDataType = {
     },
   ],
   experiencia: [
+    {
+      empresa: "Globant",
+      cargo: "Desarrollador Kotlin y Java Trainee",
+      periodo: "08/2025 - Presente",
+      descripcion: `Actualmente estoy recibiendo formación en desarrollo con Kotlin y Java, centrándome en la creación de aplicaciones escalables y eficientes.`,
+    },
     {
       empresa: "Independiente",
       cargo: "Desarrollador Android Junior",
