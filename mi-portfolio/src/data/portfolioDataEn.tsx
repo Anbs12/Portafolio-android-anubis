@@ -376,6 +376,18 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     certificationItems: [
         {
+            institucion: "Udemy",
+            titulo: "Kotlin Multiplatform Masterclass - KMP, KMM - Android, IOS",
+            periodo: "September/2025",
+            descripcion: `Certificate in Kotlin Multiplatform development, covering everything from the fundamentals of KMP and KMM
+      to the creation of native applications for Android and iOS. This achievement reflects my commitment to excellence
+      and learning to increase my development skills.`,
+            logo: 'https://freelogopng.com/images/all_img/1683006778udemy-logo-png.png',
+            url: "https://www.udemy.com/certificate/UC-a96cf502-6726-444a-8ca8-c417799f5320/",
+            urlText: "View Certificate",
+            icon: <GraduationCap className="w-8 h-8 text-black dark:text-white" />
+        },
+        {
             institucion: "Desafío Latam",
             titulo: "Kotlin Development Specialization Program",
             periodo: "August/2025",

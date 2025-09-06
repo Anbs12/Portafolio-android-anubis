@@ -57,7 +57,7 @@ export interface CertificationItem {
   institucion: string;
   titulo: string;
   periodo: string;
-  descripcion: string;
+  descripcion: string | null;
   logo?: string; // Propiedad opcional para la URL del logo
   url?: string; // Propiedad opcional para la URL del certificado
   urlText?: string; // Texto para el enlace del certificado
