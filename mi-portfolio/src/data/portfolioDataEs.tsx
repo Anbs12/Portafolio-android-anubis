@@ -345,6 +345,7 @@ export const portfolioDataEs: PortfolioDataType = {
       cargo: "Desarrollador Kotlin y Java Trainee",
       periodo: "08/2025 - Presente",
       descripcion: `Actualmente estoy recibiendo formación en desarrollo con Kotlin y Java, centrándome en la creación de aplicaciones escalables y eficientes.`,
+      logo: 'https://cdn.brandfetch.io/ide8CeiHjg/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1753072558221'
     },
     {
       empresa: "Independiente",
@@ -355,7 +356,8 @@ export const portfolioDataEs: PortfolioDataType = {
       y en la integración de APIs y bibliotecas de terceros para enriquecer la funcionalidad de las aplicaciones, incluyendo CameraX para optimización de imágenes y 
       Retrofit 2 para consumo de APIs RESTful como la de "Rick and Morty". Amplio conocimiento del ciclo de vida de desarrollo móvil, capaz de abordar desafíos en cada fase y 
       crear soluciones nativas personalizadas, 
-      asegurando la compatibilidad entre versiones de API y la documentación exhaustiva del código con Kotlin KDocs.`
+      asegurando la compatibilidad entre versiones de API y la documentación exhaustiva del código con Kotlin KDocs.`,
+      logo: 'https://www.svgrepo.com/show/274862/programmer.svg'
     },
     {
       empresa: "Magistra Ingeniería - Hardmachine",

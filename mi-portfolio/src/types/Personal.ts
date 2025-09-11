@@ -38,6 +38,7 @@ export interface ExperienceItem {
   cargo: string;
   periodo: string;
   descripcion: string;
+  logo?: string; // Propiedad opcional para la URL del logo
 }
 
 // Nueva interfaz para los titulo y subtitulo de la sección de educación

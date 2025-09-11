@@ -343,6 +343,7 @@ export const portfolioDataEn: PortfolioDataType = {
             cargo: "Kotlin and Java Trainee Developer",
             periodo: "08/2025 - Present",
             descripcion: `Currently undergoing training in Kotlin and Java development, focusing on building scalable and efficient applications.`,
+            logo: 'https://cdn.brandfetch.io/ide8CeiHjg/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1753072558221'
         },
         {
             empresa: "Freelance",
@@ -352,8 +353,8 @@ export const portfolioDataEn: PortfolioDataType = {
             Proficient in developing user interfaces with both XML 
             and Jetpack Compose, and integrating third-party APIs and libraries to enhance application functionality, including CameraX for optimized photo capture across multiple devices 
             and Retrofit 2 for consuming RESTful APIs like "Rick and Morty." Possessing comprehensive knowledge of the mobile development lifecycle, 
-            capable of addressing challenges at each phase and creating custom native solutions, ensuring API compatibility and thorough code documentation with Kotlin KDocs.
-            `
+            capable of addressing challenges at each phase and creating custom native solutions, ensuring API compatibility and thorough code documentation with Kotlin KDocs.`,
+            logo: 'https://www.svgrepo.com/show/274862/programmer.svg'
         },
         {
             empresa: "Magistra Ingeniería - Hardmachine",
