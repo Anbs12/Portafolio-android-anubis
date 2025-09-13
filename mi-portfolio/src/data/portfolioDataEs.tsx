@@ -27,6 +27,8 @@ import appNotas_img from '../assets/img_noteApp.png';
 import gestorContactos_img from '../assets/img_contactApp.png';
 import chatApp_img from '../assets/img_chatApp.png';
 import ml_kit_img from '../assets/ml_kit_img.png';
+import weather_app_img from '../assets/img_weather_app_wallpaper.png';
+import pet_walk_img from '../assets/img_pet_walk_app_wallpaper.png';
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -160,7 +162,7 @@ export const portfolioDataEs: PortfolioDataType = {
       items: [
         { name: 'Firebase', subtitle: 'Plataforma de desarrollo de Google', icon: <img src="https://www.svgrepo.com/show/373595/firebase.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Microsoft SQL Server', subtitle: 'Gestión de bases de datos relacionales', icon: <Database className="w-8 h-8 text-gray-700" /> },
-        { name: 'APIs RESTful con Retrofit 2', subtitle: 'Comunicación con servicios web', icon: <Globe className="w-8 h-8 text-sky-700" /> },
+        { name: 'APIs RESTful con Retrofit', subtitle: 'Comunicación con servicios web', icon: <Globe className="w-8 h-8 text-sky-700" /> },
         { name: 'Room Database', subtitle: 'Base de datos local para Android', icon: <LucideDatabase className="w-8 h-8 text-orange-500" /> },
         { name: 'GraphQL', subtitle: 'Lenguaje de consulta de datos para APIs', icon: <img src='https://graphql.org/_next/static/media/logo.ad338028.svg' alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Ktor', subtitle: 'Crear aplicaciones asíncronas de cliente y servidor', icon: <img src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMTQ2IDQ4IiB3aWR0aD0iMTQ2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48bGluZWFyR3JhZGllbnQgaWQ9ImEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4MT0iMSIgeDI9IjMxIiB5MT0iMTciIHkyPSI0NyI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjNmI1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNDk5IiBzdG9wLWNvbG9yPSIjZmY0NWVkIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGQxMjY1Ii8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBkPSJtOTEuOTc3IDkuMDFoLTYuNGwtMTIuMzcgMTMuNTl2LTEzLjU5aC01LjJ2MjkuOTZoNS4ydi0xNC4zbDEyLjQ2IDE0LjNoNi41OWwtMTMuNDQtMTUuNTIgMTMuMTYtMTQuNDV6bTguMTQgMi42OWgtNC43MXYzLjU1YzAgLjUzLS4xNi45Ni0uNDkgMS4yOXMtLjc2LjUtMS4zMS41aC0yLjRsLS4wMiA0LjM5aDMuODVsLjAyIDExLjcxYzAgMS4xMS4yNiAyLjExLjc4IDMgLjUyLjg4IDEuMjUgMS41OCAyLjE4IDIuMDhzMS45OS43NSAzLjE2Ljc1aDQuNzN2LTQuMzloLTMuNzJjLS42IDAtMS4xLS4yLTEuNDktLjU5cy0uNTktLjg5LS41OS0xLjQ5bC0uMDItMTEuMDZoNS44MmwuMDItNC4zOWgtNS44MnYtNS4zNXptMjQuNTMgNi4zNGMtMS43NS0xLTMuNzEtMS41LTUuODYtMS41cy00LjEzLjUtNS45IDEuNWMtMS43NiAxLTMuMTQgMi4zNy00LjE0IDQuMTJzLTEuNSAzLjctMS41IDUuODUuNSA0LjExIDEuNTEgNS44NSAyLjM5IDMuMTIgNC4xNCA0LjEyIDMuNzEgMS41IDUuODYgMS41IDQuMTMtLjUgNS44OS0xLjVjMS43NS0xIDMuMTQtMi4zNyA0LjE0LTQuMTJzMS41MS0zLjcgMS41MS01Ljg1LS41LTQuMTEtMS41MS01Ljg1YTEwLjk5IDEwLjk5IDAgMCAwIC00LjE0LTQuMTJ6bS0uNCAxMy41OWMtLjUyIDEuMDYtMS4yNiAxLjg4LTIuMjEgMi40Ni0uOTYuNTgtMi4wNS44OC0zLjI3Ljg4cy0yLjMyLS4yOS0zLjI2LS44OC0xLjY4LTEuNDEtMi4yLTIuNDZjLS41Mi0xLjA2LS43OC0yLjI2LS43OC0zLjYycy4yNi0yLjU4Ljc4LTMuNjQgMS4yNi0xLjg4IDIuMi0yLjQ2Yy45NS0uNTggMi4wNC0uODggMy4yNi0uODhzMi4zMS4zIDMuMjYuODkgMS42OSAxLjQxIDIuMjEgMi40NmMuNTMgMS4wNS43OSAyLjI2Ljc5IDMuNjNzLS4yNiAyLjU2LS43OCAzLjYyem0yMC44OS0xNC43M2MtMS41NiAwLTIuOTIuNC00LjA5IDEuMjEtLjgzLjU3LTEuNTMgMS4zMy0yLjEgMi4yNnYtMy4zMmgtNS4wMXYyMS45Mmg1LjA1di0xMS44M2MwLTEuMDYuMjItMS45Ny42Ny0yLjc0czEuMDktMS4zNiAxLjkzLTEuNzhjLjgzLS40MSAxLjgyLS42MiAyLjk0LS42MmgxLjQxdi01LjA5aC0uODF6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTQ4IDMxLjk5OC0xNi4wMDQgMTYuMDAyLTMxLjk5Ni0zMi4wMDQgMTYuMDAyLTE1Ljk5NiAzMS45OTcgMzEuOTk4eiIgZmlsbD0idXJsKCNhKSIvPjxwYXRoIGQ9Im0zMi4wMSAxNS45OTZoLTE2LjAwMnYxNi4wMDJoMTYuMDAyeiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==" alt="Kotlin Icon" className="w-8 h-8" /> },
@@ -240,7 +242,7 @@ export const portfolioDataEs: PortfolioDataType = {
       titulo: "Prc RickMorty",
       descripcion: "Aplicación de gestión de personajes de Rick y Morty.",
       tecnologias: ["Kotlin", "MVVM", "Clean Architecture", "Kotlin Flows", "Coroutines",
-        "Retrofit 2", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
+        "Retrofit", "Coil", "Jetpack Compose", "KDocs", "API Restful", "Navigation"],
       imagen: prc_rickmorty_img,
       github: "https://github.com/Anbs12/Prc_RickMorty_Android.git",
       youtube: "https://youtu.be/HEPNMiL9fDU",
@@ -264,7 +266,7 @@ export const portfolioDataEs: PortfolioDataType = {
       titulo: "Prc eCommerceApp",
       descripcion: "Aplicación de gestión de productos y pedidos para un eCommerce ficticio, con funcionalidades de carrito de compras y gestión de usuarios como futura implementación.",
       tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Dagger Hilt", "Jetpack Compose",
-        "Coroutines", "Kotlin Flows", "Retrofit 2", "Coil", "Material Design 3", "KDocs",
+        "Coroutines", "Kotlin Flows", "Retrofit", "Coil", "Material Design 3", "KDocs",
         "Navigation", "Room Database", "API Restful"],
       imagen: prc_ecommerceapp_img,
       github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
@@ -321,7 +323,7 @@ export const portfolioDataEs: PortfolioDataType = {
       id: 4,
       titulo: "Gestor de Contactos",
       descripcion: "Una aplicación robusta para Android diseñada para una gestión eficiente de tus contactos, implementando una arquitectura moderna y persistencia de datos fiable con Kotlin.",
-      tecnologias: ["Kotlin", "XML", "ViewModel", "LiveData", "Room Database", "RecyclerView", "Coroutines", "Gson"],
+      tecnologias: ["Kotlin", "XML", "MVVM", "LiveData", "Room Database", "RecyclerView", "Coroutines", "Gson"],
       imagen: gestorContactos_img,
       github: "https://github.com/Anbs12/DefLatam_ContactApp.git",
       youtube: null,
@@ -330,14 +332,36 @@ export const portfolioDataEs: PortfolioDataType = {
     {
       id: 5,
       titulo: "Chat en Tiempo Real",
-      descripcion: "Una aplicación de chat avanzada para Android que permite la comunicación en tiempo real a través de múltiples salas, construida con Kotlin y diseñada con una arquitectura limpia y técnicas de desarrollo avanzadas.",
-      tecnologias: ["Kotlin", "XML", "ViewModel", "Room Database", "RecyclerView", "Coroutines", "Gson", "Firebase",
-        "Firebase Authentication", "Firebase Analytics", "Cloud Firestore", "Retrofit 2", "Glide", "Dagger Hilt"],
+      descripcion: `Una aplicación de chat avanzada para Android que permite la comunicación en tiempo real a través de múltiples salas, 
+      construida con Kotlin y diseñada con una arquitectura limpia y técnicas de desarrollo avanzadas.`,
+      tecnologias: ["Kotlin", "XML", "MVVM", "Room Database", "RecyclerView", "Coroutines", "Gson", "Firebase",
+        "Firebase Authentication", "Firebase Analytics", "Cloud Firestore", "Retrofit", "Glide", "Dagger Hilt"],
       imagen: chatApp_img,
       github: "https://github.com/Anbs12/DefLatam_ChatApp.git",
       youtube: null,
       estado: "Completado"
     },
+    {
+      id: 6,
+      titulo: "Aplicación del Clima",
+      descripcion: `Una aplicación para visualizar el clima actual y el pronóstico extendido, utilizando la API de 
+      OpenWeatherMap para obtener datos meteorológicos precisos y actualizados.`,
+      tecnologias: ["Kotlin", "XML", "MVVM ", "Room Database", "RecyclerView", "Coroutines", "Retrofit", "Glide", "Dagger Hilt"],
+      imagen: weather_app_img,
+      github: "https://github.com/Anbs12/WeatherApp.git",
+      youtube: null,
+      estado: "Completado"
+    },
+    {
+      id: 7,
+      titulo: "Control Paseo Mascotas",
+      descripcion: `Una aplicación construida en equipo, diseñada para gestionar y coordinar los paseos de mascotas.`,
+      tecnologias: ["Kotlin", "Jetpack Compose", "Room Database", "MVVM", "TeamWork"],
+      imagen: pet_walk_img,
+      github: "https://github.com/software-developments-cl/AppFinal_lat.git",
+      youtube: null,
+      estado: "Completado"
+    }
   ],
   experiencia: [
     {
@@ -354,7 +378,7 @@ export const portfolioDataEs: PortfolioDataType = {
       descripcion: `Sólida experiencia en la implementación de arquitecturas escalables como MVVM, 
       utilizando Kotlin Flows para datos reactivos en tiempo real. Experto en el desarrollo de interfaces de usuario tanto con XML como con Jetpack Compose, 
       y en la integración de APIs y bibliotecas de terceros para enriquecer la funcionalidad de las aplicaciones, incluyendo CameraX para optimización de imágenes y 
-      Retrofit 2 para consumo de APIs RESTful como la de "Rick and Morty". Amplio conocimiento del ciclo de vida de desarrollo móvil, capaz de abordar desafíos en cada fase y 
+      Retrofit para consumo de APIs RESTful como la de "Rick and Morty". Amplio conocimiento del ciclo de vida de desarrollo móvil, capaz de abordar desafíos en cada fase y 
       crear soluciones nativas personalizadas, 
       asegurando la compatibilidad entre versiones de API y la documentación exhaustiva del código con Kotlin KDocs.`,
       logo: 'https://www.svgrepo.com/show/274862/programmer.svg'
