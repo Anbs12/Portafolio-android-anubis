@@ -97,6 +97,7 @@ export const portfolioDataEn: PortfolioDataType = {
         buttonViewVideo: "Watch Video",
         statusCompleted: "Completed",
         statusInProgress: "In Development",
+        statusPaused: "Paused",
         buttonViewMakingVideo: "Video in production"
     },
     subProjectsSettings: {
@@ -106,6 +107,7 @@ export const portfolioDataEn: PortfolioDataType = {
         buttonViewVideo: "Ver Video",
         statusCompleted: "Completado",
         statusInProgress: "En desarrollo",
+        statusPaused: "Paused",
         buttonViewMakingVideo: "Video en producción"
 
     },
@@ -234,7 +236,7 @@ export const portfolioDataEn: PortfolioDataType = {
             imagen: appmovilalertas_img,
             github: "https://github.com/Anbs12/appMovilAlertas.git",
             youtube: "https://youtu.be/5mw4I_J1-eg",
-            estado: "In development"
+            estado: "Paused"
         },
         {
             id: 3,
@@ -269,7 +271,7 @@ export const portfolioDataEn: PortfolioDataType = {
             imagen: prc_ecommerceapp_img,
             github: "https://github.com/Anbs12/Prc_eCommerceApp.git",
             youtube: null,
-            estado: "In development",
+            estado: "Paused",
             makingVideo: null
         },
         {
@@ -282,7 +284,7 @@ export const portfolioDataEn: PortfolioDataType = {
             imagen: img_en_desarrollo_eng,
             github: null,
             youtube: null,
-            estado: "In development",
+            estado: "Paused",
             makingVideo: null
         }
     ],

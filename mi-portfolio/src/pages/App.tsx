@@ -58,6 +58,7 @@ const Portfolio: React.FC = () => {
     sobreMi: useRef<HTMLElement>(null),
     tecnologias: useRef<HTMLElement>(null),
     proyectos: useRef<HTMLElement>(null),
+    subProyectos: useRef<HTMLElement>(null),
     experiencia: useRef<HTMLElement>(null),
     educacion: useRef<HTMLElement>(null),
     habilidadesPersonales: useRef<HTMLElement>(null),
@@ -70,6 +71,7 @@ const Portfolio: React.FC = () => {
     sobreMi: false,
     tecnologias: false,
     proyectos: false,
+    subProyectos: false,
     experiencia: false,
     educacion: false,
     habilidadesPersonales: false,
@@ -90,7 +92,7 @@ const Portfolio: React.FC = () => {
               observer.unobserve(entry.target);
             }
           },
-          { threshold: 0.09 } // El 20% del elemento debe ser visible para activar
+          { threshold: 0.05 } // El 20% del elemento debe ser visible para activar
         );
         observer.observe(ref.current);
         observers.push(observer);
@@ -102,6 +104,7 @@ const Portfolio: React.FC = () => {
     createObserver(sectionRefs.sobreMi, 'sobreMi');
     createObserver(sectionRefs.tecnologias, 'tecnologias');
     createObserver(sectionRefs.proyectos, 'proyectos');
+    createObserver(sectionRefs.subProyectos, 'subProyectos');
     createObserver(sectionRefs.experiencia, 'experiencia');
     createObserver(sectionRefs.educacion, 'educacion');
     createObserver(sectionRefs.habilidadesPersonales, 'habilidadesPersonales');
@@ -422,9 +425,18 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
 
+      </section>
+
+      {/* 
+      //  ////////////////////////// Subproyectos Section ////////////////////////// 
+      // 
+      // */
+      }
+      <section id="proyectos" ref={sectionRefs.subProyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+
         {/* Subproyectos abajo ⬇️⬇️⬇️⬇️*/}
 
-        <div className={`py-20 max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
+        <div className={`max-w-6xl mx-auto ${visibleSections.subProyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
 
           {/*Titulo y subtitulo de la sección*/}
           <div className="text-center mb-16">
@@ -460,6 +472,7 @@ const Portfolio: React.FC = () => {
             ))}
           </div>
         </div>
+
       </section>
 
       {/* 

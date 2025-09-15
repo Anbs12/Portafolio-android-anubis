@@ -12,6 +12,7 @@ export interface ProjectSettings {
   buttonViewVideo: string;
   statusCompleted: string;
   statusInProgress: string;
+  statusPaused: string;
   buttonViewMakingVideo: string;
 }
 
