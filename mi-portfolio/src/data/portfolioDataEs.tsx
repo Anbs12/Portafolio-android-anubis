@@ -200,6 +200,7 @@ export const portfolioDataEs: PortfolioDataType = {
         { name: 'Microsoft Word', subtitle: 'Procesador de texto', icon: <img src="https://www.svgrepo.com/show/374187/word.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Microsoft PowerPoint', subtitle: 'Software de presentaciones', icon: <img src="https://www.svgrepo.com/show/373989/powerpoint.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
         { name: 'Jetbrains IntelliJ IDEA', subtitle: 'Entorno de desarrollo integrado para Java y Kotlin', icon: <img src="https://www.svgrepo.com/show/353906/intellij-idea.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
+        { name: 'Docker', subtitle: 'Diseñado para ayudar a devs a construir, desarrollar y ejecutar aplicaciones en contenedores', icon: <img src="https://www.svgrepo.com/show/452192/docker.svg" alt="Kotlin Icon" className="w-8 h-8" /> },
       ]
     },
     {
@@ -370,7 +371,7 @@ export const portfolioDataEs: PortfolioDataType = {
       empresa: "Globant",
       cargo: "Desarrollador Kotlin y Java Trainee",
       periodo: "08/2025 - Presente",
-      descripcion: `Actualmente estoy recibiendo formación en desarrollo con Kotlin y Java, centrándome en la creación de aplicaciones escalables y eficientes.`,
+      descripcion: ``,
       logo: 'https://cdn.brandfetch.io/ide8CeiHjg/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1753072558221'
     },
     {
