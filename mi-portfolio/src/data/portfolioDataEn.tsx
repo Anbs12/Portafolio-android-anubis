@@ -367,8 +367,12 @@ export const portfolioDataEn: PortfolioDataType = {
         {
             empresa: "Globant",
             cargo: "Kotlin and Java Trainee Developer",
-            periodo: "08/2025 - Present",
-            descripcion: ``,
+            periodo: "08/2025 - 10/2025",
+            descripcion: `I integrated a large language model(LLM) with natural language processing that allows conversational queries 
+on stored data, implementing both local solutions and external APIs to optimize resources. I also implemented automated generation of 
+reports in PDF format and PNG visualization with statistical graphs that 
+provide insights into development activity, and I created a web platform that supports 
+everything as part of a team.`,
             logo: 'https://cdn.brandfetch.io/ide8CeiHjg/w/400/h/400/theme/dark/icon.png?c=1bxid64Mup7aczewSAYMX&t=1753072558221'
         },
         {
