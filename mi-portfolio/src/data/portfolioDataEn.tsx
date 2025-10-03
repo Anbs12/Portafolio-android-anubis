@@ -297,7 +297,7 @@ export const portfolioDataEn: PortfolioDataType = {
             tecnologias: ["Kotlin", "XML", "SharedPreferences"],
             imagen: calculadoraPropinas_img,
             github: "https://github.com/Anbs12/DefLatam_CalculadoraPropinas.git",
-            youtube: null,
+            youtube: "https://youtu.be/PLkjAXPea8o",
             estado: "Completed"
         },
         {
@@ -307,7 +307,7 @@ export const portfolioDataEn: PortfolioDataType = {
             tecnologias: ["Kotlin", "XML", "SharedPreferences", "RecyclerView"],
             imagen: toDoList_img,
             github: "https://github.com/Anbs12/DefLatam_ToDoList.git",
-            youtube: null,
+            youtube: "https://youtu.be/D93TVdCDsVw",
             estado: "Completed"
         },
         {
@@ -317,7 +317,7 @@ export const portfolioDataEn: PortfolioDataType = {
             tecnologias: ["Kotlin", "XML", "SharedPreferences"],
             imagen: notasApp_img,
             github: "https://github.com/Anbs12/DefLatam_NoteApp.git",
-            youtube: null,
+            youtube: "https://youtu.be/lXAQxpV3zrQ",
             estado: "Completed"
         },
         {
@@ -327,7 +327,7 @@ export const portfolioDataEn: PortfolioDataType = {
             tecnologias: ["Kotlin", "XML", "MVVM", "LiveData", "Room Database", "RecyclerView", "Coroutines", "Gson"],
             imagen: contactApp_img,
             github: "https://github.com/Anbs12/DefLatam_ContactApp.git",
-            youtube: null,
+            youtube: "https://youtu.be/9Ww536SO0I0",
             estado: "Completed"
         },
         {
@@ -338,7 +338,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 "Firebase Authentication", "Firebase Analytics", "Cloud Firestore", "Retrofit 2", "Glide", "Dagger Hilt"],
             imagen: chatApp_img,
             github: "https://github.com/Anbs12/DefLatam_ChatApp.git",
-            youtube: null,
+            youtube: "https://youtu.be/Q1ueMCrlqto",
             estado: "Completed"
         },
         {
@@ -346,10 +346,10 @@ export const portfolioDataEn: PortfolioDataType = {
             titulo: "Weather App",
             descripcion: `An application to view the current weather and extended forecast, using the OpenWeatherMap API to obtain 
             accurate and up-to-date meteorological data.`,
-            tecnologias: ["Kotlin", "XML", "MVVM ", "Room Database", "RecyclerView", "Coroutines", "Retrofit", "Glide", "Dagger Hilt"],
+            tecnologias: ["Kotlin", "XML", "MVVM ", "Room Database", "RecyclerView", "Coroutines", "Retrofit", "Dagger Hilt"],
             imagen: weather_app_img,
             github: "https://github.com/Anbs12/WeatherApp.git",
-            youtube: null,
+            youtube: "https://youtu.be/bVmk6HBQJqU",
             estado: "Completed"
         },
         {
@@ -359,7 +359,7 @@ export const portfolioDataEn: PortfolioDataType = {
             tecnologias: ["Kotlin", "Jetpack Compose", "Room Database", "MVVM", "TeamWork"],
             imagen: pet_walk_img,
             github: "https://github.com/software-developments-cl/AppFinal_lat.git",
-            youtube: null,
+            youtube: "https://youtu.be/UZfhFzHumbs",
             estado: "Completed"
         }
     ],
