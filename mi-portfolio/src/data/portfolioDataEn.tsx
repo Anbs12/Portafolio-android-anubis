@@ -29,6 +29,7 @@ import chatApp_img from '../assets/img_chatApp_eng.png';
 import ml_kit_img from '../assets/ml_kit_img.png';
 import weather_app_img from '../assets/img_weather_app_wallpaper.png';
 import pet_walk_img from '../assets/img_pet_walk_app_wallpaper.png';
+import img_chatKtor_backend from '../assets/img_chatKtor_backend.png';
 
 
 // Datos configurables en INGLÉS
@@ -159,6 +160,7 @@ export const portfolioDataEn: PortfolioDataType = {
                 { name: 'MVVM design patterns', subtitle: 'Architecture for Android apps', icon: <LayoutGrid className="w-8 h-8 text-violet-600" /> },
                 { name: 'Clean Architecture', subtitle: 'Scalable software design', icon: <Layers className="w-8 h-8 text-emerald-600" /> },
                 { name: 'Dagger Hilt', subtitle: 'Dependency Injection for Android', icon: <Plug className="w-8 h-8 text-red-600" /> },
+                { name: 'Koin', subtitle: 'Dependency Injection for Android', icon: <img src="https://insert-koin.io/img/koin_new_logo.png" className="w-8 h-8 text-red-600" /> },
             ]
         },
         {
@@ -286,6 +288,18 @@ export const portfolioDataEn: PortfolioDataType = {
             github: null,
             youtube: null,
             estado: "Paused",
+            makingVideo: null
+        },
+        {
+            id: 7,
+            titulo: "Prc ChatApp Ktor",
+            descripcion: "Chat application with real-time communication using Google FCM with push notifications and a backend created Ktor server.",
+            tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Koin", "Jetpack Compose",
+                "Coroutines", "Kotlin Flows", "KDocs", "Navigation", "Ktor", "Exposed", "Postgresql", "Firebase", "FCM"],
+            imagen: img_chatKtor_backend,
+            github: 'https://github.com/Anbs12/ChatApp_KtorClient',
+            youtube: 'https://youtu.be/56g-h9uT_qI',
+            estado: "Completed",
             makingVideo: null
         }
     ],
