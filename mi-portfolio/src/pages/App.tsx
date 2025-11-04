@@ -13,6 +13,7 @@ import { EducationCard } from '../components/EducationCard';
 import { ExperienceCard } from '../components/ExperienceCard';
 import { PersonalSkillCard } from '../components/PersonalSkillCard';
 import { CertificationCard } from '../components/CertificationCard';
+import video_background from '../assets/videos/Developer_Workspace_Night_Cityscape_Video.mp4';
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -291,10 +292,33 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="inicio" ref={sectionRefs.inicio} className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen">
-        {/* Contenedor del video de fondo */}
+      <section
+        id="inicio"
+        ref={sectionRefs.inicio}
+        className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen overflow-hidden"
+      >
 
-        <div className={`relative z-10 max-w-6xl mx-auto text-white ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
+        {/* --- Contenedor del video de fondo y superposición --- */}
+        <div className="absolute inset-0 z-0">
+          {/* El video se reproduce automáticamente, en bucle y silenciado.
+          'object-cover' asegura que el video cubra todo el contenedor sin distorsionarse.*/}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src={video_background} type="video/mp4" />
+            Tu navegador no soporta videos HTML5.
+          </video>
+
+          {/* Superposición oscura opcional.*/}
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        {/* --- Contenido del Hero Section --- */}
+        <div className={`relative z-10 max-w-6xl mx-auto ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <div className="text-center">
             <div className="mb-8">
 
@@ -303,36 +327,37 @@ const Portfolio: React.FC = () => {
                 <Smartphone className="w-16 h-16 text-white" />
               </div>
 
-              <h1 className="text-7xl font-bold font-hero-name mb-4 text-gray-900 dark:text-gray-100">
+              {/* Nombre */}
+              <h1 className="text-7xl font-bold font-hero-name mb-4 text-white dark:text-gray-100">
                 {currentPortfolioData.personal.nombre}
               </h1>
 
               {/* Título dinámico */}
-              <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
+              <h2 className="text-4xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
                 {currentPortfolioData.hero.staticHeroTitlePartOne}
               </h2>
-              <h2 className="text-5xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
-                <span key={currentDynamicPhraseIndex} className="inline-block whitespace-nowrap animate-fade-in-out-single text-green-600 dark:text-green-400">
+              <h2 className="text-5xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
+                <span key={currentDynamicPhraseIndex} className="inline-block whitespace-nowap animate-fade-in-out-single text-green-400 dark:text-green-400">
                   {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
                 </span>
               </h2>
-              <h2 className="text-4xl font-hero-title mb-6 text-gray-900 dark:text-gray-100">
+              <h2 className="text-4xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
                 {currentPortfolioData.hero.staticHeroTitlePartTwo}
               </h2>
 
             </div>
 
-            {/* Botones */}
+            {/* Botones Proyecto y Contacto*/}
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => scrollToSection('proyectos')}
-                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1 dark:from-gray-800 dark:to-gray-900"
+                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 {currentPortfolioData.hero.buttonProjects}
               </button>
               <button
                 onClick={() => scrollToSection('contacto')}
-                className="border-2 border-green-500 text-green-600 px-8 py-3 rounded-lg font-medium hover:bg-green-50 transition-colors dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                className="border-2 border-green-500 text-green-500 px-8 py-3 rounded-lg font-medium hover:bg-green-500 hover:text-white transition-colors dark:border-gray-400 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 {currentPortfolioData.hero.buttonContact}
               </button>
@@ -432,7 +457,7 @@ const Portfolio: React.FC = () => {
       // 
       // */
       }
-      <section id="proyectos" ref={sectionRefs.subProyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
+      <section id="subProyectos" ref={sectionRefs.subProyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
 
         {/* Subproyectos abajo ⬇️⬇️⬇️⬇️*/}
 
