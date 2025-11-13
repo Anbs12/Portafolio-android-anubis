@@ -30,6 +30,7 @@ import ml_kit_img from '../assets/ml_kit_img.png';
 import weather_app_img from '../assets/img_weather_app_wallpaper.png';
 import pet_walk_img from '../assets/img_pet_walk_app_wallpaper.png';
 import img_chatKtor_backend from '../assets/img_chatKtor_backend.png';
+import img_machbank_logo from '../assets/machbank_logo_icon.jpeg'
 
 // Datos configurables en ESPAÑOL
 export const portfolioDataEs: PortfolioDataType = {
@@ -298,7 +299,7 @@ export const portfolioDataEs: PortfolioDataType = {
       descripcion: `Aplicación de chat en tiempo real utilizando backend desarrollado en Ktor, con funcionalidades de mensajería instantánea y
        notificaciones push de Google FCM`,
       tecnologias: ["Kotlin", "Clean Architecture", "MVVM", "Koin", "Jetpack Compose",
-                "Coroutines", "Kotlin Flows", "KDocs", "Navigation", "Ktor", "Exposed", "Postgresql", "Firebase", "FCM"],
+        "Coroutines", "Kotlin Flows", "KDocs", "Navigation", "Ktor", "Exposed", "Postgresql", "Firebase", "FCM"],
       imagen: img_chatKtor_backend,
       github: 'https://github.com/Anbs12/ChatApp_KtorClient',
       youtube: 'https://youtu.be/Ljo9zc6134Y  https://youtu.be/56g-h9uT_qI',
@@ -383,6 +384,13 @@ export const portfolioDataEs: PortfolioDataType = {
   ],
   experiencia: [
     {
+      empresa: "MachBank - Banco BCI",
+      cargo: "Software Engineer Mobile Android",
+      periodo: "11/2025 - Actualmente",
+      descripcion: ``,
+      logo: img_machbank_logo
+    },
+    {
       empresa: "Globant",
       cargo: "Desarrollador Kotlin y Java Trainee",
       periodo: "08/2025 - 10/2025",
@@ -396,7 +404,7 @@ todo.`,
     {
       empresa: "Independiente",
       cargo: "Desarrollador Android Junior",
-      periodo: "08/2024 - Presente",
+      periodo: "08/2024 - 11/2025",
       descripcion: `Sólida experiencia en la implementación de arquitecturas escalables como MVVM, 
       utilizando Kotlin Flows para datos reactivos en tiempo real. Experto en el desarrollo de interfaces de usuario tanto con XML como con Jetpack Compose, 
       y en la integración de APIs y bibliotecas de terceros para enriquecer la funcionalidad de las aplicaciones, incluyendo CameraX para optimización de imágenes y 

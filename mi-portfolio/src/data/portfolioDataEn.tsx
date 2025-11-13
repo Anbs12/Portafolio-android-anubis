@@ -30,6 +30,7 @@ import ml_kit_img from '../assets/ml_kit_img.png';
 import weather_app_img from '../assets/img_weather_app_wallpaper.png';
 import pet_walk_img from '../assets/img_pet_walk_app_wallpaper.png';
 import img_chatKtor_backend from '../assets/img_chatKtor_backend.png';
+import img_machbank_logo from '../assets/machbank_logo_icon.jpeg';
 
 
 // Datos configurables en INGLÉS
@@ -379,6 +380,13 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     experiencia: [
         {
+            empresa: "MachBank - Banco BCI",
+            cargo: "Software Engineer Mobile Android",
+            periodo: "11/2025 - Present",
+            descripcion: ``,
+            logo: img_machbank_logo
+        },
+        {
             empresa: "Globant",
             cargo: "Kotlin and Java Trainee Developer",
             periodo: "08/2025 - 10/2025",
@@ -392,7 +400,7 @@ everything as part of a team.`,
         {
             empresa: "Freelance",
             cargo: "Junior Android Developer",
-            periodo: "08/2024 - Present",
+            periodo: "08/2024 - 11/2025",
             descripcion: `Solid experience in implementing scalable architectures like MVVM, utilizing Kotlin Flows for real-time reactive data. 
             Proficient in developing user interfaces with both XML 
             and Jetpack Compose, and integrating third-party APIs and libraries to enhance application functionality, including CameraX for optimized photo capture across multiple devices 
