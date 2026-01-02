@@ -609,7 +609,7 @@ const Portfolio: React.FC = () => {
       <footer className="bg-gray-800 dark:bg-gray-900 text-white py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-300 dark:text-gray-400">
-            © 2025 {currentPortfolioData.personal.nombre}. {currentPortfolioData.footer.text}
+            © 2026 {currentPortfolioData.personal.nombre}. {currentPortfolioData.footer.text}
           </p>
         </div>
       </footer>
