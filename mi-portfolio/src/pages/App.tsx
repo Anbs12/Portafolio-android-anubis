@@ -14,6 +14,7 @@ import { ExperienceCard } from '../components/ExperienceCard';
 import { PersonalSkillCard } from '../components/PersonalSkillCard';
 import { CertificationCard } from '../components/CertificationCard';
 import video_background from '../assets/videos/Developer_Workspace_Night_Cityscape_Video.mp4';
+import { QuantumMisteryCard } from '../components/QunatumMisteryCard';
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -423,6 +424,15 @@ const Portfolio: React.FC = () => {
               </div>
             </div>
           ))}
+          {currentPortfolioData.quantumItems && (
+            <div className="mt-12">
+              <div className="flex flex-col items-center text-center">
+                {currentPortfolioData.quantumItems.map((tech, techIndex) => (
+                  <QuantumMisteryCard key={techIndex} tech={tech} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

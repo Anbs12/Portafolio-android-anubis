@@ -31,6 +31,8 @@ import weather_app_img from '../assets/img_weather_app_wallpaper.png';
 import pet_walk_img from '../assets/img_pet_walk_app_wallpaper.png';
 import img_chatKtor_backend from '../assets/img_chatKtor_backend.png';
 import img_machbank_logo from '../assets/machbank_logo_icon.jpeg';
+import img_schrodinger_cat from '../assets/img_schrodinger_cat.png';
+import video_quantum from '../assets/videos/quantum video portafolio.mp4';
 
 
 // Datos configurables en INGLÉS
@@ -217,6 +219,9 @@ export const portfolioDataEn: PortfolioDataType = {
                 },
                 { name: 'Koog', subtitle: 'Kotlin-based framework designed to build and run AI agents', icon: <img src='https://blog.jetbrains.com/wp-content/uploads/2024/10/IMG_2404.png' className="w-8 h-8" /> },
             ]
+        }, {
+            category: "Additionally, beyond Android...",
+            items: []
         }
     ],
     proyectos: [
@@ -380,7 +385,7 @@ export const portfolioDataEn: PortfolioDataType = {
     ],
     experiencia: [
         {
-            empresa: "MachBank - Banco BCI",
+            empresa: "MachBank - Banco Bci",
             cargo: "Software Engineer Mobile Android",
             periodo: "11/2025 - Present",
             descripcion: ``,
@@ -462,5 +467,8 @@ everything as part of a team.`,
         { name: "Professional Autonomy", icon: <User className="w-8 h-8 text-green-500" /> },
         { name: "Staff Training", icon: <Users className="w-8 h-8 text-indigo-500" /> },
         { name: "Diagnostic Ability", icon: <TestTube className="w-8 h-8 text-red-500" /> }
-    ]
+    ],
+  quantumItems: [
+    { name: "Superposición", subtitle: "Where zero and one exist simultaneously in a delicate dance...", icon: <img src={img_schrodinger_cat} alt="Kotlin Icon" className="w-8 h-8" />, video: video_quantum },
+  ]
 };

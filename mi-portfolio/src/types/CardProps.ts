@@ -30,3 +30,7 @@ export interface PersonalSkillCardProps {
   skill: PersonalSkillItem;
   isVisible: boolean;
 }
+
+export interface QuantumMisteryCardProps {
+  tech: TechnologyItem;
+}

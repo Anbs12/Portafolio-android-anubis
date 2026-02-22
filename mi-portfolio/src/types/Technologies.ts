@@ -26,5 +26,6 @@ export interface TechnologyItem {
   name: string;
   subtitle: string;
   icon: JSX.Element; // Tipo para el componente de icono
+  video?: string;
 }
 

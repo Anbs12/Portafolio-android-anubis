@@ -1,7 +1,7 @@
 import type { ContactData, PersonalData, ExperienceItem, AboutMeData, ExperienceTitle, 
   EducationTitle, CertificationTitle, EducationItem, PersonalSkillsTitle, PersonalSkillItem, 
   CertificationItem} from './Personal';
-import type { TechnologiesTitle, TechnologyCategory } from './Technologies';
+import type { TechnologiesTitle, TechnologyCategory, TechnologyItem } from './Technologies';
 import type { ProjectItem, ProjectSettings } from './Project';
 
 // 1. Definición de interfaces para los datos del portafolio
@@ -64,4 +64,5 @@ export interface PortfolioDataType {
   educationItems: EducationItem[];
   certificationItems: CertificationItem[];
   personalSkillItem: PersonalSkillItem[];
+  quantumItems?: TechnologyItem[]; 
 }
