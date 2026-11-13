@@ -1,15 +1,32 @@
+import React from "react";
 import type { TechCardProps } from "../types/CardProps";
 
-// Card componente para un mostrar cada tecnología en la seccion Tecnologías de un portafolio.
 export const TechCard: React.FC<TechCardProps> = ({ tech }) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+        e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+    };
+
     return (
-        <div className="bg-white dark:bg-gray-700 rounded-xl p-4 shadow-lg border border-gray-100 dark:border-gray-600 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group aspect-square flex flex-col justify-center">
-            <div className="flex flex-col items-center text-center">
-                <div className="bg-gradient-to-br from-green-100 to-blue-100 p-3 rounded-full mb-3 group-hover:from-green-200 group-hover:to-blue-200 transition-all duration-300 flex items-center justify-center">
+        <div
+            onMouseMove={handleMouseMove}
+            className="spotlight-card group relative rounded-2xl p-5 bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/40 dark:hover:border-emerald-400/30 shadow-[0_4px_20px_rgb(0,0,0,0.03)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.25)] transition-all duration-400 ease-out hover:-translate-y-1 flex flex-col justify-between"
+        >
+            <div className="relative z-10 flex items-start gap-4">
+                {/* Pedestal de icono con contraste garantizado en modo claro y oscuro */}
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-100/90 dark:bg-white/[0.08] ring-1 ring-slate-200/80 dark:ring-white/15 flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-110 group-hover:bg-emerald-500/10 dark:group-hover:bg-emerald-400/15">
                     {tech.icon}
                 </div>
-                <h3 className="font-bold text-gray-800 dark:text-gray-100 text-sm mb-1 leading-tight">{tech.name}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-300 leading-relaxed">{tech.subtitle}</p>
+
+                <div className="flex-1 min-w-0">
+                    <h3 className="font-bold font-heading text-slate-900 dark:text-white text-sm sm:text-base leading-snug mb-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                        {tech.name}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                        {tech.subtitle}
+                    </p>
+                </div>
             </div>
         </div>
     );

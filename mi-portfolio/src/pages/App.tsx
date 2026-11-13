@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Github, Linkedin, Code, Smartphone,
   Menu, X, Sun, Moon,
-  ChevronDown
+  ChevronDown, ArrowUpRight, Sparkles, ArrowUp
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
@@ -16,28 +16,29 @@ import { CertificationCard } from '../components/CertificationCard';
 import video_background from '../assets/videos/Developer_Workspace_Night_Cityscape_Video.mp4';
 import { QuantumMisteryCard } from '../components/QunatumMisteryCard';
 
-//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
 const Portfolio: React.FC = () => {
-  // Actualizar useState con tipos explícitos
   const [activeSection, setActiveSection] = useState<string>('inicio');
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [language, setLanguage] = useState<'es' | 'en'>('es'); // 'es' para español, 'en' para inglés
-  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null); // State for mobile submenu
+  const [language, setLanguage] = useState<'es' | 'en'>('es');
+  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [selectedTechCategory, setSelectedTechCategory] = useState<number>(-1); // -1 = Todas
 
-  // --- Logica del modo oscuro ---
+  // Estados para las coreografías por scroll estilo Apple
+  const [heroScrollRatio, setHeroScrollRatio] = useState<number>(0);
+  const [aboutLitProgress, setAboutLitProgress] = useState<number>(0);
+
+  // --- Lógica del modo oscuro (Oscuro por defecto para máximo contraste XDR) ---
   type Theme = 'light' | 'dark';
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const storedTheme = window.localStorage.getItem('theme') as Theme;
-      if (storedTheme) {
+      if (storedTheme === 'light' || storedTheme === 'dark') {
         return storedTheme;
       }
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-      }
     }
-    return 'light';
+    return 'dark';
   });
 
   useEffect(() => {
@@ -52,9 +53,8 @@ const Portfolio: React.FC = () => {
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
-  // --- Fin logica del modo oscuro ---
 
-  // Referencias para cada sección para el Intersection Observer
+  // Referencias para cada sección
   const sectionRefs = {
     inicio: useRef<HTMLElement>(null),
     sobreMi: useRef<HTMLElement>(null),
@@ -67,9 +67,40 @@ const Portfolio: React.FC = () => {
     contacto: useRef<HTMLElement>(null),
   };
 
-  // Estado para controlar la visibilidad de cada sección
+  const aboutTextRef = useRef<HTMLParagraphElement>(null);
+
+  // --- Coreografía de Scroll estilo Apple (Hero XDR Recede + Scroll-Lit Text) ---
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight - windowHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+      setScrollProgress(progress);
+      setIsScrolled(scrollTop > 30);
+
+      // 1. Ratio de contracción de la pantalla Hero XDR (0 a 1 en los primeros 650px)
+      const heroRatio = Math.min(1, Math.max(0, scrollTop / 650));
+      setHeroScrollRatio(heroRatio);
+
+      // 2. Iluminación progresiva palabra por palabra en "Sobre Mí"
+      if (aboutTextRef.current) {
+        const rect = aboutTextRef.current.getBoundingClientRect();
+        const startTrigger = windowHeight * 0.85;
+        const endTrigger = windowHeight * 0.28;
+        const rawProgress = (startTrigger - rect.top) / (startTrigger - endTrigger);
+        setAboutLitProgress(Math.min(1, Math.max(0, rawProgress)));
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({
-    inicio: false,
+    inicio: true,
     sobreMi: false,
     tecnologias: false,
     proyectos: false,
@@ -80,192 +111,273 @@ const Portfolio: React.FC = () => {
     contacto: false,
   });
 
-  // Efecto para configurar los Intersection Observers
+  // Intersection Observer para animaciones de entrada y detección de sección activa
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
 
-    const createObserver = (ref: React.RefObject<HTMLElement | null>, sectionName: string) => {
+    const createObserver = (
+      ref: React.RefObject<HTMLElement | null>,
+      sectionKey: string,
+      navId: string
+    ) => {
       if (ref.current) {
-        const observer = new IntersectionObserver(
+        const revealObserver = new IntersectionObserver(
           ([entry]) => {
             if (entry.isIntersecting) {
-              setVisibleSections((prev) => ({ ...prev, [sectionName]: true }));
-              // Opcional: Desobservar el elemento una vez que ha sido visible
-              observer.unobserve(entry.target);
+              setVisibleSections(prev => ({ ...prev, [sectionKey]: true }));
+              revealObserver.unobserve(entry.target);
             }
           },
-          { threshold: 0.05 } // El 20% del elemento debe ser visible para activar
+          { threshold: 0.08 }
         );
-        observer.observe(ref.current);
-        observers.push(observer);
+        revealObserver.observe(ref.current);
+        observers.push(revealObserver);
+
+        const spyObserver = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setActiveSection(navId);
+            }
+          },
+          { rootMargin: '-35% 0px -55% 0px' }
+        );
+        spyObserver.observe(ref.current);
+        observers.push(spyObserver);
       }
     };
 
-    // Crear un observador para cada sección
-    createObserver(sectionRefs.inicio, 'inicio');
-    createObserver(sectionRefs.sobreMi, 'sobreMi');
-    createObserver(sectionRefs.tecnologias, 'tecnologias');
-    createObserver(sectionRefs.proyectos, 'proyectos');
-    createObserver(sectionRefs.subProyectos, 'subProyectos');
-    createObserver(sectionRefs.experiencia, 'experiencia');
-    createObserver(sectionRefs.educacion, 'educacion');
-    createObserver(sectionRefs.habilidadesPersonales, 'habilidadesPersonales');
-    createObserver(sectionRefs.contacto, 'contacto');
+    createObserver(sectionRefs.inicio, 'inicio', 'inicio');
+    createObserver(sectionRefs.sobreMi, 'sobreMi', 'sobre-mi');
+    createObserver(sectionRefs.tecnologias, 'tecnologias', 'tecnologias');
+    createObserver(sectionRefs.proyectos, 'proyectos', 'proyectos');
+    createObserver(sectionRefs.subProyectos, 'subProyectos', 'proyectos');
+    createObserver(sectionRefs.experiencia, 'experiencia', 'experiencia');
+    createObserver(sectionRefs.educacion, 'educacion', 'educacion');
+    createObserver(sectionRefs.habilidadesPersonales, 'habilidadesPersonales', 'habilidades-personales');
+    createObserver(sectionRefs.contacto, 'contacto', 'contacto');
 
-    // Función de limpieza para desconectar los observadores
     return () => {
-      observers.forEach((observer) => observer.disconnect());
+      observers.forEach(observer => observer.disconnect());
     };
-  }, []); // El array vacío asegura que el efecto se ejecute solo una vez al montar
+  }, []);
 
-  // Seleccionar los datos del portafolio según el idioma actual
   const currentPortfolioData: PortfolioDataType = language === 'es' ? portfolioDataEs : portfolioDataEn;
 
-  // --- Dynamic Text Animation Logic ---
+  // --- Frases dinámicas del Hero ---
   const [currentDynamicPhraseIndex, setCurrentDynamicPhraseIndex] = useState(0);
   useEffect(() => {
-    // This interval will trigger the phrase change
     const interval = setInterval(() => {
       setCurrentDynamicPhraseIndex(
-        (prevIndex) => (prevIndex + 1) % currentPortfolioData.hero.dynamicPhrases.length
+        prevIndex => (prevIndex + 1) % currentPortfolioData.hero.dynamicPhrases.length
       );
-    }, 3000); // Changed to 8 seconds, matching animation duration
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, [currentPortfolioData.hero.dynamicPhrases.length]); // Re-run if phrases change (e.g., language switch)
-  // --- End Dynamic Text Animation Logic ---
+  }, [currentPortfolioData.hero.dynamicPhrases.length]);
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
-    setIsMenuOpen(false); // Close mobile menu when a section is clicked
-    setOpenMobileSubmenu(null); // Close any open mobile submenus
+    setIsMenuOpen(false);
+    setOpenMobileSubmenu(null);
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 dark:from-gray-900 dark:to-blue-950 text-gray-900 dark:text-white font-inter transition-colors duration-300">
-
-      {/* 
-      //  ////////////////////////// Navigation ////////////////////////// 
-      // 
-      // */
+  // Obtener etiqueta de la sección actual para la Dynamic Island inferior
+  const getActiveSectionLabel = (): string => {
+    for (const item of currentPortfolioData.navItems) {
+      if (item.id === activeSection) return item.displayText;
+      if (item.subItems) {
+        const sub = item.subItems.find(s => s.id === activeSection);
+        if (sub) return sub.displayText;
       }
-      <nav className="fixed top-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md shadow-lg z-50 border-b border-gray-100 dark:border-gray-700">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+    }
+    return currentPortfolioData.navItems[0]?.displayText || '';
+  };
 
+  // Palabras de la descripción para el efecto "Scroll-Lit XDR Text"
+  const aboutWords = currentPortfolioData.personal.descripcion.trim().split(/\s+/);
+
+  // Categorías de tecnologías con elementos visibles
+  const nonEmptyCategories = currentPortfolioData.tecnologiasCategorizadas.filter(
+    cat => cat.items.length > 0
+  );
+
+  // Transformaciones físicas para el Hero estilo Apple MacBook Pro XDR
+  const heroScale = 1 - heroScrollRatio * 0.085;
+  const heroBorderRadius = Math.round(heroScrollRatio * 40);
+  const heroContentTranslateY = heroScrollRatio * -45;
+  const heroContentOpacity = 1 - heroScrollRatio * 0.75;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#05080d] text-slate-900 dark:text-slate-100 font-inter selection:bg-emerald-500/30 selection:text-emerald-300 transition-colors duration-500 relative">
+
+      {/* Barra superior de progreso de lectura */}
+      <div className="fixed top-0 left-0 right-0 h-[2px] z-[60] bg-transparent pointer-events-none">
+        <div
+          className="h-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 shadow-[0_0_12px_rgba(16,185,129,0.8)] transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
+      {/* ////////////////////////// Floating Glass Navigation ////////////////////////// */}
+      <header className="fixed top-0 inset-x-0 z-50 px-4 sm:px-6 lg:px-8 pt-4 pointer-events-none">
+        <nav
+          className={`pointer-events-auto max-w-6xl mx-auto rounded-2xl transition-all duration-500 ${
+            isScrolled
+              ? 'bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] border border-slate-200/80 dark:border-white/[0.08] py-3 px-4 sm:px-6'
+              : 'bg-slate-950/35 dark:bg-slate-900/40 backdrop-blur-xl border border-white/10 py-3.5 px-4 sm:px-6'
+          }`}
+        >
+          <div className="flex justify-between items-center">
             {/* Logo y nombre */}
-            <div className="flex items-center">
-              <div className="bg-gradient-to-r from-green-500 to-blue-500 p-2 rounded-lg mr-3">
-                <Code className="w-6 h-6 text-white" />
+            <button
+              onClick={() => scrollToSection('inicio')}
+              className="flex items-center gap-3 group text-left focus:outline-none"
+            >
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 p-2 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform duration-300">
+                <Code className="w-5 h-5 text-slate-950 stroke-[2.5]" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+              <span
+                className={`text-base sm:text-lg font-bold font-heading tracking-tight transition-colors ${
+                  isScrolled
+                    ? 'text-slate-900 dark:text-white'
+                    : 'text-white'
+                }`}
+              >
                 {currentPortfolioData.personal.nombre}
               </span>
-            </div>
+            </button>
 
-            {/* Menú de navegación Desktop*/}
-            <div className="hidden lg:flex items-center space-x-7">
-              {currentPortfolioData.navItems.map((item) => (
-                item.subItems ? (
+            {/* Menú Desktop */}
+            <div className="hidden lg:flex items-center gap-1">
+              {currentPortfolioData.navItems.map(item => {
+                const isSubItemActive = item.subItems?.some(sub => sub.id === activeSection);
+                const isActive = activeSection === item.id || isSubItemActive;
+
+                return item.subItems ? (
                   <div key={item.id} className="relative group">
                     <button
-                      onClick={() => scrollToSection(item.id)} // Added onClick to parent for scrolling
-                      className="capitalize font-semibold transition-colors hover:text-green-600 text-gray-700 dark:text-gray-300 font-body flex items-center"
+                      onClick={() => scrollToSection(item.subItems![0].id)}
+                      className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
+                        isActive
+                          ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10'
+                          : isScrolled
+                          ? 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/[0.06]'
+                          : 'text-white/85 hover:text-white hover:bg-white/10'
+                      }`}
                     >
-                      {item.displayText} <ChevronDown className="inline w-4 h-4 ml-1 transition-transform group-hover:rotate-180" />
+                      <span>{item.displayText}</span>
+                      <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" />
                     </button>
-                    <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1
-                                    opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out z-10">
-                      {item.subItems.map(subItem => (
-                        <button
-                          key={subItem.id}
-                          onClick={() => scrollToSection(subItem.id)}
-                          className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 font-body"
-                        >
-                          {subItem.displayText}
-                        </button>
-                      ))}
+
+                    <div className="absolute left-0 mt-2 w-52 pt-1 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-200 ease-out z-20">
+                      <div className="rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-2xl p-1.5">
+                        {item.subItems.map(subItem => (
+                          <button
+                            key={subItem.id}
+                            onClick={() => scrollToSection(subItem.id)}
+                            className={`block w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                              activeSection === subItem.id
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                            }`}
+                          >
+                            {subItem.displayText}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ) : (
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`capitalize font-semibold transition-colors hover:text-green-600 ${activeSection === item.id ? 'text-green-600' : 'text-gray-700 dark:text-gray-300'
-                      } font-body`}
+                    className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/10'
+                        : isScrolled
+                        ? 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/[0.06]'
+                        : 'text-white/85 hover:text-white hover:bg-white/10'
+                    }`}
                   >
                     {item.displayText}
                   </button>
-                )
-              ))}
+                );
+              })}
             </div>
 
-            {/* Botones de idioma y modo oscuro */}
-            <div className="flex items-center gap-4 ">
-              {/* Botón de cambio de idioma */}
+            {/* Controles de Idioma, Tema y Menú Móvil */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-                className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-semibold tracking-wider uppercase border transition-all duration-300 ${
+                  isScrolled
+                    ? 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40'
+                    : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
+                }`}
               >
-                {language === 'es' ? 'English' : 'Español'}
+                {language === 'es' ? 'EN' : 'ES'}
               </button>
 
-              {/* Botón de Modo Oscuro/Claro */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 
-                           hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-300
-                           focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
                 aria-label="Toggle dark mode"
+                className={`p-2 rounded-xl border transition-all duration-300 ${
+                  isScrolled
+                    ? 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40'
+                    : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
+                }`}
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-6 h-6" /> // Icono de sol para modo claro
+                  <Sun className="w-4 h-4 text-amber-300" />
                 ) : (
-                  <Moon className="w-6 h-6" /> // Icono de luna para modo oscuro
+                  <Moon className="w-4 h-4" />
                 )}
               </button>
-            </div>
 
-            {/* Mobile menu button */}
-            <button
-              className="lg:hidden p-2 rounded-md text-gray-700 dark:text-gray-200 hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
+              <button
+                className={`lg:hidden p-2 rounded-xl border transition-colors ${
+                  isScrolled
+                    ? 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
+                    : 'bg-white/10 text-white border-white/15'
+                }`}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="Toggle navigation menu"
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
 
-          {/* Mobile Navigation Menu */}
+          {/* Menú Móvil Desplegable */}
           {isMenuOpen && (
-            <div className="lg:hidden py-4 border-t border-gray-100 dark:border-gray-700">
-              {currentPortfolioData.navItems.map((item) => (
+            <div className="lg:hidden mt-3 pt-3 border-t border-slate-200/60 dark:border-white/10 space-y-1">
+              {currentPortfolioData.navItems.map(item =>
                 item.subItems ? (
-                  <div key={item.id} className="relative">
+                  <div key={item.id}>
                     <button
-                      onClick={() => {
-                        // For mobile, this button only toggles the submenu visibility
-                        setOpenMobileSubmenu(openMobileSubmenu === item.id ? null : item.id);
-                      }}
-                      className="flex w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4 font-body  justify-between items-center"
+                      onClick={() =>
+                        setOpenMobileSubmenu(openMobileSubmenu === item.id ? null : item.id)
+                      }
+                      className="flex w-full justify-between items-center px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/[0.06]"
                     >
-                      {item.displayText}
-                      <ChevronDown className={`w-5 h-5 transition-transform ${openMobileSubmenu === item.id ? 'rotate-180' : ''}`} />
+                      <span>{item.displayText}</span>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${
+                          openMobileSubmenu === item.id ? 'rotate-180' : ''
+                        }`}
+                      />
                     </button>
                     {openMobileSubmenu === item.id && (
-                      <div className="pl-6 pt-2 pb-2 space-y-2"> {/* Indent submenu */}
+                      <div className="pl-4 py-1 space-y-1">
                         {item.subItems.map(subItem => (
                           <button
                             key={subItem.id}
-                            onClick={() => scrollToSection(subItem.id)} // Submenu items scroll to section
-                            className="block w-full text-left py-2 capitalize font-medium text-gray-600 dark:text-gray-400 hover:text-green-500 font-body"
+                            onClick={() => scrollToSection(subItem.id)}
+                            className="block w-full text-left px-3.5 py-2 rounded-xl text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-500"
                           >
                             {subItem.displayText}
                           </button>
@@ -277,353 +389,623 @@ const Portfolio: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className="block w-full text-left py-2 capitalize font-medium text-gray-700 dark:text-gray-200 hover:text-green-600 px-4 font-body"
+                    className="block w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/[0.06]"
                   >
                     {item.displayText}
                   </button>
                 )
+              )}
+            </div>
+          )}
+        </nav>
+      </header>
+
+      {/* ////////////////////////// Hero Section con Efecto "Apple XDR Display Recede" ////////////////////////// */}
+      <section
+        id="inicio"
+        ref={sectionRefs.inicio}
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        {/* Marco XDR que se contrae y redondea suavemente al hacer scroll */}
+        <div
+          style={{
+            transform: `scale(${heroScale.toFixed(4)})`,
+            borderRadius: `${heroBorderRadius}px`,
+          }}
+          className={`relative w-full min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-28 pb-24 overflow-hidden transition-shadow duration-300 ${
+            heroScrollRatio > 0.05
+              ? 'ring-1 ring-white/20 shadow-[0_30px_100px_rgba(16,185,129,0.2)]'
+              : ''
+          }`}
+        >
+          {/* Video de fondo original */}
+          <div className="absolute inset-0 z-0">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover scale-[1.02]"
+            >
+              <source src={video_background} type="video/mp4" />
+              Tu navegador no soporta videos HTML5.
+            </video>
+
+            {/* Reflejo especular superior de pantalla XDR */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent z-10" />
+            <div className="absolute inset-0 bg-slate-950/65 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950/90" />
+          </div>
+
+          {/* Contenido principal del Hero con Parallax suave */}
+          <div
+            style={{
+              transform: `translateY(${heroContentTranslateY.toFixed(1)}px)`,
+              opacity: Math.max(0.15, heroContentOpacity),
+            }}
+            className={`relative z-10 max-w-5xl mx-auto text-center ${
+              visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'
+            }`}
+          >
+            {/* Badge de rol con indicador vivo */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 text-emerald-300 text-xs sm:text-sm font-mono mb-8 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+              </span>
+              <Smartphone className="w-4 h-4 text-emerald-400" />
+              <span>{currentPortfolioData.personal.titulo}</span>
+            </div>
+
+            {/* Nombre monumental con acabado metálico tipo Apple Pro */}
+            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold font-hero-name tracking-tight bg-gradient-to-b from-white via-white to-slate-300 bg-clip-text text-transparent mb-6 drop-shadow-sm">
+              {currentPortfolioData.personal.nombre}
+            </h1>
+
+            {/* Frase dinámica cinética */}
+            <div className="max-w-3xl mx-auto space-y-2 mb-12">
+              <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-200/90 font-normal leading-relaxed">
+                {currentPortfolioData.hero.staticHeroTitlePartOne}
+              </p>
+
+              <div className="h-14 sm:h-16 flex items-center justify-center">
+                <span
+                  key={currentDynamicPhraseIndex}
+                  className="inline-block px-5 py-1.5 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 backdrop-blur-md text-2xl sm:text-4xl md:text-5xl font-bold font-heading bg-gradient-to-r from-emerald-300 via-teal-200 to-cyan-300 bg-clip-text text-transparent animate-fade-in-out-single"
+                >
+                  {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
+                </span>
+              </div>
+
+              <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-200/90 font-normal leading-relaxed">
+                {currentPortfolioData.hero.staticHeroTitlePartTwo}
+              </p>
+            </div>
+
+            {/* Botones de acción (CTAs) */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button
+                onClick={() => scrollToSection('proyectos')}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-semibold px-8 py-4 rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] hover:shadow-[0_0_45px_rgba(16,185,129,0.7)] transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <span>{currentPortfolioData.hero.buttonProjects}</span>
+                <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+              </button>
+
+              <button
+                onClick={() => scrollToSection('contacto')}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl font-semibold text-white bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 hover:border-white/35 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <span>{currentPortfolioData.hero.buttonContact}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ////////////////////////// "Sobre mí" con Tipografía Iluminada por Scroll (Scroll-Lit XDR Text) ////////////////////////// */}
+      <section
+        id="sobre-mi"
+        ref={sectionRefs.sobreMi}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        <div
+          className={`max-w-6xl mx-auto ${
+            visibleSections.sobreMi ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+              <Sparkles className="w-3 h-3" /> Profile
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.aboutMe.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.aboutMe.subtitle}
+            </p>
+          </div>
+
+          <div className="relative rounded-[32px] p-8 sm:p-12 md:p-14 bg-white/80 dark:bg-slate-900/55 backdrop-blur-2xl border border-slate-200/80 dark:border-white/[0.09] shadow-[0_12px_40px_rgb(0,0,0,0.04)] dark:shadow-[0_25px_70px_rgb(0,0,0,0.45)] overflow-hidden">
+            {/* Bisel luminoso superior */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent" />
+            <div className="pointer-events-none absolute -right-24 -top-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl" />
+            <div className="pointer-events-none absolute -left-24 -bottom-24 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl" />
+
+            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
+              <div className="lg:w-3/5 text-center lg:text-left space-y-6">
+                <div className="inline-block px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.06] border border-slate-200/70 dark:border-white/10 text-xs font-mono text-emerald-600 dark:text-emerald-400">
+                  {currentPortfolioData.personal.titulo}
+                </div>
+
+                {/* Párrafo con iluminación progresiva palabra por palabra al hacer scroll */}
+                <p
+                  ref={aboutTextRef}
+                  className="text-lg sm:text-xl md:text-2xl leading-relaxed font-heading font-semibold tracking-tight flex flex-wrap justify-center lg:justify-start gap-x-[0.32em] gap-y-1"
+                >
+                  {aboutWords.map((word, index) => {
+                    const wordThreshold = index / aboutWords.length;
+                    const isLit = aboutLitProgress >= wordThreshold;
+                    return (
+                      <span
+                        key={index}
+                        className={`transition-all duration-300 ${
+                          isLit
+                            ? 'text-slate-900 dark:text-white opacity-100'
+                            : 'text-slate-400 dark:text-slate-600 opacity-35'
+                        }`}
+                      >
+                        {word}
+                      </span>
+                    );
+                  })}
+                </p>
+              </div>
+
+              <div className="lg:w-2/5 flex justify-center items-center">
+                <div className="relative group">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-emerald-500/25 to-cyan-500/25 blur-2xl animate-pulse-glow" />
+                  <img
+                    src="https://developer.android.com/images/cluster-illustrations/mad-hero.svg"
+                    alt={currentPortfolioData.aboutMe.androidSvgDescription}
+                    className="relative w-52 h-52 sm:w-64 sm:h-64 md:w-72 md:h-72 object-contain animate-float-slow drop-shadow-2xl"
+                    onError={e => {
+                      e.currentTarget.src =
+                        'https://placehold.co/300x300/10b981/ffffff?text=Android';
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ////////////////////////// Technologies Section con Selector Estilo Apple ////////////////////////// */}
+      <section
+        id="tecnologias"
+        ref={sectionRefs.tecnologias}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-100/60 dark:bg-slate-950/60 border-y border-slate-200/60 dark:border-white/[0.05]"
+      >
+        <div
+          className={`max-w-6xl mx-auto ${
+            visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+              Tech Stack
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.technologiesTitle.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.technologiesTitle.subtitle}
+            </p>
+          </div>
+
+          {/* Barra de Píldoras Interactiva estilo Apple Highlights */}
+          <div className="flex justify-center mb-14">
+            <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-lg overflow-x-auto no-scrollbar max-w-full">
+              <button
+                type="button"
+                onClick={() => setSelectedTechCategory(-1)}
+                className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all duration-300 ${
+                  selectedTechCategory === -1
+                    ? 'bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                }`}
+              >
+                {language === 'es' ? 'Todas' : 'All'}
+              </button>
+
+              {nonEmptyCategories.map((categoryGroup, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setSelectedTechCategory(idx)}
+                  className={`px-4 py-2 rounded-xl text-xs font-mono font-medium whitespace-nowrap transition-all duration-300 ${
+                    selectedTechCategory === idx
+                      ? 'bg-emerald-500 text-slate-950 font-semibold shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
+                  }`}
+                >
+                  {categoryGroup.category}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-14">
+            {currentPortfolioData.tecnologiasCategorizadas.map((categoryGroup, index) => {
+              const nonEmptyIdx = nonEmptyCategories.indexOf(categoryGroup);
+              if (
+                selectedTechCategory !== -1 &&
+                categoryGroup.items.length > 0 &&
+                nonEmptyIdx !== selectedTechCategory
+              ) {
+                return null;
+              }
+
+              return (
+                <div key={index} className="animate-fadeInUp">
+                  <div className="flex items-center gap-4 mb-6">
+                    <h3 className="text-lg sm:text-xl font-bold font-heading text-slate-800 dark:text-slate-200">
+                      {categoryGroup.category}
+                    </h3>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-300 dark:from-white/15 to-transparent" />
+                  </div>
+
+                  {categoryGroup.items.length > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {categoryGroup.items.map((tech, techIndex) => (
+                        <TechCard key={techIndex} tech={tech} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {currentPortfolioData.quantumItems && (
+            <div className="mt-14 flex flex-col items-center">
+              {currentPortfolioData.quantumItems.map((tech, techIndex) => (
+                <QuantumMisteryCard key={techIndex} tech={tech} />
               ))}
             </div>
           )}
         </div>
-      </nav>
+      </section>
 
-      {/* 
-      //  ////////////////////////// Hero Section ////////////////////////// 
-      // 
-      // */
-      }
+      {/* ////////////////////////// Projects Section ////////////////////////// */}
       <section
-        id="inicio"
-        ref={sectionRefs.inicio}
-        className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center min-h-screen overflow-hidden"
+        id="proyectos"
+        ref={sectionRefs.proyectos}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8"
       >
-
-        {/* --- Contenedor del video de fondo y superposición --- */}
-        <div className="absolute inset-0 z-0">
-          {/* El video se reproduce automáticamente, en bucle y silenciado.
-          'object-cover' asegura que el video cubra todo el contenedor sin distorsionarse.*/}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source src={video_background} type="video/mp4" />
-            Tu navegador no soporta videos HTML5.
-          </video>
-
-          {/* Superposición oscura opcional.*/}
-          <div className="absolute inset-0 bg-black/40"></div>
-        </div>
-
-        {/* --- Contenido del Hero Section --- */}
-        <div className={`relative z-10 max-w-6xl mx-auto ${visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="mb-8">
-
-              {/* Icono smartphone */}
-              <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl">
-                <Smartphone className="w-16 h-16 text-white" />
-              </div>
-
-              {/* Nombre */}
-              <h1 className="text-7xl font-bold font-hero-name mb-4 text-white dark:text-gray-100">
-                {currentPortfolioData.personal.nombre}
-              </h1>
-
-              {/* Título dinámico */}
-              <h2 className="text-4xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
-                {currentPortfolioData.hero.staticHeroTitlePartOne}
-              </h2>
-              <h2 className="text-5xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
-                <span key={currentDynamicPhraseIndex} className="inline-block whitespace-nowap animate-fade-in-out-single text-green-400 dark:text-green-400">
-                  {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
-                </span>
-              </h2>
-              <h2 className="text-4xl font-hero-title mb-6 text-gray-100 dark:text-gray-100">
-                {currentPortfolioData.hero.staticHeroTitlePartTwo}
-              </h2>
-
-            </div>
-
-            {/* Botones Proyecto y Contacto*/}
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => scrollToSection('proyectos')}
-                className="bg-gradient-to-r from-green-500 to-blue-500 text-white px-8 py-3 rounded-lg font-medium hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-              >
-                {currentPortfolioData.hero.buttonProjects}
-              </button>
-              <button
-                onClick={() => scrollToSection('contacto')}
-                className="border-2 border-green-500 text-green-500 px-8 py-3 rounded-lg font-medium hover:bg-green-500 hover:text-white transition-colors dark:border-gray-400 dark:text-gray-200 dark:hover:bg-gray-800"
-              >
-                {currentPortfolioData.hero.buttonContact}
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-      </section>
-
-
-      {/* 
-      //  ////////////////////////// "Sobre mi" Section ////////////////////////// 
-      // 
-      // */
-      }
-      <section id="sobre-mi" ref={sectionRefs.sobreMi} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
-        <div className={`max-w-6xl mx-auto ${visibleSections.sobreMi ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold font-heading text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.aboutMe.title}</h2>
-            <p className="text-xl font-body text-gray-600 dark:text-gray-300">{currentPortfolioData.aboutMe.subtitle}</p>
+        <div
+          className={`max-w-6xl mx-auto ${
+            visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+              Featured Work
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.projectsSettings.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.projectsSettings.subtitle}
+            </p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-12">
-            <div className="md:w-1/2 text-center md:text-left">
-              <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-body">
-                {currentPortfolioData.personal.descripcion}
-              </p>
-            </div>
-            <div className="md:w-1/2 flex justify-center items-center p-4">
-              {/* Abstract Android Shape (SVG) */}
-              <img
-                src="https://developer.android.com/images/cluster-illustrations/mad-hero.svg" // URL de imagen de ejemplo
-                alt={currentPortfolioData.aboutMe.androidSvgDescription} // Usamos la misma descripción para accesibilidad
-                className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 object-contain rounded-full shadow-lg" // Estilos para la imagen
-                onError={(e) => { e.currentTarget.src = 'https://placehold.co/300x300/4CAF50/white?text=Error+Loading+Image'; }} // Fallback en caso de error
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
+            {currentPortfolioData.proyectos.map(proyecto => (
+              <ProjectCard
+                key={proyecto.id}
+                proyecto={proyecto}
+                currentPortfolioData={currentPortfolioData}
               />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ////////////////////////// Subproyectos Section ////////////////////////// */}
+      <section
+        id="subProyectos"
+        ref={sectionRefs.subProyectos}
+        className="relative pb-24 sm:pb-32 pt-8 px-4 sm:px-6 lg:px-8"
+      >
+        <div
+          className={`max-w-6xl mx-auto ${
+            visibleSections.subProyectos ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-4">
+              Additional Labs
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.subProjectsSettings.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.subProjectsSettings.subtitle}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
+            {currentPortfolioData.subProyectos.map(proyecto => (
+              <ProjectCard
+                key={proyecto.id}
+                proyecto={proyecto}
+                currentPortfolioData={currentPortfolioData}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ////////////////////////// Experience Section ////////////////////////// */}
+      <section
+        id="experiencia"
+        ref={sectionRefs.experiencia}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-100/60 dark:bg-slate-950/60 border-y border-slate-200/60 dark:border-white/[0.05]"
+      >
+        <div
+          className={`max-w-4xl mx-auto ${
+            visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+              Career Path
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.experienceTitle.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.experienceTitle.subtitle}
+            </p>
+          </div>
+
+          {/* Línea de tiempo conectada */}
+          <div className="relative ml-2 sm:ml-4">
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-emerald-500/60 via-cyan-500/30 to-transparent" />
+            <div className="space-y-8">
+              {currentPortfolioData.experiencia.map((exp, index) => (
+                <ExperienceCard key={index} exp={exp} />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* 
-      //  ////////////////////////// Technologies Section////////////////////////// 
-      // 
-      // */
-      }
-      <section id="tecnologias" ref={sectionRefs.tecnologias} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
-        <div className={`max-w-6xl mx-auto ${visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.technologiesTitle.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.technologiesTitle.subtitle}</p>
+      {/* ////////////////////////// Education & Certifications Section ////////////////////////// */}
+      <section
+        id="educacion"
+        ref={sectionRefs.educacion}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8"
+      >
+        <div
+          className={`max-w-4xl mx-auto ${
+            visibleSections.educacion ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 mb-4">
+              Academic
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.educationTitle.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.educationTitle.subtitle}
+            </p>
           </div>
 
-          {/* Renderizado de tecnologías por categoría */}
-          {currentPortfolioData.tecnologiasCategorizadas.map((categoryGroup, index) => (
-            <div key={index} className="mb-12">
-              <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-8 text-center">{categoryGroup.category}</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
-                {categoryGroup.items.map((tech, techIndex) => (
-                  <TechCard key={techIndex} tech={tech} />
-                ))}
-              </div>
+          <div className="relative ml-2 sm:ml-4 mb-24">
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-sky-500/60 to-transparent" />
+            <div className="space-y-8">
+              {currentPortfolioData.educationItems.map((edu, index) => (
+                <EducationCard key={index} edu={edu} />
+              ))}
             </div>
-          ))}
-          {currentPortfolioData.quantumItems && (
-            <div className="mt-12">
-              <div className="flex flex-col items-center text-center">
-                {currentPortfolioData.quantumItems.map((tech, techIndex) => (
-                  <QuantumMisteryCard key={techIndex} tech={tech} />
-                ))}
-              </div>
+          </div>
+
+          {/* Certificaciones */}
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 mb-4">
+              Credentials
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.certificationTitle.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.certificationTitle.subtitle}
+            </p>
+          </div>
+
+          <div className="relative ml-2 sm:ml-4">
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-amber-500/60 to-transparent" />
+            <div className="space-y-8">
+              {currentPortfolioData.certificationItems.map((cert, index) => (
+                <CertificationCard key={index} cert={cert} />
+              ))}
             </div>
-          )}
-        </div>
-      </section>
-
-
-      {/* 
-      //  ////////////////////////// Projects Section ////////////////////////// 
-      // 
-      // */
-      }
-      <section id="proyectos" ref={sectionRefs.proyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
-
-        <div className={`max-w-6xl mx-auto ${visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
-
-          {/*Titulo y subtitulo de la sección*/}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.projectsSettings.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.projectsSettings.subtitle}</p>
-          </div>
-
-          {/*Renderizado de tarjetas de proyectos*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentPortfolioData.proyectos.map((proyecto) => (
-              <ProjectCard key={proyecto.id} proyecto={proyecto} currentPortfolioData={currentPortfolioData} />
-            ))}
-          </div>
-        </div>
-
-      </section>
-
-      {/* 
-      //  ////////////////////////// Subproyectos Section ////////////////////////// 
-      // 
-      // */
-      }
-      <section id="subProyectos" ref={sectionRefs.subProyectos} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
-
-        {/* Subproyectos abajo ⬇️⬇️⬇️⬇️*/}
-
-        <div className={`max-w-6xl mx-auto ${visibleSections.subProyectos ? 'animate-fadeInUp' : 'opacity-0'}`}>
-
-          {/*Titulo y subtitulo de la sección*/}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.subProjectsSettings.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.subProjectsSettings.subtitle}</p>
-          </div>
-
-          {/*Renderizado de tarjetas de proyectos*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentPortfolioData.subProyectos.map((proyecto) => (
-              <ProjectCard key={proyecto.id} proyecto={proyecto} currentPortfolioData={currentPortfolioData} />
-            ))}
-          </div>
-        </div>
-
-      </section>
-
-      {/* 
-      //  ////////////////////////// Experience Section ////////////////////////// 
-      // 
-      // */
-      }
-      <section id="experiencia" ref={sectionRefs.experiencia} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
-        <div className={`max-w-4xl mx-auto ${visibleSections.experiencia ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className={`text-center mb-16`}>
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.experienceTitle.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.experienceTitle.subtitle}</p>
-          </div>
-
-          <div className="space-y-8">
-            {currentPortfolioData.experiencia.map((exp, index) => (
-              <ExperienceCard key={index} exp={exp} />
-            ))}
-          </div>
-        </div>
-
-      </section>
-
-      {/* 
-      //  ////////////////////////// Education Section ///////////////////////// 
-      // 
-      // */
-      }
-      <section id="educacion" ref={sectionRefs.educacion} className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
-        <div className={`max-w-4xl mx-auto ${visibleSections.educacion ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.educationTitle.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.educationTitle.subtitle}</p>
-          </div>
-
-          <div className="space-y-8">
-            {currentPortfolioData.educationItems.map((edu, index) => (
-              <EducationCard key={index} edu={edu} />
-            ))}
-          </div>
-        </div>
-
-        {/* Certificaciones abajo ⬇️ */}
-
-        <div className={`py-20 max-w-4xl mx-auto ${visibleSections.educacion ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.certificationTitle.title}</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">{currentPortfolioData.certificationTitle.subtitle}</p>
-          </div>
-
-          <div className="space-y-8">
-            {currentPortfolioData.certificationItems.map((cert, index) => (
-              <CertificationCard key={index} cert={cert} />
-            ))}
           </div>
         </div>
       </section>
 
-      {/* 
-      
-        ////////////////////////// Personal Skills Section ////////////////////////// 
-        // 
-        // */}
-      <section id="habilidades-personales" ref={sectionRefs.habilidadesPersonales} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
-        <div className={`max-w-6xl mx-auto ${visibleSections.habilidadesPersonales ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold font-heading text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.personalSkillsTitle.title}</h2>
-            <p className="text-xl font-body text-gray-600 dark:text-gray-300">{currentPortfolioData.personalSkillsTitle.subtitle}</p>
+      {/* ////////////////////////// Personal Skills Section ////////////////////////// */}
+      <section
+        id="habilidades-personales"
+        ref={sectionRefs.habilidadesPersonales}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-100/60 dark:bg-slate-950/60 border-y border-slate-200/60 dark:border-white/[0.05]"
+      >
+        <div
+          className={`max-w-6xl mx-auto ${
+            visibleSections.habilidadesPersonales ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+              Human Edge
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+              {currentPortfolioData.personalSkillsTitle.title}
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+              {currentPortfolioData.personalSkillsTitle.subtitle}
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {currentPortfolioData.personalSkillItem.map((skill, index) => (
-              <PersonalSkillCard key={index} skill={skill} isVisible={visibleSections.habilidadesPersonales} />
+              <PersonalSkillCard
+                key={index}
+                skill={skill}
+                isVisible={visibleSections.habilidadesPersonales}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* 
-      //  ////////////////////////// Contact Section ///////////////////////// 
-      // 
-      // */
-      }
-      <section id="contacto" ref={sectionRefs.contacto} className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-blue-950">
-        <div className={`max-w-4xl mx-auto text-center ${visibleSections.contacto ? 'animate-fadeInUp' : 'opacity-0'}`}>
-          <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{currentPortfolioData.contact.title}</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-12">{currentPortfolioData.contact.subtitle}</p>
+      {/* ////////////////////////// Contact Section ////////////////////////// */}
+      <section
+        id="contacto"
+        ref={sectionRefs.contacto}
+        className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      >
+        <div
+          className={`max-w-4xl mx-auto text-center ${
+            visibleSections.contacto ? 'animate-fadeInUp' : 'opacity-0'
+          }`}
+        >
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
+            Connect
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
+            {currentPortfolioData.contact.title}
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-14">
+            {currentPortfolioData.contact.subtitle}
+          </p>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            {/* <a
-              href={`mailto:${currentPortfolioData.personal.email}`}
-              className="bg-white dark:bg-gray-700 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-            >
-              <Mail className="w-12 h-12 text-green-500 dark:text-green-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Email</h3>
-              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.personal.email}</p>
-            </a> */}
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             <a
               href={`https://linkedin.com/in/${currentPortfolioData.personal.linkedin}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white dark:bg-gray-700 p-8 px-24 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="spotlight-card group relative flex items-center justify-between p-7 rounded-3xl bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] hover:border-sky-500/40 dark:hover:border-sky-400/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgb(0,0,0,0.3)] transition-all duration-400 hover:-translate-y-1.5 text-left"
             >
-              <Linkedin className="w-12 h-12 text-blue-500 dark:text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">LinkedIn</h3>
-              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.contact.linkedinText}</p>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500 dark:text-sky-400 group-hover:scale-110 transition-transform duration-300">
+                  <Linkedin className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
+                    LinkedIn
+                  </h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {currentPortfolioData.contact.linkedinText}
+                  </p>
+                </div>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
 
             <a
               href={`https://github.com/${currentPortfolioData.personal.github}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white dark:bg-gray-700 p-8 px-24 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              className="spotlight-card group relative flex items-center justify-between p-7 rounded-3xl bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/40 dark:hover:border-emerald-400/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgb(0,0,0,0.3)] transition-all duration-400 hover:-translate-y-1.5 text-left"
             >
-              <Github className="w-12 h-12 text-gray-800 dark:text-gray-100 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">GitHub</h3>
-              <p className="text-gray-600 dark:text-gray-300">{currentPortfolioData.contact.githubText}</p>
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-slate-800 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                  <Github className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
+                    GitHub
+                  </h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {currentPortfolioData.contact.githubText}
+                  </p>
+                </div>
+              </div>
+              <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
           </div>
         </div>
-
       </section>
 
-      {/* 
-      //  ////////////////////////// Footer ////////////////////////// 
-      // 
-      // */
-      }
-      <footer className="bg-gray-800 dark:bg-gray-900 text-white py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-300 dark:text-gray-400">
+      {/* ////////////////////////// Footer ////////////////////////// */}
+      <footer className="border-t border-slate-200/70 dark:border-white/[0.06] bg-white/50 dark:bg-[#04060a] py-12 pb-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
+              <Code className="w-3.5 h-3.5 text-slate-950 stroke-[2.5]" />
+            </div>
+            <span className="text-sm font-semibold font-heading text-slate-800 dark:text-slate-200">
+              {currentPortfolioData.personal.nombre}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             © 2026 {currentPortfolioData.personal.nombre}. {currentPortfolioData.footer.text}
           </p>
         </div>
       </footer>
 
+      {/* ////////////////////////// Apple Dynamic Island Action Bar (Flotante Inferior) ////////////////////////// */}
+      <div
+        className={`fixed bottom-5 inset-x-0 z-40 flex justify-center px-4 pointer-events-none transition-all duration-500 ${
+          heroScrollRatio > 0.45
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 translate-y-8'
+        }`}
+      >
+        <div className="pointer-events-auto inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-950/80 dark:bg-slate-900/85 text-white backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+          {/* Indicador de sección actual */}
+          <div className="flex items-center gap-2 pr-2 border-r border-white/15">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+            <span className="text-xs font-mono font-medium tracking-wide text-slate-200">
+              {getActiveSectionLabel()}
+            </span>
+          </div>
+
+          {/* Botón rápido a Proyectos */}
+          <button
+            type="button"
+            onClick={() => scrollToSection('proyectos')}
+            className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          >
+            {currentPortfolioData.hero.buttonProjects}
+          </button>
+
+          {/* Botón rápido a Contacto */}
+          <button
+            type="button"
+            onClick={() => scrollToSection('contacto')}
+            className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors"
+          >
+            {currentPortfolioData.hero.buttonContact}
+          </button>
+
+          {/* Volver arriba */}
+          <button
+            type="button"
+            onClick={() => scrollToSection('inicio')}
+            aria-label="Volver arriba"
+            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          >
+            <ArrowUp className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

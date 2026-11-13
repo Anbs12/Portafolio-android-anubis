@@ -1,174 +1,198 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Lato:wght@400;700&display=swap');
-/* Nuevas fuentes artísticas para el Hero Section */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Dancing+Script:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-/* Estilos CSS personalizados para animaciones */
-body {
+  body {
     font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
 }
 
 .font-heading {
-    font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.025em;
 }
 
 .font-body {
-    font-family: 'Lato', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
-/* Fuentes específicas para el Hero Section */
 .font-hero-name {
-    font-family: 'Playfair Display', serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.04em;
 }
 
 .font-hero-title {
-    /* font-family: 'Dancing Script', cursive; */
-    font-family: "Indie Flower", cursive;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.015em;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+::-webkit-scrollbar-track {
+  background: #05080d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Kinetic reveal animations with spring-like cubic-bezier */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 @keyframes fadeInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
 }
 
-@keyframes fadeInOut {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+@keyframes kineticWord {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+    filter: blur(6px);
+  }
+  14% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+  86% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.96);
+    filter: blur(6px);
+  }
+}
 
-    10% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes siliconBeam {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
-    90% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
+@keyframes quickLookIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
 }
 
 .animate-fadeInUp {
-    animation: fadeInUp 1s ease-out forwards;
+  animation: fadeInUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fadeInLeft {
-    animation: fadeInLeft 0.8s ease-out forwards;
+  animation: fadeInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Apply fadeInOut animation once per phrase */
 .animate-fade-in-out-single {
-    animation: fadeInOut 3s ease-in-out infinite;
-    /* Adjusted duration to 8s and added infinite */
+  animation: kineticWord 3s cubic-bezier(0.22, 1, 0.36, 1) infinite;
 }
 
-/* Clases para retrasos de animación */
-.animate-delay-0 {
-    animation-delay: 0s;
+.animate-quicklook {
+  animation: quickLookIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.animate-delay-100 {
-    animation-delay: 0.1s;
+/* Interactive Spotlight Card effect (Zero dependencies) */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
 }
 
-.animate-delay-200 {
-    animation-delay: 0.2s;
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    550px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(16, 185, 129, 0.12),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.animate-delay-300 {
-    animation-delay: 0.3s;
+.spotlight-card:hover::before {
+  opacity: 1;
 }
 
-.animate-delay-400 {
-    animation-delay: 0.4s;
+/* 3D Perspective Tilt & XDR Liquid Glass Glare */
+.tilt-card-3d {
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  will-change: transform;
 }
 
-.animate-delay-500 {
-    animation-delay: 0.5s;
+.xdr-glare {
+  background: radial-gradient(
+    420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.14),
+    rgba(56, 189, 248, 0.05) 35%,
+    transparent 65%
+  );
 }
 
-.animate-delay-600 {
-    animation-delay: 0.6s;
+/* Apple Silicon M5 animated perimeter light beam */
+.silicon-beam-spin {
+  animation: siliconBeam 8s linear infinite;
 }
 
-.animate-delay-700 {
-    animation-delay: 0.7s;
+/* Hide scrollbar for Apple pill bar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.animate-delay-800 {
-    animation-delay: 0.8s;
-}
-
-.animate-delay-900 {
-    animation-delay: 0.9s;
-}
-
-.animate-delay-1000 {
-    animation-delay: 1s;
-}
-
-/* Estilos para el video de fondo */
-.video-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1;
-    /* Envía el video al fondo */
-}
-
-.video-background video {
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    object-fit: cover;
-    /* Asegura que el video cubra todo el espacio */
-}
-
-.video-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Capa semitransparente oscura */
-    z-index: 0;
-    /* Por encima del video, por debajo del contenido */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
