@@ -205,6 +205,44 @@
   animation: siliconBeam 8s linear infinite;
 }
 
+@keyframes orbitSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitCounterSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.hero-orbit-cw {
+  animation: orbitSpin 42s linear infinite;
+  will-change: transform;
+}
+
+.hero-orbit-cw-counter {
+  animation: orbitCounterSpin 42s linear infinite;
+  will-change: transform;
+}
+
+.hero-orbit-ccw {
+  animation: orbitCounterSpin 28s linear infinite;
+  will-change: transform;
+}
+
+.hero-orbit-ccw-counter {
+  animation: orbitSpin 28s linear infinite;
+  will-change: transform;
+}
+
 /* Subtle architectural grid background */
 .bg-grid-pattern {
   background-size: 40px 40px;
@@ -229,7 +267,11 @@
   .animate-fadeInUp,
   .animate-fadeInLeft,
   .animate-fade-in-out-single,
-  .silicon-beam-spin {
+  .silicon-beam-spin,
+  .hero-orbit-cw,
+  .hero-orbit-cw-counter,
+  .hero-orbit-ccw,
+  .hero-orbit-ccw-counter {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

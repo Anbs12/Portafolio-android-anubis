@@ -17,6 +17,7 @@ import {
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
+import { HeroOrbitBackdrop } from '../components/HeroOrbitBackdrop';
 import { IsometricDeviceLab } from '../components/IsometricDeviceLab';
 import { TechScrollStage } from '../components/TechScrollStage';
 import { ProjectScrollShowcase } from '../components/ProjectScrollShowcase';
@@ -564,6 +565,9 @@ const Portfolio: React.FC = () => {
         {/* Halo volumétrico sutil de fondo */}
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] sm:w-[740px] sm:h-[740px] rounded-full bg-gradient-to-tr from-emerald-500/18 via-cyan-500/10 to-purple-500/14 blur-[120px]" />
 
+        {/* Órbita minimalista con dispositivos Samsung, Android y Kotlin */}
+        <HeroOrbitBackdrop />
+
         <div className="relative z-10 max-w-4xl w-full mx-auto text-center">
           {/* Pill minimalista de rol */}
           <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/85 dark:bg-white/[0.07] backdrop-blur-xl border border-slate-200/80 dark:border-white/15 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-mono mb-7 shadow-[0_0_25px_rgba(16,185,129,0.16)]">
@@ -688,11 +692,12 @@ const Portfolio: React.FC = () => {
                 </p>
               </div>
 
-              {/* Escultura SVG Procedural Propia */}
+              {/* Escultura WebGL 3D Cel-Shader del Androide de Google */}
               <div className="lg:w-2/5 flex justify-center items-center">
                 <AndroidCoreGraphic
                   scrollProgress={scrollProgress}
                   altText={currentPortfolioData.aboutMe.androidSvgDescription}
+                  language={language}
                 />
               </div>
             </div>

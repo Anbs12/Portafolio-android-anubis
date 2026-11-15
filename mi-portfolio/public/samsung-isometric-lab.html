@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samsung Galaxy Lab — Escena Isométrica WebGL 3D</title>
+  <style>
+    :root {
+      --bg: #050811;
+      --panel: rgba(10, 16, 29, 0.72);
+      --border: rgba(255, 255, 255, 0.12);
+      --emerald: #10b981;
+      --cyan: #38bdf8;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 40%, #0d172a 0%, #050811 72%);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #webgl-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    #webgl-container.hovering-module {
+      cursor: pointer;
+    }
+
+    #webgl-container:active {
+      cursor: grabbing;
+    }
+
+    /* Top Minimalist Header Pill */
+    .hud-top {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .hud-badge {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 12px var(--emerald);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.8); }
+    }
+
+    .hud-controls {
+      pointer-events: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 999px;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn.active {
+      background: var(--emerald);
+      color: #04120c;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn.active-cyan {
+      background: var(--cyan);
+      color: #031520;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+    }
+
+    /* Bottom Module Quick-Bar */
+    .hud-bottom {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+      z-index: 20;
+      max-width: calc(100vw - 24px);
+      overflow-x: auto;
+    }
+
+    .mod-pill {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mod-pill:hover {
+      color: var(--text);
+      border-color: rgba(16, 185, 129, 0.45);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .mod-pill.selected {
+      color: #04120c;
+      background: linear-gradient(135deg, #34d399, #38bdf8);
+      border-color: transparent;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Floating Minimalist Telemetry Card */
+    .telemetry-panel {
+      position: fixed;
+      right: 18px;
+      top: 72px;
+      width: min(330px, calc(100vw - 36px));
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(8, 13, 24, 0.82);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(16, 185, 129, 0.14);
+      z-index: 25;
+      opacity: 0;
+      transform: translateY(-10px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .telemetry-panel.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .telemetry-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .telemetry-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #34d399;
+      text-transform: uppercase;
+    }
+
+    .close-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-family: ui-monospace, monospace;
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .telemetry-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .telemetry-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .metric-box {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .metric-label {
+      font-family: ui-monospace, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .metric-val {
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag {
+      font-family: ui-monospace, monospace;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      color: #6ee7b7;
+    }
+
+    /* Isometric angle subtle watermark */
+    .iso-readout {
+      position: fixed;
+      left: 18px;
+      bottom: 70px;
+      font-family: ui-monospace, monospace;
+      font-size: 10px;
+      color: rgba(148, 163, 184, 0.65);
+      pointer-events: none;
+      z-index: 10;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .hud-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .telemetry-panel {
+        top: auto;
+        bottom: 70px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+      }
+      .iso-readout {
+        display: none;
+      }
+    }
+  </style>
+
+  <!-- ES Modules Import Map for Three.js r186 -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="webgl-container"></div>
+
+  <!-- Top Studio Controls -->
+  <div class="hud-top">
+    <div class="hud-badge">
+      <span class="pulse-dot"></span>
+      <span id="hud-brand">SAMSUNG GALAXY LAB // ISO 45° · 35.264°</span>
+    </div>
+
+    <div class="hud-controls">
+      <button id="btn-explode" class="btn active" type="button">Vista Explotada</button>
+      <button id="btn-orbit" class="btn" type="button">Auto-Órbita</button>
+      <button id="btn-reset" class="btn" type="button">Reset Iso</button>
+    </div>
+  </div>
+
+  <!-- Left Subtle Isometric Telemetry Readout -->
+  <div class="iso-readout" id="iso-readout">
+    CAM: ORTHOGRAPHIC ISO (45° Y / 35.264° X)<br />
+    SHADOW: 2048×2048 PCF · SHADER: GLSL ENERGY FLOW
+  </div>
+
+  <!-- Floating Minimalist Module Telemetry Panel -->
+  <aside id="telemetry-panel" class="telemetry-panel" aria-live="polite">
+    <div class="telemetry-header">
+      <span id="tel-code" class="telemetry-code">MOD.01 // DISPLAY</span>
+      <button id="btn-close-panel" class="close-btn" type="button">ESC</button>
+    </div>
+    <h3 id="tel-title" class="telemetry-title">Dynamic AMOLED 2X</h3>
+    <p id="tel-desc" class="telemetry-desc">Panel LTPO de 120Hz con Gorilla Glass Armor.</p>
+    <div id="tel-metrics" class="metrics-grid"></div>
+    <div id="tel-tags" class="tags-row"></div>
+  </aside>
+
+  <!-- Bottom Module Quick Selector -->
+  <nav class="hud-bottom" id="module-bar" aria-label="Samsung Modules">
+    <button class="mod-pill" data-module="display" type="button">[01] AMOLED 2X</button>
+    <button class="mod-pill" data-module="pcb" type="button">[02] SoC PCB</button>
+    <button class="mod-pill" data-module="battery" type="button">[03] 5000mAh + NFC</button>
+    <button class="mod-pill" data-module="camera" type="button">[04] 200MP Quad</button>
+    <button class="mod-pill" data-module="chassis" type="button">[05] Titanio + S-Pen</button>
+  </nav>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+    // =========================================================================
+    // 0. LOCALIZATION (ES / EN via ?lang=en or postMessage)
+    // =========================================================================
+    const params = new URLSearchParams(window.location.search);
+    let currentLang = params.get("lang") === "en" ? "en" : "es";
+
+    const I18N = {
+      es: {
+        brand: "SAMSUNG GALAXY LAB // ISO 45° · 35.264°",
+        explodeOn: "Vista Explotada",
+        explodeOff: "Ensamblar",
+        orbit: "Auto-Órbita",
+        reset: "Reset Iso",
+        readout: "CAM: ORTHOGRAPHIC ISO (45° Y / 35.264° X)<br/>SOMBRAS: 2048×2048 PCF · SHADER: GLSL FLUJO DE ENERGÍA",
+        pills: {
+          display: "[01] AMOLED 2X",
+          pcb: "[02] Placa SoC",
+          battery: "[03] Batería + NFC",
+          camera: "[04] Cámara 200MP",
+          chassis: "[05] Titanio + S-Pen"
+        }
+      },
+      en: {
+        brand: "SAMSUNG GALAXY LAB // ISO 45° · 35.264°",
+        explodeOn: "Exploded View",
+        explodeOff: "Assemble",
+        orbit: "Auto-Orbit",
+        reset: "Reset Iso",
+        readout: "CAM: ORTHOGRAPHIC ISO (45° Y / 35.264° X)<br/>SHADOWS: 2048×2048 PCF · SHADER: GLSL ENERGY FLOW",
+        pills: {
+          display: "[01] AMOLED 2X",
+          pcb: "[02] SoC Board",
+          battery: "[03] Battery + NFC",
+          camera: "[04] 200MP Quad",
+          chassis: "[05] Titanium + S-Pen"
+        }
+      }
+    };
+
+    const MODULES_DATA = {
+      display: {
+        code: { es: "MOD.01 // PANTALLA SAMSUNG", en: "MOD.01 // SAMSUNG DISPLAY" },
+        title: { es: "Panel Dynamic AMOLED 2X LTPO", en: "Dynamic AMOLED 2X LTPO Panel" },
+        desc: {
+          es: "Cristal Gorilla Armor antirreflejo con tasa adaptativa 1–120Hz, cámara punch-hole y lector ultrasónico bajo pantalla.",
+          en: "Anti-reflective Gorilla Armor glass with 1–120Hz adaptive refresh, punch-hole camera, and ultrasonic fingerprint sensor."
+        },
+        metrics: [
+          { label: { es: "REFRESCO", en: "REFRESH" }, base: "120 Hz", dynamic: (t) => `${Math.round(118 + Math.sin(t * 2) * 2)} Hz` },
+          { label: { es: "BRILLO PICO", en: "PEAK NITS" }, base: "2600 nits", dynamic: () => "2600 nits" },
+          { label: { es: "LATENCIA TÁCTIL", en: "TOUCH LATENCY" }, base: "4.1 ms", dynamic: (t) => `${(4.0 + Math.sin(t * 3) * 0.2).toFixed(1)} ms` },
+          { label: { es: "RENDER UI", en: "UI PIPELINE" }, base: "60/120 FPS", dynamic: () => "120 FPS" }
+        ],
+        tags: ["Jetpack Compose", "Material 3", "BiometricPrompt", "HDR10+"]
+      },
+      pcb: {
+        code: { es: "MOD.02 // PLACA BASE & SoC", en: "MOD.02 // LOGIC BOARD & SoC" },
+        title: { es: "Placa Multicapa + SoC & NPU", en: "Multi-Layer PCB + SoC & NPU" },
+        desc: {
+          es: "Arquitectura Octa-Core de 4nm con acelerador neuronal para inferencia IA on-device, RAM LPDDR5X y buses 5G/Wi-Fi 7.",
+          en: "4nm Octa-Core architecture with neural engine for on-device AI inference, LPDDR5X RAM, and 5G/Wi-Fi 7 buses."
+        },
+        metrics: [
+          { label: { es: "NPU / IA", en: "NPU / AI" }, base: "45 TOPS", dynamic: (t) => `${(44.2 + Math.sin(t * 1.7) * 0.8).toFixed(1)} TOPS` },
+          { label: { es: "TEMP. SoC", en: "SoC TEMP" }, base: "34.2 °C", dynamic: (t) => `${(34.0 + Math.sin(t * 0.9) * 0.6).toFixed(1)} °C` },
+          { label: { es: "MEMORIA", en: "MEMORY" }, base: "12 GB", dynamic: () => "12 GB LPDDR5X" },
+          { label: { es: "HILOS ASYNC", en: "ASYNC THREADS" }, base: "Coroutines", dynamic: () => "Dispatchers.IO" }
+        ],
+        tags: ["Kotlin Coroutines", "StateFlow", "Dagger Hilt", "On-Device AI"]
+      },
+      battery: {
+        code: { es: "MOD.03 // ENERGÍA & FLUJO GLSL", en: "MOD.03 // POWER & GLSL FLOW" },
+        title: { es: "Celda 5000 mAh, Bobina NFC & Vapor Chamber", en: "5000 mAh Cell, NFC Coil & Vapor Chamber" },
+        desc: {
+          es: "Batería de alta densidad acoplada a bobina de cobre para Samsung Pay / carga Qi2 y cámara de vapor con flujo térmico activo.",
+          en: "High-density cell paired with copper coil for Samsung Pay / Qi2 charging and active thermal vapor chamber flow."
+        },
+        metrics: [
+          { label: { es: "CAPACIDAD", en: "CAPACITY" }, base: "5000 mAh", dynamic: () => "5000 mAh" },
+          { label: { es: "CARGA / FLUJO", en: "POWER DRAW" }, base: "45 W", dynamic: (t) => `${(43.5 + Math.sin(t * 2.4) * 1.5).toFixed(1)} W` },
+          { label: { es: "INDUCCIÓN NFC", en: "NFC COIL" }, base: "13.56 MHz", dynamic: () => "13.56 MHz" },
+          { label: { es: "VOLTAJE", en: "VOLTAGE" }, base: "4.42 V", dynamic: (t) => `${(4.40 + Math.cos(t * 1.5) * 0.03).toFixed(2)} V` }
+        ],
+        tags: ["Room DB", "WorkManager", "NFC / HCE", "ShaderMaterial"]
+      },
+      camera: {
+        code: { es: "MOD.04 // ÓPTICA PRO-GRADE", en: "MOD.04 // PRO-GRADE OPTICS" },
+        title: { es: "Matriz Cuádruple 200MP + Periscopio 5x", en: "200MP Quad Array + 5x Periscope" },
+        desc: {
+          es: "Anillos flotantes de titanio con lentes de zafiro antirreflejo, sensor principal de 200MP, teleobjetivo periscópico 5x y enfoque láser.",
+          en: "Floating titanium rings with anti-reflective sapphire lenses, 200MP main sensor, 5x periscope telephoto, and laser AF."
+        },
+        metrics: [
+          { label: { es: "SENSOR MAIN", en: "MAIN SENSOR" }, base: "200 MP", dynamic: () => "200 MP f/1.7" },
+          { label: { es: "ZOOM ÓPTICO", en: "OPTICAL ZOOM" }, base: "5x / 100x", dynamic: () => "5x Periscope" },
+          { label: { es: "ESTABILIZADOR", en: "OIS GYRO" }, base: "±1.5° OIS", dynamic: (t) => `${(Math.sin(t * 3.1) * 0.12).toFixed(2)}°` },
+          { label: { es: "PIPELINE", en: "ANDROID API" }, base: "CameraX", dynamic: () => "CameraX / 2" }
+        ],
+        tags: ["CameraX", "RAW / DNG", "OIS Gyro", "Laser AF"]
+      },
+      chassis: {
+        code: { es: "MOD.05 // CHASIS TITANIO & S-PEN", en: "MOD.05 // TITANIUM CHASSIS & S-PEN" },
+        title: { es: "Marco de Titanio Grado 2 + S-Pen", en: "Grade-2 Titanium Frame + S-Pen" },
+        desc: {
+          es: "Estructura unibody CNC con 4 tornillos Torx T3, puerto USB-C 3.2 Gen 1, botones táctiles laterales y stylus S-Pen integrado.",
+          en: "CNC unibody frame with 4 Torx T3 screws, USB-C 3.2 Gen 1 port, tactile side keys, and integrated S-Pen stylus."
+        },
+        metrics: [
+          { label: { es: "ALEACIÓN", en: "ALLOY" }, base: "Titanium G2", dynamic: () => "Titanium G2" },
+          { label: { es: "PROTECCIÓN", en: "INGRESS" }, base: "IP68", dynamic: () => "IP68 · 1.5m" },
+          { label: { es: "TORNILLERÍA", en: "FASTENERS" }, base: "4× Torx T3", dynamic: () => "4× Torx T3" },
+          { label: { es: "S-PEN BLE", en: "S-PEN BLE" }, base: "2.8 ms", dynamic: (t) => `${(2.7 + Math.sin(t * 2.2) * 0.1).toFixed(1)} ms` }
+        ],
+        tags: ["USB-C 3.2", "Bluetooth LE", "Torx T3", "Stylus SDK"]
+      }
+    };
+
+    // =========================================================================
+    // 1. RENDERER, SCENE, ENVIRONMENT & TRUE ISOMETRIC ORTHOGRAPHIC CAMERA
+    // =========================================================================
+    const container = document.getElementById("webgl-container");
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.12;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // Modern soft shadow default (r182+)
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    // Subtle studio environment reflections for Titanium, Glass & Copper
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    const roomEnv = new RoomEnvironment();
+    scene.environment = pmrem.fromScene(roomEnv, 0.04).texture;
+    scene.environmentIntensity = 0.55;
+    roomEnv.dispose();
+    pmrem.dispose();
+
+    // True Isometric Angle: 45° around Y, 35.264° elevation around X
+    // Camera vector along normalized (1, 1, 1) satisfies atan2(x, z) = 45° and asin(y / r) = 35.26439°
+    const ISO_DIR = new THREE.Vector3(1, 1, 1).normalize();
+    const ISO_DISTANCE = 15;
+    const DEFAULT_CAM_POS = ISO_DIR.clone().multiplyScalar(ISO_DISTANCE);
+    const DEFAULT_TARGET = new THREE.Vector3(0, 0.25, 0);
+    const FRUSTUM_HEIGHT = 8.4;
+
+    const aspect = window.innerWidth / window.innerHeight;
+    const camera = new THREE.OrthographicCamera(
+      (-FRUSTUM_HEIGHT * aspect) / 2,
+      (FRUSTUM_HEIGHT * aspect) / 2,
+      FRUSTUM_HEIGHT / 2,
+      -FRUSTUM_HEIGHT / 2,
+      0.1,
+      100
+    );
+    camera.position.copy(DEFAULT_CAM_POS);
+    camera.lookAt(DEFAULT_TARGET);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.copy(DEFAULT_TARGET);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.065;
+    controls.minZoom = 0.68;
+    controls.maxZoom = 3.1;
+    controls.minPolarAngle = 0.2;
+    controls.maxPolarAngle = Math.PI * 0.58;
+    controls.enablePan = true;
+    controls.autoRotate = false;
+    controls.autoRotateSpeed = 1.1;
+
+    // =========================================================================
+    // 2. STUDIO LIGHTING (Hemisphere + 2048x2048 Directional + Accent PointLights)
+    // =========================================================================
+    const hemiLight = new THREE.HemisphereLight(0xbbe7ff, 0x0b1220, 0.48);
+    scene.add(hemiLight);
+
+    const keyDirLight = new THREE.DirectionalLight(0xf8fafc, 2.35);
+    keyDirLight.position.set(7.5, 12.5, 6.5);
+    keyDirLight.castShadow = true;
+    keyDirLight.shadow.mapSize.set(2048, 2048);
+    keyDirLight.shadow.camera.left = -7.5;
+    keyDirLight.shadow.camera.right = 7.5;
+    keyDirLight.shadow.camera.top = 7.5;
+    keyDirLight.shadow.camera.bottom = -7.5;
+    keyDirLight.shadow.camera.near = 1;
+    keyDirLight.shadow.camera.far = 32;
+    keyDirLight.shadow.normalBias = 0.02;
+    keyDirLight.shadow.bias = -0.00025;
+    scene.add(keyDirLight);
+
+    // Accent PointLights (candela scale for physically based decay=2)
+    const emeraldAccent = new THREE.PointLight(0x10b981, 24, 14, 2);
+    emeraldAccent.position.set(-3.4, 2.2, 2.8);
+    scene.add(emeraldAccent);
+
+    const cyanAccent = new THREE.PointLight(0x38bdf8, 26, 15, 2);
+    cyanAccent.position.set(3.8, 3.0, -2.5);
+    scene.add(cyanAccent);
+
+    const warmRimAccent = new THREE.PointLight(0xf59e0b, 16, 12, 2);
+    warmRimAccent.position.set(0.5, -2.2, 3.8);
+    scene.add(warmRimAccent);
+
+    // =========================================================================
+    // 3. STUDIO GROUND PLANE & ISOMETRIC ENGINEERING GRID
+    // =========================================================================
+    const studioGroup = new THREE.Group();
+    scene.add(studioGroup);
+
+    const shadowPlane = new THREE.Mesh(
+      new THREE.CircleGeometry(14, 64),
+      new THREE.ShadowMaterial({ opacity: 0.42 })
+    );
+    shadowPlane.rotation.x = -Math.PI / 2;
+    shadowPlane.position.y = -2.45;
+    shadowPlane.receiveShadow = true;
+    studioGroup.add(shadowPlane);
+
+    const gridHelper = new THREE.GridHelper(16, 32, 0x10b981, 0x1e293b);
+    gridHelper.position.y = -2.46;
+    gridHelper.material.transparent = true;
+    gridHelper.material.opacity = 0.28;
+    studioGroup.add(gridHelper);
+
+    const ringMesh = new THREE.Mesh(
+      new THREE.RingGeometry(3.45, 3.5, 96),
+      new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.25,
+        side: THREE.DoubleSide
+      })
+    );
+    ringMesh.rotation.x = -Math.PI / 2;
+    ringMesh.position.y = -2.44;
+    studioGroup.add(ringMesh);
+
+    // =========================================================================
+    // 4. HELPER FUNCTIONS: ROUNDED RECT EXTRUSION & PROCEDURAL CANVAS TEXTURES
+    // =========================================================================
+    function createRoundedRectShape(width, height, radius) {
+      const shape = new THREE.Shape();
+      const x = -width / 2;
+      const y = -height / 2;
+      shape.moveTo(x + radius, y);
+      shape.lineTo(x + width - radius, y);
+      shape.quadraticCurveTo(x + width, y, x + width, y + radius);
+      shape.lineTo(x + width, y + height - radius);
+      shape.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      shape.lineTo(x + radius, y + height);
+      shape.quadraticCurveTo(x, y + height, x, y + height - radius);
+      shape.lineTo(x, y + radius);
+      shape.quadraticCurveTo(x, y, x + radius, y);
+      return shape;
+    }
+
+    function createRoundedPlateGeometry(width, height, radius, depth, bevel = 0.025) {
+      const shape = createRoundedRectShape(width, height, radius);
+      const geo = new THREE.ExtrudeGeometry(shape, {
+        depth,
+        steps: 1,
+        curveSegments: 16,
+        bevelEnabled: bevel > 0,
+        bevelThickness: bevel,
+        bevelSize: bevel,
+        bevelSegments: 3
+      });
+      geo.center();
+      return geo;
+    }
+
+    // Procedural Samsung One UI Screen Texture
+    function createSamsungScreenTexture() {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 1024;
+      const ctx = c.getContext("2d");
+
+      // AMOLED dark gradient background
+      const grad = ctx.createLinearGradient(0, 0, 512, 1024);
+      grad.addColorStop(0, "#040914");
+      grad.addColorStop(0.45, "#071828");
+      grad.addColorStop(1, "#040812");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 1024);
+
+      // Ambient glow blobs on screen
+      const glow1 = ctx.createRadialGradient(380, 260, 10, 380, 260, 260);
+      glow1.addColorStop(0, "rgba(16, 185, 129, 0.35)");
+      glow1.addColorStop(1, "rgba(16, 185, 129, 0)");
+      ctx.fillStyle = glow1;
+      ctx.fillRect(0, 0, 512, 1024);
+
+      const glow2 = ctx.createRadialGradient(130, 620, 10, 130, 620, 240);
+      glow2.addColorStop(0, "rgba(56, 189, 248, 0.3)");
+      glow2.addColorStop(1, "rgba(56, 189, 248, 0)");
+      ctx.fillStyle = glow2;
+      ctx.fillRect(0, 0, 512, 1024);
+
+      // Status bar
+      ctx.fillStyle = "#e2e8f0";
+      ctx.font = "bold 20px monospace";
+      ctx.fillText("19:21", 34, 48);
+      ctx.fillStyle = "#34d399";
+      ctx.fillText("5G  98%", 395, 48);
+
+      // Punch-hole camera
+      ctx.beginPath();
+      ctx.arc(256, 40, 11, 0, Math.PI * 2);
+      ctx.fillStyle = "#000000";
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#1e293b";
+      ctx.stroke();
+
+      // One UI / Galaxy Header
+      ctx.fillStyle = "#34d399";
+      ctx.font = "bold 17px monospace";
+      ctx.fillText("SAMSUNG ONE UI // ANDROID 15", 36, 118);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "bold 40px sans-serif";
+      ctx.fillText("Galaxy Lab", 36, 170);
+
+      // Card 1: Jetpack Compose & Telemetry
+      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+      ctx.strokeStyle = "rgba(16, 185, 129, 0.55)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(32, 210, 448, 195, 28);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#34d399";
+      ctx.font = "bold 16px monospace";
+      ctx.fillText("UDF STATEFLOW • 120 FPS", 58, 250);
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "bold 26px sans-serif";
+      ctx.fillText("Architecture Active", 58, 290);
+
+      // Mini waveform bars inside card
+      for (let i = 0; i < 14; i++) {
+        const h = 24 + Math.sin(i * 0.7) * 20 + (i % 3) * 10;
+        ctx.fillStyle = i % 2 === 0 ? "#10b981" : "#38bdf8";
+        ctx.beginPath();
+        ctx.roundRect(58 + i * 28, 375 - h, 16, h, 6);
+        ctx.fill();
+      }
+
+      // Card 2: Twin metric tiles
+      const drawTile = (x, y, label, val, accent) => {
+        ctx.fillStyle = "rgba(15, 23, 42, 0.8)";
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(x, y, 214, 150, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "bold 14px monospace";
+        ctx.fillText(label, x + 22, y + 40);
+
+        ctx.fillStyle = accent;
+        ctx.font = "bold 32px monospace";
+        ctx.fillText(val, x + 22, y + 95);
+      };
+
+      drawTile(32, 430, "NPU ENGINE", "45 TOPS", "#38bdf8");
+      drawTile(266, 430, "BATTERY", "5000mAh", "#34d399");
+
+      // Card 3: CameraX & Biometric
+      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.45)";
+      ctx.beginPath();
+      ctx.roundRect(32, 606, 448, 130, 24);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#38bdf8";
+      ctx.font = "bold 16px monospace";
+      ctx.fillText("CAMERAX + BIOMETRICPROMPT", 58, 648);
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "19px sans-serif";
+      ctx.fillText("Hardware Keystore Verified", 58, 690);
+
+      // Ultrasonic fingerprint ring
+      ctx.beginPath();
+      ctx.arc(256, 825, 36, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(52, 211, 153, 0.8)";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(256, 825, 22, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.8)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Bottom One UI Dock
+      ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+      ctx.beginPath();
+      ctx.roundRect(44, 900, 424, 80, 28);
+      ctx.fill();
+
+      const dockColors = ["#10b981", "#38bdf8", "#818cf8", "#f59e0b"];
+      dockColors.forEach((col, i) => {
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.roundRect(80 + i * 94, 918, 56, 46, 14);
+        ctx.fill();
+      });
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = 4;
+      return tex;
+    }
+
+    // Procedural PCB Silkscreen & Copper Traces Texture
+    function createPcbTexture() {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      ctx.fillStyle = "#062b26";
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Copper circuit traces
+      ctx.strokeStyle = "#14b8a6";
+      ctx.lineWidth = 2.2;
+      for (let i = 0; i < 36; i++) {
+        const x = 30 + (i % 9) * 52;
+        const y = 30 + Math.floor(i / 9) * 115;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 28, y);
+        ctx.lineTo(x + 42, y + 36);
+        ctx.lineTo(x + 42, y + 86);
+        ctx.stroke();
+
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Gold contact pads
+      ctx.fillStyle = "#f59e0b";
+      for (let i = 0; i < 16; i++) {
+        ctx.fillRect(48 + i * 26, 476, 14, 22);
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // Procedural Samsung Battery Label Texture
+    function createBatteryTexture() {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 512;
+      const ctx = c.getContext("2d");
+
+      ctx.fillStyle = "#111827";
+      ctx.fillRect(0, 0, 512, 512);
+
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(20, 20, 472, 472);
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "bold 36px sans-serif";
+      ctx.fillText("SAMSUNG SDI", 48, 90);
+
+      ctx.fillStyle = "#34d399";
+      ctx.font = "bold 54px monospace";
+      ctx.fillText("5000 mAh", 48, 175);
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "bold 24px monospace";
+      ctx.fillText("Li-Ion Polymer • 19.4 Wh", 48, 225);
+      ctx.fillText("NOMINAL 3.88V • MAX 4.47V", 48, 265);
+
+      ctx.fillStyle = "#f59e0b";
+      ctx.font = "bold 22px monospace";
+      ctx.fillText("FAST CHARGE 45W // Qi2 + NFC", 48, 430);
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    }
+
+    // =========================================================================
+    // 5. CUSTOM GLSL SHADERMATERIAL (ENERGY & LIQUID COOLANT FLOW)
+    // =========================================================================
+    const energyUniforms = {
+      uTime: { value: 0 },
+      uColorA: { value: new THREE.Color(0x10b981) },
+      uColorB: { value: new THREE.Color(0x38bdf8) },
+      uBoost: { value: 1.0 }
+    };
+
+    const energyShaderMaterial = new THREE.ShaderMaterial({
+      uniforms: energyUniforms,
+      transparent: true,
+      side: THREE.DoubleSide,
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        varying vec3 vWorldNormal;
+        varying vec3 vWorldPos;
+        uniform float uTime;
+
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+          // Subtle harmonic liquid ripple along surface normal
+          pos.z += sin(uv.x * 14.0 - uTime * 3.0) * cos(uv.y * 10.0 + uTime * 2.2) * 0.012;
+          vWorldNormal = normalize(mat3(modelMatrix) * normal);
+          vec4 worldPos = modelMatrix * vec4(pos, 1.0);
+          vWorldPos = worldPos.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPos;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform float uTime;
+        uniform vec3 uColorA;
+        uniform vec3 uColorB;
+        uniform float uBoost;
+        varying vec2 vUv;
+        varying vec3 vWorldNormal;
+        varying vec3 vWorldPos;
+
+        void main() {
+          // Layered liquid wave + circuit energy pulses
+          float flow1 = sin(vUv.y * 18.0 - uTime * 3.8 + sin(vUv.x * 8.0 + uTime) * 1.6);
+          float flow2 = cos(vUv.x * 22.0 + uTime * 2.6 - vUv.y * 10.0);
+          float wave = smoothstep(-0.2, 0.9, flow1 * 0.55 + flow2 * 0.45);
+
+          // Traveling energy packet pulse along Y
+          float pulse = exp(-pow(fract(vUv.y * 1.4 - uTime * 0.55) - 0.5, 2.0) * 42.0);
+
+          // Subtle micro-grid lines
+          float gridX = smoothstep(0.92, 1.0, abs(sin(vUv.x * 32.0)));
+          float gridY = smoothstep(0.92, 1.0, abs(sin(vUv.y * 64.0)));
+          float grid = max(gridX, gridY) * 0.28;
+
+          // World-space Fresnel rim glow
+          vec3 viewDir = normalize(cameraPosition - vWorldPos);
+          float fresnel = pow(1.0 - max(dot(viewDir, normalize(vWorldNormal)), 0.0), 2.5);
+
+          vec3 baseCol = mix(uColorA, uColorB, wave);
+          vec3 finalCol = baseCol * (0.45 + 0.75 * wave + pulse * 1.35 + grid) + uColorB * fresnel * 0.8;
+          finalCol *= uBoost;
+
+          float alpha = clamp(0.42 + pulse * 0.48 + fresnel * 0.35 + grid * 0.4, 0.35, 0.96);
+          gl_FragColor = vec4(finalCol, alpha);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+        }
+      `
+    });
+
+    // =========================================================================
+    // 6. BUILD SAMSUNG GALAXY FLAGSHIP 3D ASSEMBLY (5 CLICKABLE MODULES)
+    // =========================================================================
+    // Orientation: Phone lies cleanly in isometric space, slightly tilted upward
+    // so both front screen & side/camera/exploded layers read dramatically!
+    const deviceRoot = new THREE.Group();
+    deviceRoot.rotation.set(-Math.PI * 0.36, 0, Math.PI * 0.04);
+    scene.add(deviceRoot);
+
+    const interactiveRoots = []; // Root groups for raycasting module selection
+    const moduleGroups = {};
+    const moduleCentersLocal = {};
+
+    function tagModule(group, key) {
+      group.userData.moduleKey = key;
+      group.traverse((child) => {
+        if (child.isMesh) {
+          child.userData.moduleKey = key;
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      moduleGroups[key] = group;
+      interactiveRoots.push(group);
+    }
+
+    // Shared PBR Materials
+    const titaniumMat = new THREE.MeshStandardMaterial({
+      color: 0x64748b,
+      metalness: 0.9,
+      roughness: 0.24
+    });
+
+    const darkTitaniumMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      metalness: 0.85,
+      roughness: 0.32
+    });
+
+    const copperMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      metalness: 0.92,
+      roughness: 0.22
+    });
+
+    const glassMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      metalness: 0.0,
+      roughness: 0.04,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.04,
+      reflectivity: 0.9,
+      envMapIntensity: 0.35,
+      transparent: true,
+      opacity: 0.11,
+      depthWrite: false
+    });
+
+    // Dimensions (Galaxy S Ultra crisp sharp-cornered silhouette with subtle r=0.14 radius)
+    const W = 2.35;
+    const H = 4.95;
+    const R = 0.14;
+
+    // -------------------------------------------------------------------------
+    // MODULE 01: DYNAMIC AMOLED 2X DISPLAY
+    // -------------------------------------------------------------------------
+    const displayGroup = new THREE.Group();
+    const screenBezel = new THREE.Mesh(
+      createRoundedPlateGeometry(W, H, R, 0.07, 0.02),
+      new THREE.MeshStandardMaterial({
+        color: 0x090d16,
+        metalness: 0.75,
+        roughness: 0.25
+      })
+    );
+    displayGroup.add(screenBezel);
+
+    const screenTex = createSamsungScreenTexture();
+    const screenSurface = new THREE.Mesh(
+      new THREE.PlaneGeometry(W - 0.14, H - 0.16),
+      new THREE.MeshStandardMaterial({
+        color: 0x0a0f1a,
+        map: screenTex,
+        emissiveMap: screenTex,
+        emissive: new THREE.Color(0xffffff),
+        emissiveIntensity: 1.15,
+        roughness: 0.14,
+        metalness: 0.0,
+        envMapIntensity: 0.08
+      })
+    );
+    screenSurface.position.z = 0.056;
+    displayGroup.add(screenSurface);
+
+    const gorillaGlass = new THREE.Mesh(
+      createRoundedPlateGeometry(W - 0.04, H - 0.04, R * 0.9, 0.025, 0.008),
+      glassMat
+    );
+    gorillaGlass.position.z = 0.075;
+    displayGroup.add(gorillaGlass);
+
+    deviceRoot.add(displayGroup);
+    tagModule(displayGroup, "display");
+    screenSurface.receiveShadow = false;
+    gorillaGlass.castShadow = false;
+    gorillaGlass.receiveShadow = false;
+    moduleCentersLocal.display = new THREE.Vector3(0, 0, 1.55);
+
+    // -------------------------------------------------------------------------
+    // MODULE 02: LOGIC BOARD (PCB), SoC & GLSL DATA BUS
+    // -------------------------------------------------------------------------
+    const pcbGroup = new THREE.Group();
+    const pcbTex = createPcbTexture();
+    const pcbBoard = new THREE.Mesh(
+      createRoundedPlateGeometry(W - 0.24, H - 0.35, 0.1, 0.08, 0.015),
+      new THREE.MeshStandardMaterial({
+        map: pcbTex,
+        roughness: 0.42,
+        metalness: 0.35
+      })
+    );
+    pcbGroup.add(pcbBoard);
+
+    // Main SoC Snapdragon / Exynos Heatspreader
+    const socChip = new THREE.Mesh(
+      new THREE.BoxGeometry(0.76, 0.76, 0.1),
+      new THREE.MeshStandardMaterial({
+        color: 0x94a3b8,
+        metalness: 0.95,
+        roughness: 0.16
+      })
+    );
+    socChip.position.set(-0.22, 0.65, 0.07);
+    pcbGroup.add(socChip);
+
+    // Glowing NPU / Core Die Ring around SoC
+    const socGlow = new THREE.Mesh(
+      new THREE.BoxGeometry(0.84, 0.84, 0.04),
+      new THREE.MeshStandardMaterial({
+        color: 0x10b981,
+        emissive: 0x10b981,
+        emissiveIntensity: 1.5,
+        roughness: 0.3
+      })
+    );
+    socGlow.position.set(-0.22, 0.65, 0.045);
+    pcbGroup.add(socGlow);
+
+    // RF 5G & LPDDR5X Shield Cans
+    const ramShield = new THREE.Mesh(
+      new THREE.BoxGeometry(0.62, 0.95, 0.08),
+      titaniumMat
+    );
+    ramShield.position.set(0.55, 0.55, 0.06);
+    pcbGroup.add(ramShield);
+
+    const modemShield = new THREE.Mesh(
+      new THREE.BoxGeometry(1.35, 0.55, 0.07),
+      darkTitaniumMat
+    );
+    modemShield.position.set(0.05, -0.95, 0.06);
+    pcbGroup.add(modemShield);
+
+    // GLSL Shader Energy Conduit Ribbon on PCB
+    const pcbConduit = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.45, 3.6, 16, 48),
+      energyShaderMaterial
+    );
+    pcbConduit.position.set(-0.22, -0.35, 0.105);
+    pcbGroup.add(pcbConduit);
+
+    deviceRoot.add(pcbGroup);
+    tagModule(pcbGroup, "pcb");
+    moduleCentersLocal.pcb = new THREE.Vector3(0, 0, 0.52);
+
+    // -------------------------------------------------------------------------
+    // MODULE 03: 5000 mAh BATTERY, COPPER NFC COIL & GLSL VAPOR CHAMBER
+    // -------------------------------------------------------------------------
+    const batteryGroup = new THREE.Group();
+    const batteryTex = createBatteryTexture();
+    const batteryBody = new THREE.Mesh(
+      new THREE.BoxGeometry(1.52, 2.75, 0.14),
+      new THREE.MeshStandardMaterial({
+        map: batteryTex,
+        roughness: 0.38,
+        metalness: 0.25
+      })
+    );
+    batteryBody.position.set(0, -0.35, 0);
+    batteryGroup.add(batteryBody);
+
+    // Copper Vapor Chamber + Custom GLSL Energy/Liquid Flow Sheet
+    const vaporChamber = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.75, 3.85, 24, 48),
+      energyShaderMaterial
+    );
+    vaporChamber.position.set(0, -0.1, 0.11);
+    batteryGroup.add(vaporChamber);
+
+    // Concentric Copper NFC / Qi2 Wireless Charging Coil
+    for (let i = 0; i < 4; i++) {
+      const nfcRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.38 + i * 0.075, 0.018, 12, 64),
+        copperMat
+      );
+      nfcRing.position.set(0, -0.35, -0.105);
+      batteryGroup.add(nfcRing);
+    }
+
+    deviceRoot.add(batteryGroup);
+    tagModule(batteryGroup, "battery");
+    moduleCentersLocal.battery = new THREE.Vector3(0, 0, -0.52);
+
+    // -------------------------------------------------------------------------
+    // MODULE 04: SAMSUNG QUAD 200MP FLOATING CAMERA ARRAY
+    // -------------------------------------------------------------------------
+    const cameraGroup = new THREE.Group();
+    const sapphireLensMat = new THREE.MeshPhysicalMaterial({
+      color: 0x090d16,
+      metalness: 0.1,
+      roughness: 0.04,
+      clearcoat: 1.0,
+      iridescence: 0.9,
+      iridescenceIOR: 1.35,
+      iridescenceThicknessRange: [150, 480]
+    });
+
+    const lensPositions = [
+      { x: -0.62, y: 1.82, r: 0.24, isPeriscope: false }, // 12MP UW
+      { x: -0.62, y: 1.24, r: 0.27, isPeriscope: false }, // 200MP Main
+      { x: -0.62, y: 0.64, r: 0.24, isPeriscope: true },  // 50MP 5x Periscope
+      { x: -0.06, y: 1.54, r: 0.18, isPeriscope: false }, // 10MP 3x Tele
+      { x: -0.06, y: 0.96, r: 0.14, isPeriscope: false }  // Laser AF
+    ];
+
+    lensPositions.forEach((cfg, idx) => {
+      // Anodized Titanium Ring
+      const ring = new THREE.Mesh(
+        new THREE.CylinderGeometry(cfg.r, cfg.r * 1.04, 0.14, 36),
+        titaniumMat
+      );
+      ring.rotation.x = Math.PI / 2;
+      ring.position.set(cfg.x, cfg.y, 0);
+      cameraGroup.add(ring);
+
+      // Sapphire lens element
+      const lens = new THREE.Mesh(
+        cfg.isPeriscope
+          ? new THREE.BoxGeometry(cfg.r * 1.05, cfg.r * 0.72, 0.04)
+          : new THREE.CylinderGeometry(cfg.r * 0.72, cfg.r * 0.72, 0.04, 32),
+        sapphireLensMat
+      );
+      if (!cfg.isPeriscope) lens.rotation.x = Math.PI / 2;
+      lens.position.set(cfg.x, cfg.y, -0.065);
+      cameraGroup.add(lens);
+
+      // Subtle cyan optical core glint
+      if (idx === 1 || idx === 2) {
+        const opticRing = new THREE.Mesh(
+          new THREE.RingGeometry(cfg.r * 0.35, cfg.r * 0.48, 32),
+          new THREE.MeshBasicMaterial({
+            color: idx === 1 ? 0x38bdf8 : 0x10b981,
+            side: THREE.DoubleSide
+          })
+        );
+        opticRing.position.set(cfg.x, cfg.y, -0.09);
+        cameraGroup.add(opticRing);
+      }
+    });
+
+    // LED Flash
+    const flash = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.08, 0.08, 0.04, 24),
+      new THREE.MeshStandardMaterial({
+        color: 0xfef3c7,
+        emissive: 0xfde68a,
+        emissiveIntensity: 0.7
+      })
+    );
+    flash.rotation.x = Math.PI / 2;
+    flash.position.set(-0.06, 1.25, -0.04);
+    cameraGroup.add(flash);
+
+    deviceRoot.add(cameraGroup);
+    tagModule(cameraGroup, "camera");
+    moduleCentersLocal.camera = new THREE.Vector3(-0.35, 1.25, -1.65);
+
+    // -------------------------------------------------------------------------
+    // MODULE 05: ARMOR TITANIUM CHASSIS, USB-C, TORX SCREWS & S-PEN
+    // -------------------------------------------------------------------------
+    const chassisGroup = new THREE.Group();
+    const backPlate = new THREE.Mesh(
+      createRoundedPlateGeometry(W + 0.06, H + 0.06, R + 0.02, 0.14, 0.025),
+      titaniumMat
+    );
+    chassisGroup.add(backPlate);
+
+    // Matte Titanium Frost Back Glass Inset
+    const backGlass = new THREE.Mesh(
+      createRoundedPlateGeometry(W - 0.1, H - 0.1, R * 0.85, 0.03, 0.008),
+      new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        metalness: 0.45,
+        roughness: 0.48
+      })
+    );
+    backGlass.position.z = -0.09;
+    chassisGroup.add(backGlass);
+
+    // Side Physical Buttons (Power + Volume Rocker on right edge)
+    const volBtn = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 0.72, 0.09),
+      titaniumMat
+    );
+    volBtn.position.set(W / 2 + 0.055, 0.95, 0);
+    chassisGroup.add(volBtn);
+
+    const pwrBtn = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 0.42, 0.09),
+      new THREE.MeshStandardMaterial({
+        color: 0x34d399,
+        emissive: 0x10b981,
+        emissiveIntensity: 0.45,
+        metalness: 0.7,
+        roughness: 0.25
+      })
+    );
+    pwrBtn.position.set(W / 2 + 0.055, 0.18, 0);
+    chassisGroup.add(pwrBtn);
+
+    // Bottom USB-C 3.2 Port Assembly
+    const usbcSlot = new THREE.Mesh(
+      new THREE.BoxGeometry(0.42, 0.08, 0.1),
+      new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.6 })
+    );
+    usbcSlot.position.set(0, -H / 2 - 0.03, 0);
+    chassisGroup.add(usbcSlot);
+
+    const usbcPin = new THREE.Mesh(
+      new THREE.BoxGeometry(0.28, 0.03, 0.04),
+      copperMat
+    );
+    usbcPin.position.set(0, -H / 2 - 0.03, 0);
+    chassisGroup.add(usbcPin);
+
+    // S-Pen Stylus (slides out beside bottom-left edge when exploded)
+    const sPenGroup = new THREE.Group();
+    const sPenBody = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.065, 0.065, 3.3, 20),
+      darkTitaniumMat
+    );
+    sPenGroup.add(sPenBody);
+
+    const sPenTip = new THREE.Mesh(
+      new THREE.ConeGeometry(0.055, 0.22, 20),
+      new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.8
+      })
+    );
+    sPenTip.position.y = 1.75;
+    sPenGroup.add(sPenTip);
+
+    const sPenCap = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.072, 0.072, 0.28, 20),
+      titaniumMat
+    );
+    sPenCap.position.y = -1.72;
+    sPenGroup.add(sPenCap);
+
+    sPenGroup.position.set(-W / 2 - 0.35, -0.5, 0);
+    chassisGroup.add(sPenGroup);
+
+    // 4 Micro Torx T3 Screws (attached to chassis group, animated outward)
+    const torxScrews = [];
+    const screwCoords = [
+      [-W / 2 + 0.22, H / 2 - 0.22],
+      [W / 2 - 0.22, H / 2 - 0.22],
+      [-W / 2 + 0.22, -H / 2 + 0.22],
+      [W / 2 - 0.22, -H / 2 + 0.22]
+    ];
+    screwCoords.forEach(([sx, sy]) => {
+      const screw = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.045, 0.045, 0.14, 12),
+        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.15 })
+      );
+      screw.rotation.x = Math.PI / 2;
+      screw.position.set(sx, sy, -0.15);
+      chassisGroup.add(screw);
+      torxScrews.push(screw);
+    });
+
+    deviceRoot.add(chassisGroup);
+    tagModule(chassisGroup, "chassis");
+    moduleCentersLocal.chassis = new THREE.Vector3(0, 0, -1.25);
+
+    // =========================================================================
+    // 7. INSTANCED PARTICLE SYSTEM (InstancedMesh FLOATING AMBIENT MOTES)
+    // =========================================================================
+    const PARTICLE_COUNT = 180;
+    const particleGeo = new THREE.OctahedronGeometry(0.036, 0);
+    const particleMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.72
+    });
+    const particlesMesh = new THREE.InstancedMesh(particleGeo, particleMat, PARTICLE_COUNT);
+    particlesMesh.frustumCulled = false;
+
+    const particleData = [];
+    const dummy = new THREE.Object3D();
+    const palette = [
+      new THREE.Color(0x10b981),
+      new THREE.Color(0x38bdf8),
+      new THREE.Color(0x818cf8),
+      new THREE.Color(0x6ee7b7)
+    ];
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 2.6 + Math.random() * 5.2;
+      const y = (Math.random() - 0.5) * 6.0;
+      const speed = 0.12 + Math.random() * 0.26;
+      const scale = 0.45 + Math.random() * 1.15;
+      const phase = Math.random() * Math.PI * 2;
+      particleData.push({ angle, radius, y, speed, scale, phase });
+      particlesMesh.setColorAt(i, palette[i % palette.length]);
+    }
+    particlesMesh.instanceColor.needsUpdate = true;
+    scene.add(particlesMesh);
+
+    // =========================================================================
+    // 8. CYCLIC SPRING-DAMPING PHYSICS + CLICK-TO-FOCUS INTERACTION
+    // =========================================================================
+    let isExploded = true;
+    let selectedModule = null;
+    let hoveredModule = null;
+    let cameraFocusActive = false;
+
+    // Second-order Spring State Helper: x'' = -k*(x - target) - c*x'
+    function stepSpring(state, target, stiffness, damping, dt) {
+      const clampedDt = Math.min(dt, 0.05);
+      const force = -stiffness * (state.value - target) - damping * state.vel;
+      state.vel += force * clampedDt;
+      state.value += state.vel * clampedDt;
+      return state.value;
+    }
+
+    const explodeSpring = { value: 1, vel: 0 };
+    const hoverSprings = {
+      display: { value: 0, vel: 0 },
+      pcb: { value: 0, vel: 0 },
+      battery: { value: 0, vel: 0 },
+      camera: { value: 0, vel: 0 },
+      chassis: { value: 0, vel: 0 }
+    };
+
+    const camZoomSpring = { value: 1, vel: 0 };
+    const desiredTarget = DEFAULT_TARGET.clone();
+    const desiredCamPos = DEFAULT_CAM_POS.clone();
+    let desiredZoom = 1.0;
+
+    // UI Elements
+    const btnExplode = document.getElementById("btn-explode");
+    const btnOrbit = document.getElementById("btn-orbit");
+    const btnReset = document.getElementById("btn-reset");
+    const btnClosePanel = document.getElementById("btn-close-panel");
+    const telemetryPanel = document.getElementById("telemetry-panel");
+    const telCode = document.getElementById("tel-code");
+    const telTitle = document.getElementById("tel-title");
+    const telDesc = document.getElementById("tel-desc");
+    const telMetrics = document.getElementById("tel-metrics");
+    const telTags = document.getElementById("tel-tags");
+    const moduleBar = document.getElementById("module-bar");
+
+    function updateLocalizedText() {
+      const t = I18N[currentLang];
+      document.getElementById("hud-brand").textContent = t.brand;
+      btnExplode.textContent = isExploded ? t.explodeOn : t.explodeOff;
+      btnOrbit.textContent = t.orbit;
+      btnReset.textContent = t.reset;
+      document.getElementById("iso-readout").innerHTML = t.readout;
+
+      moduleBar.querySelectorAll(".mod-pill").forEach((pill) => {
+        const key = pill.dataset.module;
+        if (t.pills[key]) pill.textContent = t.pills[key];
+      });
+
+      if (selectedModule) renderTelemetryPanel(selectedModule, 0);
+    }
+
+    function renderTelemetryPanel(key, elapsed) {
+      const data = MODULES_DATA[key];
+      if (!data) return;
+      telCode.textContent = data.code[currentLang];
+      telTitle.textContent = data.title[currentLang];
+      telDesc.textContent = data.desc[currentLang];
+
+      telMetrics.innerHTML = data.metrics
+        .map(
+          (m) => `
+        <div class="metric-box">
+          <div class="metric-label">${m.label[currentLang]}</div>
+          <div class="metric-val">${m.dynamic(elapsed)}</div>
+        </div>`
+        )
+        .join("");
+
+      telTags.innerHTML = data.tags.map((tg) => `<span class="tag">${tg}</span>`).join("");
+    }
+
+    function selectModule(key) {
+      selectedModule = key;
+
+      moduleBar.querySelectorAll(".mod-pill").forEach((pill) => {
+        pill.classList.toggle("selected", pill.dataset.module === key);
+      });
+
+      if (!key) {
+        telemetryPanel.classList.remove("visible");
+        resetCameraFocus();
+        return;
+      }
+
+      // Compute world center of the clicked module to focus camera cleanly
+      const grp = moduleGroups[key];
+      const worldCenter = new THREE.Vector3();
+      new THREE.Box3().setFromObject(grp).getCenter(worldCenter);
+
+      desiredTarget.copy(worldCenter);
+      // Preserve isometric offset direction from target
+      const currentOffset = camera.position.clone().sub(controls.target);
+      if (currentOffset.lengthSq() < 0.01) currentOffset.copy(DEFAULT_CAM_POS);
+      desiredCamPos.copy(worldCenter).add(currentOffset);
+      desiredZoom = 1.75;
+      camZoomSpring.value = camera.zoom;
+      camZoomSpring.vel = 0;
+      cameraFocusActive = true;
+
+      renderTelemetryPanel(key, timer.getElapsed());
+      telemetryPanel.classList.add("visible");
+    }
+
+    function resetCameraFocus() {
+      desiredTarget.copy(DEFAULT_TARGET);
+      desiredCamPos.copy(DEFAULT_CAM_POS);
+      desiredZoom = 1.0;
+      camZoomSpring.value = camera.zoom;
+      camZoomSpring.vel = 0;
+      cameraFocusActive = true;
+    }
+
+    // Cancel camera focus animation immediately if user interacts with OrbitControls
+    controls.addEventListener("start", () => {
+      cameraFocusActive = false;
+    });
+
+    btnExplode.addEventListener("click", () => {
+      isExploded = !isExploded;
+      btnExplode.classList.toggle("active", isExploded);
+      updateLocalizedText();
+    });
+
+    btnOrbit.addEventListener("click", () => {
+      controls.autoRotate = !controls.autoRotate;
+      btnOrbit.classList.toggle("active-cyan", controls.autoRotate);
+    });
+
+    btnReset.addEventListener("click", () => {
+      selectedModule = null;
+      moduleBar.querySelectorAll(".mod-pill").forEach((p) => p.classList.remove("selected"));
+      telemetryPanel.classList.remove("visible");
+      resetCameraFocus();
+    });
+
+    btnClosePanel.addEventListener("click", () => selectModule(null));
+
+    moduleBar.querySelectorAll(".mod-pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const key = pill.dataset.module;
+        selectModule(selectedModule === key ? null : key);
+      });
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && selectedModule) {
+        selectModule(null);
+      }
+    });
+
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "SET_LANG" && (event.data.language === "es" || event.data.language === "en")) {
+        currentLang = event.data.language;
+        updateLocalizedText();
+      }
+    });
+
+    // =========================================================================
+    // 9. RAYCASTING (CLICK & HOVER DETECTION WITH DRAG THRESHOLD)
+    // =========================================================================
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0 };
+
+    function updatePointer(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.set(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+      );
+    }
+
+    renderer.domElement.addEventListener("pointerdown", (e) => {
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener("pointermove", (e) => {
+      updatePointer(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(interactiveRoots, true);
+      hoveredModule = hits.length > 0 ? hits[0].object.userData.moduleKey || null : null;
+      container.classList.toggle("hovering-module", Boolean(hoveredModule));
+    });
+
+    renderer.domElement.addEventListener("pointerup", (e) => {
+      const dx = e.clientX - pointerDownPos.x;
+      const dy = e.clientY - pointerDownPos.y;
+      if (Math.hypot(dx, dy) > 6) return; // Ignore orbit drags
+
+      updatePointer(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(interactiveRoots, true);
+      if (hits.length > 0) {
+        const key = hits[0].object.userData.moduleKey;
+        if (key) selectModule(key);
+      }
+    });
+
+    // =========================================================================
+    // 10. ANIMATION LOOP (THREE.Timer, Spring Physics, Shaders, InstancedMesh)
+    // =========================================================================
+    const timer = new THREE.Timer();
+    timer.connect(document);
+
+    let lastTelemetryTick = 0;
+
+    function animate() {
+      timer.update();
+      const dt = timer.getDelta();
+      const elapsed = timer.getElapsed();
+
+      // 1) Update GLSL Energy Shader Uniforms
+      energyUniforms.uTime.value = elapsed;
+      const targetBoost = selectedModule === "battery" || selectedModule === "pcb" ? 1.55 : isExploded ? 1.2 : 0.85;
+      energyUniforms.uBoost.value = THREE.MathUtils.damp(energyUniforms.uBoost.value, targetBoost, 5, dt);
+
+      // 2) Cyclic Spring-Damping Physics for Exploded Layers & Hover Lift
+      const exp = stepSpring(explodeSpring, isExploded ? 1.0 : 0.0, 140, 15, dt);
+
+      // Cyclic breathing wave for levitating hardware modules
+      const breathe = Math.sin(elapsed * 1.65) * 0.055 * (0.25 + exp * 0.75);
+      deviceRoot.position.y = 0.2 + Math.sin(elapsed * 1.1) * 0.08;
+
+      Object.keys(hoverSprings).forEach((k) => {
+        const isHot = hoveredModule === k || selectedModule === k;
+        stepSpring(hoverSprings[k], isHot ? 1.0 : 0.0, 220, 18, dt);
+      });
+
+      // Layer Z separations along local phone normal (+Z = front screen, -Z = back/camera)
+      displayGroup.position.z = 0.06 + exp * 1.45 + hoverSprings.display.value * 0.16 + breathe;
+      pcbGroup.position.z = 0.02 + exp * 0.52 + hoverSprings.pcb.value * 0.14 + breathe * 0.5;
+      batteryGroup.position.z = -0.02 - exp * 0.45 - hoverSprings.battery.value * 0.14 - breathe * 0.4;
+      chassisGroup.position.z = -0.08 - exp * 1.25 - hoverSprings.chassis.value * 0.14 - breathe * 0.6;
+      cameraGroup.position.z = -0.14 - exp * 1.85 - hoverSprings.camera.value * 0.18 - breathe;
+
+      // S-Pen cyclic slide-out & Torx screw float in Exploded Mode
+      sPenGroup.position.x = -W / 2 - 0.18 - exp * 0.48;
+      sPenGroup.position.y = -0.55 - exp * 0.45 + Math.sin(elapsed * 2.0) * 0.04 * exp;
+
+      torxScrews.forEach((screw, i) => {
+        screw.position.z = -0.14 - exp * (0.42 + (i % 2) * 0.06);
+        screw.rotation.y = elapsed * (0.6 + i * 0.1) * exp;
+      });
+
+      // Accent lights subtle cyclic shimmer
+      emeraldAccent.intensity = 24 + Math.sin(elapsed * 2.2) * 5;
+      cyanAccent.intensity = 26 + Math.cos(elapsed * 1.8) * 5;
+
+      // 3) Update InstancedMesh Ambient Particles
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const p = particleData[i];
+        const a = p.angle + elapsed * p.speed * 0.25;
+        const bobY = p.y + Math.sin(elapsed * 1.2 + p.phase) * 0.35;
+        dummy.position.set(Math.cos(a) * p.radius, bobY, Math.sin(a) * p.radius);
+        dummy.rotation.set(elapsed * 0.6 + p.phase, elapsed * 0.9, 0);
+        dummy.scale.setScalar(p.scale * (0.85 + Math.sin(elapsed * 2.0 + p.phase) * 0.2));
+        dummy.updateMatrix();
+        particlesMesh.setMatrixAt(i, dummy.matrix);
+      }
+      particlesMesh.instanceMatrix.needsUpdate = true;
+
+      // 4) Smooth Camera Focus Spring-Damping
+      if (cameraFocusActive) {
+        const dampLambda = 6.5;
+        controls.target.x = THREE.MathUtils.damp(controls.target.x, desiredTarget.x, dampLambda, dt);
+        controls.target.y = THREE.MathUtils.damp(controls.target.y, desiredTarget.y, dampLambda, dt);
+        controls.target.z = THREE.MathUtils.damp(controls.target.z, desiredTarget.z, dampLambda, dt);
+
+        camera.position.x = THREE.MathUtils.damp(camera.position.x, desiredCamPos.x, dampLambda, dt);
+        camera.position.y = THREE.MathUtils.damp(camera.position.y, desiredCamPos.y, dampLambda, dt);
+        camera.position.z = THREE.MathUtils.damp(camera.position.z, desiredCamPos.z, dampLambda, dt);
+
+        camera.zoom = stepSpring(camZoomSpring, desiredZoom, 120, 16, dt);
+        camera.updateProjectionMatrix();
+
+        if (
+          controls.target.distanceTo(desiredTarget) < 0.01 &&
+          Math.abs(camera.zoom - desiredZoom) < 0.005
+        ) {
+          cameraFocusActive = false;
+        }
+      }
+
+      // Live telemetry metric refresh (~4 Hz when panel open)
+      if (selectedModule && elapsed - lastTelemetryTick > 0.25) {
+        lastTelemetryTick = elapsed;
+        renderTelemetryPanel(selectedModule, elapsed);
+      }
+
+      controls.update(dt);
+      renderer.render(scene, camera);
+    }
+
+    updateLocalizedText();
+    renderer.setAnimationLoop(animate);
+
+    // =========================================================================
+    // 11. RESPONSIVE RESIZE HANDLER (Orthographic Frustum)
+    // =========================================================================
+    window.addEventListener("resize", () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const newAspect = w / h;
+      camera.left = (-FRUSTUM_HEIGHT * newAspect) / 2;
+      camera.right = (FRUSTUM_HEIGHT * newAspect) / 2;
+      camera.top = FRUSTUM_HEIGHT / 2;
+      camera.bottom = -FRUSTUM_HEIGHT / 2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Smartphone,
   Cpu,
@@ -11,6 +11,8 @@ import {
   Wifi,
   CheckCircle2,
   RotateCcw,
+  Box,
+  ExternalLink,
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 
@@ -19,19 +21,34 @@ interface IsometricDeviceLabProps {
   language: 'es' | 'en';
 }
 
-type IsometricViewMode = 'assembled' | 'hardware' | 'software';
+type IsometricViewMode = 'webgl3d' | 'assembled' | 'hardware' | 'software';
 
 export const IsometricDeviceLab: React.FC<IsometricDeviceLabProps> = ({
   currentPortfolioData,
   language,
 }) => {
   const isEs = language === 'es';
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const baseUrl = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
+  const [iframeSrc] = useState<string>(
+    () => `${baseUrl}samsung-isometric-lab.html?lang=${language}`
+  );
+  const [isWebGLReady, setIsWebGLReady] = useState<boolean>(false);
 
   // Modo interactivo controlado por clic
-  const [viewMode, setViewMode] = useState<IsometricViewMode>('assembled');
+  const [viewMode, setViewMode] = useState<IsometricViewMode>('webgl3d');
   const [selectedHwIndex, setSelectedHwIndex] = useState<number>(0);
   const [selectedSwIndex, setSelectedSwIndex] = useState<number>(1);
   const [mouseTilt, setMouseTilt] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'SET_LANG', language },
+      '*'
+    );
+  }, [language]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -216,8 +233,107 @@ export const IsometricDeviceLab: React.FC<IsometricDeviceLabProps> = ({
         </p>
       </div>
 
-      {/* Escenario Principal: Ficha Técnica (Izquierda) + Modelo Isométrico 3D (Derecha) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+      {/* Barra de Selector de Modo + Acceso Standalone WebGL 3D */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/75 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-md">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setViewMode('webgl3d')}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all ${
+              viewMode === 'webgl3d'
+                ? 'bg-gradient-to-r from-emerald-500 to-cyan-400 text-slate-950 shadow-[0_0_22px_rgba(16,185,129,0.45)]'
+                : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-emerald-500/15'
+            }`}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span>{isEs ? '0. Laboratorio WebGL 3D (Samsung)' : '0. WebGL 3D Lab (Samsung)'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('assembled')}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all ${
+              viewMode === 'assembled'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
+                : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-white/10'
+            }`}
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>{isEs ? '1. Dispositivo' : '1. Device'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('hardware')}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all ${
+              viewMode === 'hardware'
+                ? 'bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-emerald-500/20'
+            }`}
+          >
+            <Wrench className="w-3.5 h-3.5" />
+            <span>{isEs ? '2. Despiece Hardware' : '2. Hardware Teardown'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('software')}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all ${
+              viewMode === 'software'
+                ? 'bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.4)]'
+                : 'bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 hover:bg-cyan-500/20'
+            }`}
+          >
+            <GitBranch className="w-3.5 h-3.5" />
+            <span>{isEs ? '3. Flujo UI & Software' : '3. UI Flow & Software'}</span>
+          </button>
+        </div>
+
+        <a
+          href={`${baseUrl}samsung-isometric-lab.html?lang=${language}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500 hover:text-slate-950 transition-all"
+        >
+          <span>{isEs ? 'Abrir HTML 3D Independiente' : 'Open Standalone 3D HTML'}</span>
+          <ExternalLink className="w-3 h-3" />
+        </a>
+      </div>
+
+      {viewMode === 'webgl3d' ? (
+        /* ==================== ESCENA WEBGL 3D ISOMÉTRICA THREE.JS (SAMSUNG) ==================== */
+        <div className="relative rounded-[32px] overflow-hidden border border-slate-200/80 dark:border-white/15 bg-[#050811] shadow-[0_25px_80px_rgba(0,0,0,0.55)]">
+          {!isWebGLReady && (
+            <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#050811] text-slate-300 font-mono text-xs">
+              <div className="w-8 h-8 rounded-full border-2 border-emerald-400/30 border-t-emerald-400 animate-spin" />
+              <span>
+                {isEs
+                  ? 'Inicializando Samsung Galaxy WebGL 3D...'
+                  : 'Initializing Samsung Galaxy WebGL 3D...'}
+              </span>
+            </div>
+          )}
+          <iframe
+            ref={iframeRef}
+            src={iframeSrc}
+            onLoad={() => {
+              setIsWebGLReady(true);
+              iframeRef.current?.contentWindow?.postMessage(
+                { type: 'SET_LANG', language },
+                '*'
+              );
+            }}
+            title={
+              isEs
+                ? 'Laboratorio Isométrico 3D WebGL Samsung Galaxy'
+                : 'Samsung Galaxy 3D WebGL Isometric Lab'
+            }
+            className="w-full h-[540px] sm:h-[640px] border-0 block"
+          />
+        </div>
+      ) : (
+        /* Escenario Principal CSS: Ficha Técnica (Izquierda) + Modelo Isométrico 3D (Derecha) */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
         {/* ==================== COLUMNA IZQUIERDA (6 cols): SELECTOR & FICHA DE INGENIERÍA ==================== */}
         <div className="lg:col-span-6">
           <div className="rounded-[32px] p-6 sm:p-8 bg-white/85 dark:bg-slate-900/75 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-xl text-left">
@@ -815,6 +931,7 @@ export const IsometricDeviceLab: React.FC<IsometricDeviceLabProps> = ({
           )}
         </div>
       </div>
+      )}
     </div>
   );
 };
