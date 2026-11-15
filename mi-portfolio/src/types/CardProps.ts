@@ -24,6 +24,7 @@ export interface CertificationCardProps {
 
 export interface ExperienceCardProps {
   exp: ExperienceItem;
+  language?: 'es' | 'en';
 }
 
 export interface PersonalSkillCardProps {
@@ -33,4 +34,5 @@ export interface PersonalSkillCardProps {
 
 export interface QuantumMisteryCardProps {
   tech: TechnologyItem;
+  language?: 'es' | 'en';
 }

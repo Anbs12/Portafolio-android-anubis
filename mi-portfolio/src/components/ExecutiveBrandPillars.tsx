@@ -18,32 +18,34 @@ export const ExecutiveBrandPillars: React.FC<ExecutiveBrandPillarsProps> = ({
 
   const pillars = [
     {
-      roleTag: 'FOR CEOs & FOUNDERS',
+      roleTag: isEs ? 'PARA CEOs & FUNDADORES' : 'FOR CEOs & FOUNDERS',
       title: isEs ? 'Impacto de Negocio & Fiabilidad' : 'Business Impact & Reliability',
       description: isEs
         ? 'Experiencia en banca digital (MachBank - Bci) y consultoría global (Globant), transformando requerimientos complejos en productos móviles listos para producción.'
         : 'Experience in digital banking (MachBank - Bci) and global consulting (Globant), turning complex requirements into production-ready mobile products.',
-      metric: `${projectsCount + subProjectsCount}+ Apps & Labs`,
+      metric: isEs
+        ? `${projectsCount + subProjectsCount}+ Apps & Proyectos`
+        : `${projectsCount + subProjectsCount}+ Apps & Labs`,
       icon: <Briefcase className="w-5 h-5 text-emerald-400" />,
       accent: 'from-emerald-500/20 to-teal-500/5 border-emerald-500/30',
     },
     {
-      roleTag: 'FOR POs & AGILE TEAMS',
+      roleTag: isEs ? 'PARA POs & EQUIPOS ÁGILES' : 'FOR POs & AGILE TEAMS',
       title: isEs ? 'Entrega Autónoma & Colaboración' : 'Autonomous Delivery & Collaboration',
       description: isEs
         ? 'Comunicación asertiva, pensamiento crítico y foco en la experiencia del usuario final con interfaces fluidas en Jetpack Compose y Material Design 3.'
         : 'Assertive communication, critical thinking, and end-user focus with fluid interfaces built in Jetpack Compose and Material Design 3.',
-      metric: 'End-to-End UX/UI',
+      metric: isEs ? 'UX/UI de Extremo a Extremo' : 'End-to-End UX/UI',
       icon: <Users className="w-5 h-5 text-cyan-400" />,
       accent: 'from-cyan-500/20 to-sky-500/5 border-cyan-500/30',
     },
     {
-      roleTag: 'FOR SEMs & TECH LEADS',
+      roleTag: isEs ? 'PARA SEMs & TECH LEADS' : 'FOR SEMs & TECH LEADS',
       title: isEs ? 'Arquitectura Limpia & Escalable' : 'Clean & Scalable Architecture',
       description: isEs
         ? 'Código mantenible, desacoplado y documentado (KDocs) con Kotlin, MVVM, Clean Architecture, Coroutines, Flows, Inyección de Dependencias (Hilt/Koin) y Unit Testing.'
         : 'Maintainable, decoupled, and documented (KDocs) code using Kotlin, MVVM, Clean Architecture, Coroutines, Flows, DI (Hilt/Koin), and Unit Testing.',
-      metric: `${techCount}+ Core Techs`,
+      metric: isEs ? `${techCount}+ Tecnologías Clave` : `${techCount}+ Core Techs`,
       icon: <Cpu className="w-5 h-5 text-purple-400" />,
       accent: 'from-purple-500/20 to-indigo-500/5 border-purple-500/30',
     },
@@ -81,7 +83,7 @@ export const ExecutiveBrandPillars: React.FC<ExecutiveBrandPillarsProps> = ({
               <CheckCircle2 className="w-3.5 h-3.5" />
               {p.metric}
             </span>
-            <span className="opacity-60">VERIFIED</span>
+            <span className="opacity-60">{isEs ? 'VERIFICADO' : 'VERIFIED'}</span>
           </div>
         </div>
       ))}

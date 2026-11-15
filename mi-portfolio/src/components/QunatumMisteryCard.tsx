@@ -2,7 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import type { QuantumMisteryCardProps } from "../types/CardProps";
 import { Sparkles, Atom } from "lucide-react";
 
-export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({ tech }) => {
+export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({
+    tech,
+    language = "es",
+}) => {
+    const isEs = language === "es";
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
@@ -10,9 +14,18 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({ tech }) 
         y: 0.5,
         active: false,
     });
-    const [quantumState, setQuantumState] = useState<"|Ψ⟩ = α|0⟩ + β|1⟩" | "|0⟩ COLLAPSED" | "|1⟩ COLLAPSED">(
-        "|Ψ⟩ = α|0⟩ + β|1⟩"
-    );
+    const [collapsedSide, setCollapsedSide] = useState<"none" | "0" | "1">("none");
+
+    const quantumStateText =
+        collapsedSide === "none"
+            ? "|Ψ⟩ = α|0⟩ + β|1⟩"
+            : collapsedSide === "0"
+            ? isEs
+                ? "|0⟩ COLAPSADO"
+                : "|0⟩ COLLAPSED"
+            : isEs
+            ? "|1⟩ COLAPSADO"
+            : "|1⟩ COLLAPSED";
 
     // Simulador Cuántico Procedural en Canvas (100% código propio, cero videos externos)
     useEffect(() => {
@@ -125,12 +138,12 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({ tech }) 
         const nx = (e.clientX - rect.left) / rect.width;
         const ny = (e.clientY - rect.top) / rect.height;
         mouseRef.current = { x: nx, y: ny, active: true };
-        setQuantumState(nx < 0.5 ? "|0⟩ COLLAPSED" : "|1⟩ COLLAPSED");
+        setCollapsedSide(nx < 0.5 ? "0" : "1");
     };
 
     const handleMouseLeave = () => {
         mouseRef.current = { x: 0.5, y: 0.5, active: false };
-        setQuantumState("|Ψ⟩ = α|0⟩ + β|1⟩");
+        setCollapsedSide("none");
     };
 
     return (
@@ -164,7 +177,7 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({ tech }) 
 
                     <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 backdrop-blur-xl border border-emerald-400/30 text-emerald-300 text-xs font-mono">
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>{quantumState}</span>
+                        <span>{quantumStateText}</span>
                     </div>
                 </div>
 
@@ -174,7 +187,9 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({ tech }) 
                         “{tech.subtitle}”
                     </p>
                     <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-300/80">
-                        HOVER TO COLLAPSE WAVEFUNCTION
+                        {isEs
+                            ? "PASA EL CURSOR PARA COLAPSAR LA FUNCIÓN DE ONDA"
+                            : "HOVER TO COLLAPSE WAVEFUNCTION"}
                     </span>
                 </div>
             </div>

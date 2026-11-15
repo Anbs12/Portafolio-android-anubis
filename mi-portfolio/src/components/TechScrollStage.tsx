@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { TechnologyCategory, TechnologyItem } from '../types/Technologies';
 import { TechCard } from './TechCard';
 import { QuantumMisteryCard } from './QunatumMisteryCard';
-import { Cpu, Layers, Sparkles } from 'lucide-react';
+import { Cpu, Layers, Sparkles, Play, ArrowDown, CheckCircle2 } from 'lucide-react';
 
 interface TechScrollStageProps {
   title: string;
@@ -10,6 +10,7 @@ interface TechScrollStageProps {
   categories: TechnologyCategory[];
   quantumItems?: TechnologyItem[];
   language: 'es' | 'en';
+  onSkipNext?: () => void;
 }
 
 export const TechScrollStage: React.FC<TechScrollStageProps> = ({
@@ -18,21 +19,23 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
   categories,
   quantumItems,
   language,
+  onSkipNext,
 }) => {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const nonEmptyCategories = categories.filter(cat => cat.items.length > 0);
   const totalSteps = nonEmptyCategories.length;
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [stageProgress, setStageProgress] = useState<number>(0); // 0 to 1 across the sticky track
+  const [stageProgress, setStageProgress] = useState<number>(0);
   const [showAllGrid, setShowAllGrid] = useState<boolean>(false);
 
-  // Todos los nombres de tecnologías para la cinta cinética (Kinetic Marquee)
-  const allTechNames = nonEmptyCategories.flatMap(c => c.items.map(i => i.name));
+  // Simulador interactivo "Run Request Flow (UDF)"
+  const [isSimulatingFlow, setIsSimulatingFlow] = useState<boolean>(false);
+  const [simStep, setSimStep] = useState<number>(0);
 
-  // Lógica Scroll-Stopping (Sticky Pinning):
-  // Mientras el usuario recorre los 340vh de altura del contenedor, la pantalla permanece anclada
-  // y el scroll avanza suavemente por cada una de las categorías de arquitectura.
+  const allTechNames = nonEmptyCategories.flatMap(c => c.items.map(i => i.name));
+  const isEs = language === 'es';
+
   useEffect(() => {
     const handleScroll = () => {
       if (!trackRef.current || showAllGrid) return;
@@ -58,7 +61,27 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [totalSteps, showAllGrid]);
 
-  // Permitir clic manual en un capítulo de tecnología desplazando el scroll a ese punto exacto del sticky track
+  // Ejecutar simulación de petición unidireccional (UDF) a través de las capas
+  const triggerFlowSimulation = () => {
+    if (isSimulatingFlow) return;
+    setIsSimulatingFlow(true);
+    setSimStep(0);
+
+    let current = 0;
+    const interval = setInterval(() => {
+      current += 1;
+      if (current < totalSteps) {
+        setSimStep(current);
+        setActiveIndex(current);
+      } else {
+        clearInterval(interval);
+        setTimeout(() => {
+          setIsSimulatingFlow(false);
+        }, 600);
+      }
+    }, 420);
+  };
+
   const jumpToCategory = (index: number) => {
     setActiveIndex(index);
     if (!trackRef.current || showAllGrid) return;
@@ -76,10 +99,10 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
   return (
     <div className="w-full">
-      {/* ==================== CONTENEDOR SCROLL-STOPPING (340vh) ==================== */}
+      {/* ==================== CONTENEDOR SCROLL-STOPPING CALIBRADO (260vh) ==================== */}
       <div
         ref={trackRef}
-        className={showAllGrid ? 'relative py-20' : 'relative min-h-[340vh]'}
+        className={showAllGrid ? 'relative py-20' : 'relative min-h-[260vh]'}
       >
         <div
           className={
@@ -88,7 +111,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
               : 'sticky top-0 min-h-screen flex flex-col justify-between py-20 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden'
           }
         >
-          {/* Luz ambiental reactiva al capítulo actual */}
+          {/* Luz ambiental reactiva */}
           <div
             style={{
               transform: `translate3d(${(stageProgress - 0.5) * 180}px, 0, 0)`,
@@ -97,12 +120,16 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
           />
 
           <div className="relative z-10 w-full max-w-6xl mx-auto flex-1 flex flex-col justify-center">
-            {/* Cabecera + Conmutador de Modo (Scroll-Stopping Reactor vs Vista Completa) */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-10">
+            {/* Cabecera + Controles Interactivos (Simular Petición UDF / Expandir / Saltar) */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
                   <Sparkles className="w-3 h-3" />
-                  <span>03 // SCROLL-STOPPING ARCHITECTURE</span>
+                  <span>
+                    {isEs
+                      ? '03 // ARQUITECTURA INTERACTIVA'
+                      : '03 // SCROLL-STOPPING ARCHITECTURE'}
+                  </span>
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
                   {title}
@@ -112,8 +139,31 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                 </p>
               </div>
 
-              {/* Botón para alternar entre modo Scroll-Stopping interactivo o ver todas de golpe */}
-              <div className="flex items-center gap-3 self-start md:self-end">
+              <div className="flex flex-wrap items-center gap-2.5 self-start md:self-end">
+                {/* Botón "Simular Petición UDF (Run Flow)" */}
+                {!showAllGrid && (
+                  <button
+                    type="button"
+                    onClick={triggerFlowSimulation}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all shadow-md ${
+                      isSimulatingFlow
+                        ? 'bg-emerald-400 text-slate-950 animate-pulse shadow-[0_0_25px_#34d399]'
+                        : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                    }`}
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>
+                      {isSimulatingFlow
+                        ? isEs
+                          ? `Ejecutando Capa 0${simStep + 1}...`
+                          : `Running Layer 0${simStep + 1}...`
+                        : isEs
+                        ? 'Simular Flujo de App'
+                        : 'Simulate App Flow'}
+                    </span>
+                  </button>
+                )}
+
                 <button
                   type="button"
                   onClick={() => setShowAllGrid(prev => !prev)}
@@ -122,14 +172,25 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                   <Layers className="w-3.5 h-3.5 text-emerald-500" />
                   <span>
                     {showAllGrid
-                      ? language === 'es'
+                      ? isEs
                         ? 'Modo Scroll-Stopping'
                         : 'Scroll-Stopping Mode'
-                      : language === 'es'
+                      : isEs
                       ? 'Expandir Todo el Stack'
                       : 'Expand Full Stack'}
                   </span>
                 </button>
+
+                {onSkipNext && !showAllGrid && (
+                  <button
+                    type="button"
+                    onClick={onSkipNext}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-200/60 dark:bg-white/[0.06] hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors"
+                  >
+                    <span>{isEs ? 'Saltar ↓' : 'Skip ↓'}</span>
+                    <ArrowDown className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -144,10 +205,21 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                     {/* Indicador de progreso del pin */}
                     <div className="flex items-center justify-between text-xs font-mono mb-4">
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        LAYER 0{activeIndex + 1} / 0{totalSteps}
+                        {isEs ? 'CAPA' : 'LAYER'} 0{activeIndex + 1} / 0{totalSteps}
                       </span>
-                      <span className="text-slate-400 dark:text-slate-500">
-                        {Math.round(stageProgress * 100)}% SYNCED
+                      <span className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500">
+                        {isSimulatingFlow ? (
+                          <span className="text-emerald-400 font-bold">
+                            {isEs
+                              ? '⚡ PAQUETE UDF: 16.6ms (60FPS)'
+                              : '⚡ UDF PACKET: 16.6ms (60FPS)'}
+                          </span>
+                        ) : (
+                          <span>
+                            {Math.round(stageProgress * 100)}%{' '}
+                            {isEs ? 'SINCRONIZADO' : 'SYNCED'}
+                          </span>
+                        )}
                       </span>
                     </div>
 
@@ -203,23 +275,27 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                                 ry={isCurrent ? 11 : 8}
                                 fill={
                                   isCurrent
-                                    ? 'rgba(16, 185, 129, 0.28)'
+                                    ? 'rgba(16, 185, 129, 0.32)'
                                     : 'rgba(148, 163, 184, 0.08)'
                                 }
                                 stroke={isCurrent ? '#34d399' : 'rgba(148, 163, 184, 0.35)'}
-                                strokeWidth={isCurrent ? '2' : '1'}
+                                strokeWidth={isCurrent ? '2.2' : '1'}
                               />
                               {isCurrent && (
                                 <>
-                                  {/* Haz de datos láser conectando la capa activa con las tarjetas de la derecha */}
                                   <path
                                     d={`M 148 ${yPos} C 220 ${yPos}, 240 90, 345 90`}
                                     fill="none"
                                     stroke="url(#stageBeam)"
-                                    strokeWidth="2.2"
+                                    strokeWidth="2.4"
                                     strokeDasharray="6 4"
                                   />
-                                  <circle cx="345" cy="90" r="4.5" fill="#38bdf8" />
+                                  <circle
+                                    cx="345"
+                                    cy="90"
+                                    r={isSimulatingFlow ? '7' : '4.5'}
+                                    fill="#34d399"
+                                  />
                                 </>
                               )}
                             </g>
@@ -275,7 +351,9 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                         </div>
                         <div>
                           <div className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-                            ACTIVE ARCHITECTURE MODULE // 0{activeIndex + 1}
+                            {isEs
+                              ? `MÓDULO DE ARQUITECTURA ACTIVO // 0${activeIndex + 1}`
+                              : `ACTIVE ARCHITECTURE MODULE // 0${activeIndex + 1}`}
                           </div>
                           <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-slate-900 dark:text-white">
                             {activeCategory.category}
@@ -283,8 +361,11 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                         </div>
                       </div>
 
-                      <span className="px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
-                        {language === 'es' ? 'Desliza para cambiar capa ↓' : 'Scroll to switch layer ↓'}
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>
+                          {isEs ? 'Desliza para cambiar capa ↓' : 'Scroll to switch layer ↓'}
+                        </span>
                       </span>
                     </div>
 
@@ -346,7 +427,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
       {quantumItems && quantumItems.length > 0 && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-6 flex flex-col items-center">
           {quantumItems.map((tech, techIndex) => (
-            <QuantumMisteryCard key={techIndex} tech={tech} />
+            <QuantumMisteryCard key={techIndex} tech={tech} language={language} />
           ))}
         </div>
       )}

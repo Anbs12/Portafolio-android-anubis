@@ -29,6 +29,8 @@ import { PersonalSkillCard } from '../components/PersonalSkillCard';
 import { CertificationCard } from '../components/CertificationCard';
 import { ScrollyCanvas } from '../components/ScrollyCanvas';
 import { AndroidCoreGraphic } from '../components/AndroidCoreGraphic';
+import { AndroidBootSplash } from '../components/AndroidBootSplash';
+import { MagneticCursorHUD } from '../components/MagneticCursorHUD';
 
 const Portfolio: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('inicio');
@@ -257,6 +259,10 @@ const Portfolio: React.FC = () => {
         isXRay ? '[&_section]:outline-dashed [&_section]:outline-1 [&_section]:outline-emerald-500/30' : ''
       }`}
     >
+      {/* Secuencia de Arranque Rápida (1.4s) estilo Android Kernel + Cursor Magnético HUD */}
+      <AndroidBootSplash nombre={currentPortfolioData.personal.nombre} language={language} />
+      <MagneticCursorHUD isXRay={isXRay} />
+
       {/* Motor 3D Procedural de Fondo (Canvas 100% propio) */}
       <ScrollyCanvas scrollProgress={scrollProgress} theme={theme} />
 
@@ -271,13 +277,30 @@ const Portfolio: React.FC = () => {
       {isXRay && (
         <div className="fixed top-20 right-6 z-40 hidden lg:flex flex-col gap-1.5 p-3.5 rounded-2xl bg-slate-950/90 text-emerald-400 border border-emerald-500/40 font-mono text-[10px] shadow-[0_0_30px_rgba(16,185,129,0.25)] pointer-events-none animate-fadeInUp">
           <div className="font-bold text-white flex items-center justify-between gap-4">
-            <span>COMPOSE LAYOUT INSPECTOR</span>
+            <span>
+              {language === 'es'
+                ? 'INSPECTOR DE LAYOUT COMPOSE'
+                : 'COMPOSE LAYOUT INSPECTOR'}
+            </span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           </div>
-          <div>RENDER ENGINE: 60 FPS • 0 JANKS</div>
-          <div>SCROLL PROGRESS: {scrollProgress.toFixed(1)}%</div>
-          <div>ACTIVE NODE: #{activeSection}</div>
-          <div>ARCH: CLEAN + MVVM + STATEFLOW</div>
+          <div>
+            {language === 'es'
+              ? 'MOTOR DE RENDER: 60 FPS • 0 JANKS'
+              : 'RENDER ENGINE: 60 FPS • 0 JANKS'}
+          </div>
+          <div>
+            {language === 'es' ? 'PROGRESO DE SCROLL:' : 'SCROLL PROGRESS:'}{' '}
+            {scrollProgress.toFixed(1)}%
+          </div>
+          <div>
+            {language === 'es' ? 'NODO ACTIVO:' : 'ACTIVE NODE:'} #{activeSection}
+          </div>
+          <div>
+            {language === 'es'
+              ? 'ARQ: CLEAN + MVVM + STATEFLOW'
+              : 'ARCH: CLEAN + MVVM + STATEFLOW'}
+          </div>
         </div>
       )}
 
@@ -421,7 +444,11 @@ const Portfolio: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsXRay(prev => !prev)}
-                title="Toggle Engineering X-Ray Inspector"
+                title={
+                  language === 'es'
+                    ? 'Alternar Inspector de Ingeniería Rayos-X'
+                    : 'Toggle Engineering X-Ray Inspector'
+                }
                 className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-semibold border transition-all duration-300 ${
                   isXRay
                     ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.5)]'
@@ -429,7 +456,15 @@ const Portfolio: React.FC = () => {
                 }`}
               >
                 <Eye className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">{isXRay ? 'X-RAY' : 'LENS'}</span>
+                <span className="hidden md:inline">
+                  {isXRay
+                    ? language === 'es'
+                      ? 'RAYOS-X'
+                      : 'X-RAY'
+                    : language === 'es'
+                    ? 'LENTE'
+                    : 'LENS'}
+                </span>
               </button>
 
               {/* Selector de Idioma */}
@@ -535,7 +570,10 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              <Sparkles className="w-3 h-3" /> 02 // Profile & Brand Value
+              <Sparkles className="w-3 h-3" />{' '}
+              {language === 'es'
+                ? '02 // Perfil & Valor de Marca'
+                : '02 // Profile & Brand Value'}
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.aboutMe.title}
@@ -612,6 +650,7 @@ const Portfolio: React.FC = () => {
           categories={currentPortfolioData.tecnologiasCategorizadas}
           quantumItems={currentPortfolioData.quantumItems}
           language={language}
+          onSkipNext={() => scrollToSection('proyectos')}
         />
       </section>
 
@@ -628,7 +667,9 @@ const Portfolio: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-6">
           <div className="flex items-center gap-4 mb-8">
             <span className="text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold">
-              ALL FEATURED RELEASES ({currentPortfolioData.proyectos.length})
+              {language === 'es'
+                ? `TODOS LOS PROYECTOS DESTACADOS (${currentPortfolioData.proyectos.length})`
+                : `ALL FEATURED RELEASES (${currentPortfolioData.proyectos.length})`}
             </span>
             <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-300 dark:from-white/15 to-transparent" />
           </div>
@@ -654,6 +695,7 @@ const Portfolio: React.FC = () => {
           subProyectos={currentPortfolioData.subProyectos}
           currentPortfolioData={currentPortfolioData}
           language={language}
+          onSkipNext={() => scrollToSection('experiencia')}
         />
       </section>
 
@@ -670,7 +712,9 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              05 // Career Flight Recorder
+              {language === 'es'
+                ? '05 // Trayectoria Profesional'
+                : '05 // Career Flight Recorder'}
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.experienceTitle.title}
@@ -689,7 +733,7 @@ const Portfolio: React.FC = () => {
             />
             <div className="space-y-8">
               {currentPortfolioData.experiencia.map((exp, index) => (
-                <ExperienceCard key={index} exp={exp} />
+                <ExperienceCard key={index} exp={exp} language={language} />
               ))}
             </div>
           </div>
@@ -709,7 +753,7 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 mb-4">
-              06 // Academic
+              {language === 'es' ? '06 // Formación Académica' : '06 // Academic'}
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.educationTitle.title}
@@ -735,7 +779,7 @@ const Portfolio: React.FC = () => {
           {/* Certificaciones */}
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 mb-4">
-              06.B // Credentials
+              {language === 'es' ? '06.B // Certificaciones' : '06.B // Credentials'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.certificationTitle.title}
@@ -773,7 +817,7 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              07 // Human Edge
+              {language === 'es' ? '07 // Habilidades Humanas' : '07 // Human Edge'}
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.personalSkillsTitle.title}
@@ -807,7 +851,7 @@ const Portfolio: React.FC = () => {
           }`}
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-            08 // Launchpad & Connect
+            {language === 'es' ? '08 // Contacto & Simulador' : '08 // Launchpad & Connect'}
           </span>
           <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
             {currentPortfolioData.contact.title}

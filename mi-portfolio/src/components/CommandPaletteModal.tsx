@@ -42,11 +42,9 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   const isEs = language === 'es';
 
   useEffect(() => {
+    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        if (isOpen) onClose();
-      } else if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
@@ -129,7 +127,15 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                 className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-100/80 dark:bg-white/[0.05] hover:bg-emerald-500/15 text-left text-xs font-mono text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-white/10 transition-colors"
               >
                 <Eye className="w-4 h-4 text-emerald-400" />
-                <span>{isXRay ? 'Disable X-Ray Lens' : 'Enable X-Ray Lens'}</span>
+                <span>
+                  {isXRay
+                    ? isEs
+                      ? 'Desactivar Lente Rayos-X'
+                      : 'Disable X-Ray Lens'
+                    : isEs
+                    ? 'Activar Lente Rayos-X'
+                    : 'Enable X-Ray Lens'}
+                </span>
               </button>
 
               <button
@@ -157,7 +163,15 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                 ) : (
                   <Moon className="w-4 h-4 text-sky-400" />
                 )}
-                <span>{theme === 'dark' ? 'Light Mode' : 'Dark XDR Mode'}</span>
+                <span>
+                  {theme === 'dark'
+                    ? isEs
+                      ? 'Modo Claro'
+                      : 'Light Mode'
+                    : isEs
+                    ? 'Modo Oscuro XDR'
+                    : 'Dark XDR Mode'}
+                </span>
               </button>
             </div>
           </div>
@@ -261,8 +275,8 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
 
         {/* Pie de modal */}
         <div className="px-5 py-3 bg-slate-50 dark:bg-slate-950/80 border-t border-slate-200/70 dark:border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-          <span>ANUBIS // COMMAND PALETTE</span>
-          <span>ESC TO CLOSE</span>
+          <span>{isEs ? 'ANUBIS // PALETA DE COMANDOS' : 'ANUBIS // COMMAND PALETTE'}</span>
+          <span>{isEs ? 'ESC PARA CERRAR' : 'ESC TO CLOSE'}</span>
         </div>
       </div>
     </div>

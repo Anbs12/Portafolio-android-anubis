@@ -42,9 +42,9 @@ export const TechCard: React.FC<TechCardProps> = ({ tech }) => {
                 </span>
             </div>
 
-            {/* Contenido principal respetando el ícono original exacto de cada tecnología */}
+            {/* Contenido principal respetando el ícono original exacto de cada tecnología + corrección de contraste en modo oscuro */}
             <div className="relative z-10 flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/[0.08] ring-1 ring-slate-200/90 dark:ring-white/15 group-hover:ring-emerald-400/50 flex items-center justify-center transition-all duration-500 ease-out group-hover:scale-110 shadow-inner [&_img]:w-7 [&_img]:h-7 [&_img]:object-contain [&_svg]:w-7 [&_svg]:h-7">
+                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/[0.1] ring-1 ring-slate-200/90 dark:ring-white/15 group-hover:ring-emerald-400/50 flex items-center justify-center transition-all duration-500 ease-out group-hover:scale-110 shadow-inner [&_img]:w-7 [&_img]:h-7 [&_img]:object-contain [&_svg]:w-7 [&_svg]:h-7 dark:[&_svg.text-gray-800]:text-white dark:[&_svg.text-gray-700]:text-slate-200">
                     {tech.icon}
                 </div>
 

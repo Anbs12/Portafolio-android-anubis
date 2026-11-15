@@ -104,7 +104,7 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
   );
 
   return (
-    <div ref={trackRef} className="relative min-h-[380vh] w-full">
+    <div ref={trackRef} className="relative min-h-[280vh] w-full">
       <div className="sticky top-0 min-h-screen flex flex-col justify-center py-20 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Halo de luz detrás del dispositivo */}
         <div
@@ -119,7 +119,10 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10">
             <div>
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
-                <Sparkles className="w-3 h-3" /> 04 // SCROLL-STOPPING PRODUCT SHOWCASE
+                <Sparkles className="w-3 h-3" />{' '}
+                {language === 'es'
+                  ? '04 // VITRINA INTERACTIVA DE PRODUCTOS'
+                  : '04 // SCROLL-STOPPING PRODUCT SHOWCASE'}
               </span>
               <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
                 {currentPortfolioData.projectsSettings.title}
@@ -198,13 +201,17 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
                     {phoneScreenTab === 'arch' && (
                       <div className="p-4 h-full flex flex-col justify-between bg-[#060a12] text-left animate-fadeInUp overflow-y-auto">
                         <div className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest">
-                          LIVE ARCHITECTURE BLUEPRINT
+                          {language === 'es'
+                            ? 'ESQUEMA DE ARQUITECTURA EN VIVO'
+                            : 'LIVE ARCHITECTURE BLUEPRINT'}
                         </div>
 
                         <div className="space-y-2 my-auto">
                           <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
                             <div className="text-[9px] font-mono text-emerald-300 font-bold">
-                              UI LAYER (PRESENTATION)
+                              {language === 'es'
+                                ? 'CAPA UI (PRESENTACIÓN)'
+                                : 'UI LAYER (PRESENTATION)'}
                             </div>
                             <div className="text-[11px] text-white font-mono truncate">
                               {uiTechs.length > 0 ? uiTechs.join(' • ') : 'Jetpack Compose / XML'}
@@ -217,7 +224,9 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
 
                           <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30">
                             <div className="text-[9px] font-mono text-cyan-300 font-bold">
-                              DOMAIN & ARCHITECTURE
+                              {language === 'es'
+                                ? 'DOMINIO & ARQUITECTURA'
+                                : 'DOMAIN & ARCHITECTURE'}
                             </div>
                             <div className="text-[11px] text-white font-mono truncate">
                               {domainTechs.length > 0 ? domainTechs.join(' • ') : 'Kotlin • MVVM'}
@@ -230,7 +239,9 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
 
                           <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30">
                             <div className="text-[9px] font-mono text-purple-300 font-bold">
-                              DATA & INFRASTRUCTURE
+                              {language === 'es'
+                                ? 'DATOS & INFRAESTRUCTURA'
+                                : 'DATA & INFRASTRUCTURE'}
                             </div>
                             <div className="text-[11px] text-white font-mono truncate">
                               {dataTechs.length > 0
@@ -262,7 +273,9 @@ class ${activeProject.titulo.replace(/[^a-zA-Z0-9]/g, '')}VM @Inject constructor
 }`}
                         </pre>
                         <div className="text-[9px] text-emerald-400">
-                          ✓ Compiled with Kotlin • {activeProject.tecnologias.length} modules
+                          {language === 'es'
+                            ? `✓ Compilado con Kotlin • ${activeProject.tecnologias.length} módulos`
+                            : `✓ Compiled with Kotlin • ${activeProject.tecnologias.length} modules`}
                         </div>
                       </div>
                     )}
@@ -280,7 +293,7 @@ class ${activeProject.titulo.replace(/[^a-zA-Z0-9]/g, '')}VM @Inject constructor
                       }`}
                     >
                       <Eye className="w-3 h-3" />
-                      <span>App UI</span>
+                      <span>{language === 'es' ? 'Vista App' : 'App UI'}</span>
                     </button>
 
                     <button
@@ -293,7 +306,7 @@ class ${activeProject.titulo.replace(/[^a-zA-Z0-9]/g, '')}VM @Inject constructor
                       }`}
                     >
                       <Cpu className="w-3 h-3" />
-                      <span>Arch</span>
+                      <span>{language === 'es' ? 'Arq' : 'Arch'}</span>
                     </button>
 
                     <button
@@ -334,7 +347,9 @@ class ${activeProject.titulo.replace(/[^a-zA-Z0-9]/g, '')}VM @Inject constructor
                 {/* Cabecera del proyecto */}
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <span className="text-xs font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">
-                    PRODUCT RELEASE // 0{activeIndex + 1}
+                    {language === 'es'
+                      ? `LANZAMIENTO DE PRODUCTO // 0${activeIndex + 1}`
+                      : `PRODUCT RELEASE // 0${activeIndex + 1}`}
                   </span>
 
                   <span
