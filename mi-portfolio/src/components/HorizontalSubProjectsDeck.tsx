@@ -1,0 +1,143 @@
+import React, { useEffect, useRef, useState } from 'react';
+import type { ProjectItem } from '../types/Project';
+import type { PortfolioDataType } from '../types/Portfolio';
+import { ProjectCard } from './ProjectCard';
+import { Sparkles, Layers } from 'lucide-react';
+
+interface HorizontalSubProjectsDeckProps {
+  subProyectos: ProjectItem[];
+  currentPortfolioData: PortfolioDataType;
+  language: 'es' | 'en';
+}
+
+export const HorizontalSubProjectsDeck: React.FC<HorizontalSubProjectsDeckProps> = ({
+  subProyectos,
+  currentPortfolioData,
+  language,
+}) => {
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [deckProgress, setDeckProgress] = useState<number>(0); // 0 to 1
+  const [showGrid, setShowGrid] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!trackRef.current || showGrid) return;
+      const rect = trackRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const scrollable = rect.height - windowHeight;
+      if (scrollable <= 0) return;
+
+      const raw = -rect.top / scrollable;
+      setDeckProgress(Math.min(1, Math.max(0, raw)));
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showGrid]);
+
+  // Desplazamiento horizontal en porcentaje a medida que el usuario baja con la rueda del mouse
+  const maxTranslatePercent = Math.max(0, (subProyectos.length - 2.2) * 34);
+  const currentTranslateX = -(deckProgress * maxTranslatePercent);
+
+  return (
+    <div
+      ref={trackRef}
+      className={showGrid ? 'relative py-20' : 'relative min-h-[280vh] w-full'}
+    >
+      <div
+        className={
+          showGrid
+            ? 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'
+            : 'sticky top-0 min-h-screen flex flex-col justify-center py-20 overflow-hidden'
+        }
+      >
+        <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-3">
+              <Sparkles className="w-3 h-3" /> 04.B // HORIZONTAL APP SWITCHER DECK
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tight">
+              {currentPortfolioData.subProjectsSettings.title}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-1">
+              {currentPortfolioData.subProjectsSettings.subtitle}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {!showGrid && (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-white/10 text-xs font-mono text-cyan-600 dark:text-cyan-400">
+                <span>DECK SCROLL {Math.round(deckProgress * 100)}%</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setShowGrid(prev => !prev)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-800 dark:text-slate-200 border border-slate-300/80 dark:border-white/15 hover:border-cyan-500/50 transition-all shadow-sm"
+            >
+              <Layers className="w-3.5 h-3.5 text-cyan-500" />
+              <span>
+                {showGrid
+                  ? language === 'es'
+                    ? 'Modo Carrusel 3D'
+                    : '3D Deck Mode'
+                  : language === 'es'
+                  ? 'Ver en Cuadrícula'
+                  : 'Grid View'}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {!showGrid ? (
+          /* Carrusel Horizontal Cinético impulsado por el scroll vertical */
+          <div className="w-full overflow-visible px-4 sm:px-12 lg:px-20">
+            <div
+              style={{
+                transform: `translate3d(${currentTranslateX.toFixed(2)}%, 0, 0)`,
+                transition: 'transform 0.14s cubic-bezier(0.22, 1, 0.36, 1)',
+              }}
+              className="flex items-stretch gap-7 w-full"
+            >
+              {subProyectos.map((proyecto, idx) => (
+                <div
+                  key={proyecto.id}
+                  className="w-[85vw] sm:w-[370px] md:w-[390px] flex-shrink-0"
+                >
+                  <div className="mb-2 flex items-center justify-between text-[11px] font-mono text-slate-400 px-1">
+                    <span>LAB // 0{idx + 1}</span>
+                    <span>ANDROID KOTLIN</span>
+                  </div>
+                  <ProjectCard
+                    proyecto={proyecto}
+                    currentPortfolioData={currentPortfolioData}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Barra de progreso horizontal del carrusel */}
+            <div className="max-w-md mx-auto mt-10 h-1 rounded-full bg-slate-200 dark:bg-white/10 overflow-hidden">
+              <div
+                style={{ width: `${Math.max(12, deckProgress * 100)}%` }}
+                className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all duration-150"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch animate-fadeInUp">
+            {subProyectos.map(proyecto => (
+              <ProjectCard
+                key={proyecto.id}
+                proyecto={proyecto}
+                currentPortfolioData={currentPortfolioData}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

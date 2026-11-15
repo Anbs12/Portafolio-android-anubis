@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Github, Linkedin, Code, Smartphone,
-  Menu, X, Sun, Moon,
-  ChevronDown, ArrowUpRight, Sparkles, ArrowUp, Layers, Cpu, Compass
+  Code,
+  Menu,
+  X,
+  Sun,
+  Moon,
+  ChevronDown,
+  Sparkles,
+  ArrowUp,
+  Compass,
+  Eye,
+  Search,
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
+import { ExplodedPhoneHero } from '../components/ExplodedPhoneHero';
 import { TechScrollStage } from '../components/TechScrollStage';
 import { ProjectScrollShowcase } from '../components/ProjectScrollShowcase';
+import { HorizontalSubProjectsDeck } from '../components/HorizontalSubProjectsDeck';
 import { ExecutiveBrandPillars } from '../components/ExecutiveBrandPillars';
+import { CommandPaletteModal } from '../components/CommandPaletteModal';
+import { ContactLaunchpad } from '../components/ContactLaunchpad';
 import { ProjectCard } from '../components/ProjectCard';
 import { EducationCard } from '../components/EducationCard';
 import { ExperienceCard } from '../components/ExperienceCard';
@@ -26,10 +38,12 @@ const Portfolio: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
-  // Estados para las coreografías de Scrollytelling
-  const [heroScrollRatio, setHeroScrollRatio] = useState<number>(0);
+  // Nuevos estados para "Audience Lens (X-Ray)", Command Palette (Ctrl+K) y Rayos Láser de Timeline
+  const [isXRay, setIsXRay] = useState<boolean>(false);
+  const [isCommandOpen, setIsCommandOpen] = useState<boolean>(false);
   const [aboutLitProgress, setAboutLitProgress] = useState<number>(0);
-  const [heroTilt, setHeroTilt] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [expBeamProgress, setExpBeamProgress] = useState<number>(0);
+  const [eduBeamProgress, setEduBeamProgress] = useState<number>(0);
 
   // --- Lógica del modo oscuro (Oscuro por defecto para máximo contraste XDR) ---
   type Theme = 'light' | 'dark';
@@ -56,6 +70,18 @@ const Portfolio: React.FC = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
+  // Atajo global Ctrl+K / Cmd+K para abrir el Command Palette
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   // Referencias para cada sección
   const sectionRefs = {
     inicio: useRef<HTMLElement>(null),
@@ -71,7 +97,7 @@ const Portfolio: React.FC = () => {
 
   const aboutTextRef = useRef<HTMLParagraphElement>(null);
 
-  // --- Coreografía de Scrollytelling (Hero XDR Recede + Scroll-Lit Text + 3D Canvas Drive) ---
+  // --- Coreografía de Scrollytelling Global ---
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -82,17 +108,27 @@ const Portfolio: React.FC = () => {
       setScrollProgress(progress);
       setIsScrolled(scrollTop > 30);
 
-      // 1. Ratio de contracción espacial del Hero (0 a 1 en los primeros 700px)
-      const heroRatio = Math.min(1, Math.max(0, scrollTop / 700));
-      setHeroScrollRatio(heroRatio);
-
-      // 2. Iluminación progresiva palabra por palabra en "Sobre Mí"
+      // 1. Iluminación progresiva palabra por palabra en "Sobre Mí"
       if (aboutTextRef.current) {
         const rect = aboutTextRef.current.getBoundingClientRect();
         const startTrigger = windowHeight * 0.88;
         const endTrigger = windowHeight * 0.25;
         const rawProgress = (startTrigger - rect.top) / (startTrigger - endTrigger);
         setAboutLitProgress(Math.min(1, Math.max(0, rawProgress)));
+      }
+
+      // 2. Rayo láser de progreso para "Career Flight Recorder" (Experiencia)
+      if (sectionRefs.experiencia.current) {
+        const rect = sectionRefs.experiencia.current.getBoundingClientRect();
+        const raw = (windowHeight * 0.7 - rect.top) / Math.max(1, rect.height * 0.85);
+        setExpBeamProgress(Math.min(1, Math.max(0, raw)));
+      }
+
+      // 3. Rayo láser de progreso para "Educación y Certificaciones"
+      if (sectionRefs.educacion.current) {
+        const rect = sectionRefs.educacion.current.getBoundingClientRect();
+        const raw = (windowHeight * 0.7 - rect.top) / Math.max(1, rect.height * 0.85);
+        setEduBeamProgress(Math.min(1, Math.max(0, raw)));
       }
     };
 
@@ -130,7 +166,7 @@ const Portfolio: React.FC = () => {
               revealObserver.unobserve(entry.target);
             }
           },
-          { threshold: 0.08 }
+          { threshold: 0.06 }
         );
         revealObserver.observe(ref.current);
         observers.push(revealObserver);
@@ -187,18 +223,6 @@ const Portfolio: React.FC = () => {
     }
   };
 
-  // Interacción 3D del Hero con el cursor
-  const handleHeroMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5;
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-    setHeroTilt({ x: ny * -8, y: nx * 10 });
-  };
-
-  const handleHeroMouseLeave = () => {
-    setHeroTilt({ x: 0, y: 0 });
-  };
-
   const getActiveSectionLabel = (): string => {
     for (const item of currentPortfolioData.navItems) {
       if (item.id === activeSection) return item.displayText;
@@ -216,14 +240,6 @@ const Portfolio: React.FC = () => {
     cat => cat.items.length > 0
   );
 
-  // Transformaciones físicas para el Hero Scrollytelling Stage
-  const heroScale = 1 - heroScrollRatio * 0.09;
-  const heroBorderRadius = Math.round(heroScrollRatio * 44);
-  const heroRotateX = heroScrollRatio * 8 + heroTilt.x * 0.4;
-  const heroContentTranslateY = heroScrollRatio * -55;
-  const heroContentOpacity = 1 - heroScrollRatio * 0.8;
-
-  // Capítulos para el riel lateral de Scrollytelling
   const scrollyChapters = [
     { id: 'inicio', code: '01' },
     { id: 'sobre-mi', code: '02' },
@@ -236,13 +252,34 @@ const Portfolio: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#05080d] text-slate-900 dark:text-slate-100 font-inter selection:bg-emerald-500/30 selection:text-emerald-300 transition-colors duration-500 relative">
-
-      {/* Motor 3D Procedural de Fondo (Canvas 100% propio sin imágenes/videos externos) */}
+    <div
+      className={`min-h-screen bg-slate-50 dark:bg-[#05080d] text-slate-900 dark:text-slate-100 font-inter selection:bg-emerald-500/30 selection:text-emerald-300 transition-colors duration-500 relative ${
+        isXRay ? '[&_section]:outline-dashed [&_section]:outline-1 [&_section]:outline-emerald-500/30' : ''
+      }`}
+    >
+      {/* Motor 3D Procedural de Fondo (Canvas 100% propio) */}
       <ScrollyCanvas scrollProgress={scrollProgress} theme={theme} />
 
-      {/* Malla arquitectónica sutil superpuesta */}
-      <div className="fixed inset-0 bg-grid-pattern pointer-events-none z-0 opacity-60 dark:opacity-100" />
+      {/* Malla arquitectónica sutil superpuesta (Se intensifica en modo Engineering X-Ray) */}
+      <div
+        className={`fixed inset-0 bg-grid-pattern pointer-events-none z-0 transition-opacity duration-500 ${
+          isXRay ? 'opacity-100' : 'opacity-50 dark:opacity-90'
+        }`}
+      />
+
+      {/* HUD Superior de Telemetría cuando el Modo Engineering X-Ray está activo */}
+      {isXRay && (
+        <div className="fixed top-20 right-6 z-40 hidden lg:flex flex-col gap-1.5 p-3.5 rounded-2xl bg-slate-950/90 text-emerald-400 border border-emerald-500/40 font-mono text-[10px] shadow-[0_0_30px_rgba(16,185,129,0.25)] pointer-events-none animate-fadeInUp">
+          <div className="font-bold text-white flex items-center justify-between gap-4">
+            <span>COMPOSE LAYOUT INSPECTOR</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          </div>
+          <div>RENDER ENGINE: 60 FPS • 0 JANKS</div>
+          <div>SCROLL PROGRESS: {scrollProgress.toFixed(1)}%</div>
+          <div>ACTIVE NODE: #{activeSection}</div>
+          <div>ARCH: CLEAN + MVVM + STATEFLOW</div>
+        </div>
+      )}
 
       {/* Barra superior de progreso de lectura XDR */}
       <div className="fixed top-0 left-0 right-0 h-[2px] z-[60] bg-transparent pointer-events-none">
@@ -295,26 +332,26 @@ const Portfolio: React.FC = () => {
         <nav
           className={`pointer-events-auto max-w-6xl mx-auto rounded-2xl transition-all duration-500 ${
             isScrolled
-              ? 'bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.55)] border border-slate-200/80 dark:border-white/[0.09] py-3 px-4 sm:px-6'
-              : 'bg-white/60 dark:bg-slate-900/45 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 py-3.5 px-4 sm:px-6'
+              ? 'bg-white/85 dark:bg-slate-900/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.55)] border border-slate-200/80 dark:border-white/[0.09] py-2.5 px-4 sm:px-6'
+              : 'bg-white/65 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 py-3 px-4 sm:px-6'
           }`}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             {/* Logo y nombre */}
             <button
               onClick={() => scrollToSection('inicio')}
-              className="flex items-center gap-3 group text-left focus:outline-none"
+              className="flex items-center gap-2.5 group text-left focus:outline-none"
             >
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 p-2 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform duration-300">
                 <Code className="w-5 h-5 text-slate-950 stroke-[2.5]" />
               </div>
-              <span className="text-base sm:text-lg font-bold font-heading tracking-tight text-slate-900 dark:text-white">
+              <span className="text-sm sm:text-base font-bold font-heading tracking-tight text-slate-900 dark:text-white truncate">
                 {currentPortfolioData.personal.nombre}
               </span>
             </button>
 
             {/* Menú Desktop */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-0.5">
               {currentPortfolioData.navItems.map(item => {
                 const isSubItemActive = item.subItems?.some(sub => sub.id === activeSection);
                 const isActive = activeSection === item.id || isSubItemActive;
@@ -323,7 +360,7 @@ const Portfolio: React.FC = () => {
                   <div key={item.id} className="relative group">
                     <button
                       onClick={() => scrollToSection(item.subItems![0].id)}
-                      className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
+                      className={`px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all duration-300 flex items-center gap-1 ${
                         isActive
                           ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10'
                           : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/[0.06]'
@@ -355,7 +392,7 @@ const Portfolio: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all duration-300 ${
                       isActive
                         ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10'
                         : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/[0.06]'
@@ -367,15 +404,43 @@ const Portfolio: React.FC = () => {
               })}
             </div>
 
-            {/* Controles de Idioma, Tema y Menú Móvil */}
-            <div className="flex items-center gap-2">
+            {/* Controles Superiores: Buscador Ctrl+K, Lente X-Ray, Idioma, Tema */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Botón Command Palette (Ctrl + K) */}
+              <button
+                type="button"
+                onClick={() => setIsCommandOpen(true)}
+                title="Command Palette (Ctrl + K)"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40 transition-all"
+              >
+                <Search className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="hidden sm:inline text-[11px] opacity-80">Ctrl+K</span>
+              </button>
+
+              {/* Selector de Lente: Product Keynote vs Engineering X-Ray */}
+              <button
+                type="button"
+                onClick={() => setIsXRay(prev => !prev)}
+                title="Toggle Engineering X-Ray Inspector"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-semibold border transition-all duration-300 ${
+                  isXRay
+                    ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-[0_0_18px_rgba(16,185,129,0.5)]'
+                    : 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">{isXRay ? 'X-RAY' : 'LENS'}</span>
+              </button>
+
+              {/* Selector de Idioma */}
               <button
                 onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-                className="px-3 py-1.5 rounded-xl text-xs font-mono font-semibold tracking-wider uppercase border bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40 transition-all duration-300"
+                className="px-2.5 py-1.5 rounded-xl text-xs font-mono font-semibold tracking-wider uppercase border bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10 hover:border-emerald-500/40 transition-all duration-300"
               >
                 {language === 'es' ? 'EN' : 'ES'}
               </button>
 
+              {/* Selector de Tema */}
               <button
                 onClick={toggleTheme}
                 aria-label="Toggle dark mode"
@@ -446,187 +511,18 @@ const Portfolio: React.FC = () => {
         </nav>
       </header>
 
-      {/* ////////////////////////// CHAPTER 01: Hero Scrollytelling Stage (100% Procedural CSS/SVG/3D) ////////////////////////// */}
-      <section
-        id="inicio"
-        ref={sectionRefs.inicio}
-        onMouseMove={handleHeroMouseMove}
-        onMouseLeave={handleHeroMouseLeave}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden [perspective:1400px]"
-      >
-        <div
-          style={{
-            transform: `scale(${heroScale.toFixed(4)}) rotateX(${heroRotateX.toFixed(2)}deg) rotateY(${(heroTilt.y * 0.35).toFixed(2)}deg)`,
-            borderRadius: `${heroBorderRadius}px`,
-          }}
-          className={`relative w-full min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-28 pb-24 overflow-hidden transition-[box-shadow,border-color] duration-300 ${
-            heroScrollRatio > 0.04
-              ? 'ring-1 ring-emerald-500/30 dark:ring-white/20 shadow-[0_35px_120px_rgba(16,185,129,0.22)] bg-white/40 dark:bg-slate-950/55 backdrop-blur-xl'
-              : ''
-          }`}
-        >
-          {/* Escena Holográfica Procedural (Reemplaza cualquier video externo con arte generativo propio) */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-            {/* Auroras volumétricas dinámicas */}
-            <div
-              style={{
-                transform: `translate3d(${(heroTilt.y * -4).toFixed(1)}px, ${(heroTilt.x * -4).toFixed(1)}px, 0)`,
-              }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] sm:w-[760px] sm:h-[760px] rounded-full bg-gradient-to-tr from-emerald-500/20 via-cyan-500/12 to-purple-500/15 blur-[110px]"
-            />
-
-            {/* Anillos orbitales SVG de precisión en perspectiva */}
-            <svg
-              viewBox="0 0 1000 1000"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] sm:w-[1150px] sm:h-[1150px] opacity-35 dark:opacity-45"
-            >
-              <defs>
-                <linearGradient id="heroOrbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.6" />
-                  <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.25" />
-                  <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.5" />
-                </linearGradient>
-              </defs>
-              <g
-                style={{
-                  transform: `rotate(${(scrollProgress * 2.5).toFixed(1)}deg)`,
-                  transformOrigin: '500px 500px',
-                }}
-              >
-                <circle
-                  cx="500"
-                  cy="500"
-                  r="340"
-                  fill="none"
-                  stroke="url(#heroOrbitGrad)"
-                  strokeWidth="1"
-                  strokeDasharray="10 18"
-                />
-                <circle
-                  cx="500"
-                  cy="500"
-                  r="430"
-                  fill="none"
-                  stroke="url(#heroOrbitGrad)"
-                  strokeWidth="1.2"
-                  strokeDasharray="80 140"
-                />
-                <circle cx="500" cy="160" r="4" fill="#34d399" />
-                <circle cx="840" cy="500" r="3.5" fill="#38bdf8" />
-                <circle cx="160" cy="500" r="3.5" fill="#a855f7" />
-              </g>
-            </svg>
-
-            {/* Bisel especular superior XDR */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
-          </div>
-
-          {/* Tarjetas Flotantes de Telemetría 3D en las esquinas del Hero (Desktop) */}
-          <div
-            style={{
-              transform: `translate3d(${(heroTilt.y * 2.2).toFixed(1)}px, ${(heroTilt.x * 2.2 - heroScrollRatio * 80).toFixed(1)}px, 40px)`,
-            }}
-            className="hidden xl:flex absolute left-12 top-36 z-10 items-center gap-3 px-4 py-3 rounded-2xl bg-white/70 dark:bg-slate-900/65 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-2xl"
-          >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400">
-              <Layers className="w-4 h-4" />
-            </div>
-            <div className="text-left">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                Architecture
-              </div>
-              <div className="text-xs font-bold font-heading text-slate-800 dark:text-slate-100">
-                Kotlin • MVVM • Clean
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              transform: `translate3d(${(heroTilt.y * -2.2).toFixed(1)}px, ${(heroTilt.x * -2.2 - heroScrollRatio * 90).toFixed(1)}px, 40px)`,
-            }}
-            className="hidden xl:flex absolute right-12 bottom-32 z-10 items-center gap-3 px-4 py-3 rounded-2xl bg-white/70 dark:bg-slate-900/65 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-2xl"
-          >
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
-              <Cpu className="w-4 h-4" />
-            </div>
-            <div className="text-left">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                UI Engine
-              </div>
-              <div className="text-xs font-bold font-heading text-slate-800 dark:text-slate-100">
-                Jetpack Compose • Coroutines
-              </div>
-            </div>
-          </div>
-
-          {/* Contenido central del Hero */}
-          <div
-            style={{
-              transform: `translateY(${heroContentTranslateY.toFixed(1)}px)`,
-              opacity: Math.max(0.12, heroContentOpacity),
-            }}
-            className={`relative z-10 max-w-5xl mx-auto text-center ${
-              visibleSections.inicio ? 'animate-fadeInUp' : 'opacity-0'
-            }`}
-          >
-            {/* Badge de rol con indicador vivo */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 dark:bg-white/[0.07] backdrop-blur-xl border border-slate-200/80 dark:border-white/15 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-mono mb-8 shadow-[0_0_30px_rgba(16,185,129,0.18)]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
-              </span>
-              <Smartphone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{currentPortfolioData.personal.titulo}</span>
-            </div>
-
-            {/* Nombre monumental con acabado metálico XDR */}
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold font-hero-name tracking-tight bg-gradient-to-b from-slate-950 via-slate-800 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 bg-clip-text text-transparent mb-6 drop-shadow-sm">
-              {currentPortfolioData.personal.nombre}
-            </h1>
-
-            {/* Frase dinámica cinética */}
-            <div className="max-w-3xl mx-auto space-y-2.5 mb-12">
-              <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
-                {currentPortfolioData.hero.staticHeroTitlePartOne}
-              </p>
-
-              <div className="h-14 sm:h-16 flex items-center justify-center">
-                <span
-                  key={currentDynamicPhraseIndex}
-                  className="inline-block px-5 py-1.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 dark:border-emerald-400/30 backdrop-blur-md text-2xl sm:text-4xl md:text-5xl font-bold font-heading bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 bg-clip-text text-transparent animate-fade-in-out-single"
-                >
-                  {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
-                </span>
-              </div>
-
-              <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
-                {currentPortfolioData.hero.staticHeroTitlePartTwo}
-              </p>
-            </div>
-
-            {/* Botones de acción (CTAs) */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                onClick={() => scrollToSection('proyectos')}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-semibold px-8 py-4 rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.35)] hover:shadow-[0_0_45px_rgba(16,185,129,0.65)] transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <span>{currentPortfolioData.hero.buttonProjects}</span>
-                <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-              </button>
-
-              <button
-                onClick={() => scrollToSection('contacto')}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl font-semibold text-slate-800 dark:text-white bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 backdrop-blur-md border border-slate-300/80 dark:border-white/20 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <span>{currentPortfolioData.hero.buttonContact}</span>
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* ////////////////////////// CHAPTER 01: Exploded 3D Android Phone Hero (Scroll-Stopping) ////////////////////////// */}
+      <section id="inicio" ref={sectionRefs.inicio} className="relative z-10">
+        <ExplodedPhoneHero
+          currentPortfolioData={currentPortfolioData}
+          currentDynamicPhraseIndex={currentDynamicPhraseIndex}
+          language={language}
+          isXRay={isXRay}
+          onScrollToSection={scrollToSection}
+        />
       </section>
 
-      {/* ////////////////////////// CHAPTER 02: "Sobre mí" + Escultura SVG Android Procedural ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 02: "Sobre mí" + Escultura SVG Android + Pilares Ejecutivos ////////////////////////// */}
       <section
         id="sobre-mi"
         ref={sectionRefs.sobreMi}
@@ -639,7 +535,7 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              <Sparkles className="w-3 h-3" /> 02 // Profile
+              <Sparkles className="w-3 h-3" /> 02 // Profile & Brand Value
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.aboutMe.title}
@@ -684,7 +580,7 @@ const Portfolio: React.FC = () => {
                 </p>
               </div>
 
-              {/* Escultura SVG Procedural Propia (Sin usar URL externa de developer.android.com) */}
+              {/* Escultura SVG Procedural Propia */}
               <div className="lg:w-2/5 flex justify-center items-center">
                 <AndroidCoreGraphic
                   scrollProgress={scrollProgress}
@@ -720,15 +616,12 @@ const Portfolio: React.FC = () => {
       </section>
 
       {/* ////////////////////////// CHAPTER 04: Projects Scroll-Stopping Product Showcase ////////////////////////// */}
-      <section
-        id="proyectos"
-        ref={sectionRefs.proyectos}
-        className="relative z-10"
-      >
+      <section id="proyectos" ref={sectionRefs.proyectos} className="relative z-10">
         <ProjectScrollShowcase
           proyectos={currentPortfolioData.proyectos}
           currentPortfolioData={currentPortfolioData}
           language={language}
+          isXRay={isXRay}
         />
 
         {/* Galería Interactiva Completa con Quick Look debajo del Showcase Anclado */}
@@ -751,42 +644,20 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* ////////////////////////// Subproyectos Section ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 04.B: Subproyectos en Carrusel Horizontal Scroll-Stopping ////////////////////////// */}
       <section
         id="subProyectos"
         ref={sectionRefs.subProyectos}
-        className="relative z-10 pb-24 sm:pb-32 pt-8 px-4 sm:px-6 lg:px-8"
+        className="relative z-10 border-t border-slate-200/60 dark:border-white/[0.05]"
       >
-        <div
-          className={`max-w-6xl mx-auto ${
-            visibleSections.subProyectos ? 'animate-fadeInUp' : 'opacity-0'
-          }`}
-        >
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 mb-4">
-              04.B // Additional Labs
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
-              {currentPortfolioData.subProjectsSettings.title}
-            </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-              {currentPortfolioData.subProjectsSettings.subtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
-            {currentPortfolioData.subProyectos.map(proyecto => (
-              <ProjectCard
-                key={proyecto.id}
-                proyecto={proyecto}
-                currentPortfolioData={currentPortfolioData}
-              />
-            ))}
-          </div>
-        </div>
+        <HorizontalSubProjectsDeck
+          subProyectos={currentPortfolioData.subProyectos}
+          currentPortfolioData={currentPortfolioData}
+          language={language}
+        />
       </section>
 
-      {/* ////////////////////////// CHAPTER 05: Experience Section ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 05: Experience Section ("Career Flight Recorder" con Rayo Láser de Scroll) ////////////////////////// */}
       <section
         id="experiencia"
         ref={sectionRefs.experiencia}
@@ -799,7 +670,7 @@ const Portfolio: React.FC = () => {
         >
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              05 // Career Path
+              05 // Career Flight Recorder
             </span>
             <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
               {currentPortfolioData.experienceTitle.title}
@@ -810,7 +681,12 @@ const Portfolio: React.FC = () => {
           </div>
 
           <div className="relative ml-2 sm:ml-4">
-            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-emerald-500/60 via-cyan-500/30 to-transparent" />
+            {/* Riel base + Haz de luz esmeralda que desciende según el scroll */}
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-slate-300/60 dark:bg-white/10" />
+            <div
+              style={{ height: `${Math.round(expBeamProgress * 100)}%` }}
+              className="absolute left-0 top-3 w-[2px] bg-gradient-to-b from-emerald-400 via-cyan-400 to-emerald-500 shadow-[0_0_15px_#10b981] transition-all duration-150"
+            />
             <div className="space-y-8">
               {currentPortfolioData.experiencia.map((exp, index) => (
                 <ExperienceCard key={index} exp={exp} />
@@ -844,7 +720,11 @@ const Portfolio: React.FC = () => {
           </div>
 
           <div className="relative ml-2 sm:ml-4 mb-24">
-            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-sky-500/60 to-transparent" />
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-slate-300/60 dark:bg-white/10" />
+            <div
+              style={{ height: `${Math.min(100, Math.round(eduBeamProgress * 140))}%` }}
+              className="absolute left-0 top-3 w-[2px] bg-gradient-to-b from-sky-400 to-cyan-500 shadow-[0_0_15px_#38bdf8] transition-all duration-150"
+            />
             <div className="space-y-8">
               {currentPortfolioData.educationItems.map((edu, index) => (
                 <EducationCard key={index} edu={edu} />
@@ -866,7 +746,11 @@ const Portfolio: React.FC = () => {
           </div>
 
           <div className="relative ml-2 sm:ml-4">
-            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-gradient-to-b from-amber-500/60 to-transparent" />
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-slate-300/60 dark:bg-white/10" />
+            <div
+              style={{ height: `${Math.round(eduBeamProgress * 100)}%` }}
+              className="absolute left-0 top-3 w-[2px] bg-gradient-to-b from-amber-400 to-orange-500 shadow-[0_0_15px_#f59e0b] transition-all duration-150"
+            />
             <div className="space-y-8">
               {currentPortfolioData.certificationItems.map((cert, index) => (
                 <CertificationCard key={index} cert={cert} />
@@ -911,7 +795,7 @@ const Portfolio: React.FC = () => {
         </div>
       </section>
 
-      {/* ////////////////////////// CHAPTER 08: Contact Section ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 08: Contact Launchpad Section ////////////////////////// */}
       <section
         id="contacto"
         ref={sectionRefs.contacto}
@@ -923,60 +807,19 @@ const Portfolio: React.FC = () => {
           }`}
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-            08 // Connect
+            08 // Launchpad & Connect
           </span>
           <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
             {currentPortfolioData.contact.title}
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-14">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-12">
             {currentPortfolioData.contact.subtitle}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            <a
-              href={`https://linkedin.com/in/${currentPortfolioData.personal.linkedin}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="spotlight-card group relative flex items-center justify-between p-7 rounded-3xl bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] hover:border-sky-500/40 dark:hover:border-sky-400/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgb(0,0,0,0.3)] transition-all duration-400 hover:-translate-y-1.5 text-left"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-500 dark:text-sky-400 group-hover:scale-110 transition-transform duration-300">
-                  <Linkedin className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
-                    LinkedIn
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {currentPortfolioData.contact.linkedinText}
-                  </p>
-                </div>
-              </div>
-              <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-
-            <a
-              href={`https://github.com/${currentPortfolioData.personal.github}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="spotlight-card group relative flex items-center justify-between p-7 rounded-3xl bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] hover:border-emerald-500/40 dark:hover:border-emerald-400/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgb(0,0,0,0.3)] transition-all duration-400 hover:-translate-y-1.5 text-left"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-slate-800 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
-                  <Github className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold font-heading text-slate-900 dark:text-white">
-                    GitHub
-                  </h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {currentPortfolioData.contact.githubText}
-                  </p>
-                </div>
-              </div>
-              <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-          </div>
+          <ContactLaunchpad
+            currentPortfolioData={currentPortfolioData}
+            language={language}
+          />
         </div>
       </section>
 
@@ -1000,19 +843,30 @@ const Portfolio: React.FC = () => {
       {/* ////////////////////////// Apple Dynamic Island Action Bar (Flotante Inferior) ////////////////////////// */}
       <div
         className={`fixed bottom-5 inset-x-0 z-40 flex justify-center px-4 pointer-events-none transition-all duration-500 ${
-          heroScrollRatio > 0.45
-            ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-8'
+          scrollProgress > 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <div className="pointer-events-auto inline-flex items-center gap-3 px-4 py-2 rounded-full bg-slate-950/85 dark:bg-slate-900/90 text-white backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
+        <div className="pointer-events-auto inline-flex items-center gap-2.5 sm:gap-3 px-4 py-2 rounded-full bg-slate-950/85 dark:bg-slate-900/90 text-white backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
           {/* Indicador de capítulo y sección actual */}
           <div className="flex items-center gap-2 pr-2 border-r border-white/15">
-            <Compass className="w-3.5 h-3.5 text-emerald-400 animate-spin" style={{ animationDuration: '10s' }} />
+            <Compass
+              className="w-3.5 h-3.5 text-emerald-400 animate-spin"
+              style={{ animationDuration: '10s' }}
+            />
             <span className="text-xs font-mono font-medium tracking-wide text-slate-200">
               {getActiveSectionLabel()}
             </span>
           </div>
+
+          {/* Botón rápido a Command Palette */}
+          <button
+            type="button"
+            onClick={() => setIsCommandOpen(true)}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-emerald-300 transition-colors"
+          >
+            <Search className="w-3 h-3" />
+            <span>Ctrl+K</span>
+          </button>
 
           {/* Botón rápido a Proyectos */}
           <button
@@ -1043,6 +897,20 @@ const Portfolio: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal Command Palette (Ctrl + K) */}
+      <CommandPaletteModal
+        isOpen={isCommandOpen}
+        onClose={() => setIsCommandOpen(false)}
+        currentPortfolioData={currentPortfolioData}
+        language={language}
+        onToggleLanguage={() => setLanguage(prev => (prev === 'es' ? 'en' : 'es'))}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        isXRay={isXRay}
+        onToggleXRay={() => setIsXRay(prev => !prev)}
+        onScrollToSection={scrollToSection}
+      />
     </div>
   );
 };
