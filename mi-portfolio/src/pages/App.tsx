@@ -7,13 +7,14 @@ import {
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
-import { TechCard } from '../components/TechCard';
+import { TechScrollStage } from '../components/TechScrollStage';
+import { ProjectScrollShowcase } from '../components/ProjectScrollShowcase';
+import { ExecutiveBrandPillars } from '../components/ExecutiveBrandPillars';
 import { ProjectCard } from '../components/ProjectCard';
 import { EducationCard } from '../components/EducationCard';
 import { ExperienceCard } from '../components/ExperienceCard';
 import { PersonalSkillCard } from '../components/PersonalSkillCard';
 import { CertificationCard } from '../components/CertificationCard';
-import { QuantumMisteryCard } from '../components/QunatumMisteryCard';
 import { ScrollyCanvas } from '../components/ScrollyCanvas';
 import { AndroidCoreGraphic } from '../components/AndroidCoreGraphic';
 
@@ -24,7 +25,6 @@ const Portfolio: React.FC = () => {
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [selectedTechCategory, setSelectedTechCategory] = useState<number>(-1); // -1 = Todas
 
   // Estados para las coreografías de Scrollytelling
   const [heroScrollRatio, setHeroScrollRatio] = useState<number>(0);
@@ -693,129 +693,52 @@ const Portfolio: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Pilares de Valor de Marca para CEOs, POs, SEMs e Ingenieros */}
+          <ExecutiveBrandPillars
+            language={language}
+            projectsCount={currentPortfolioData.proyectos.length}
+            subProjectsCount={currentPortfolioData.subProyectos.length}
+            techCount={nonEmptyCategories.reduce((acc, c) => acc + c.items.length, 0)}
+          />
         </div>
       </section>
 
-      {/* ////////////////////////// CHAPTER 03: Technologies Section ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 03: Technologies Scroll-Stopping Section ////////////////////////// */}
       <section
         id="tecnologias"
         ref={sectionRefs.tecnologias}
-        className="relative z-10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-slate-100/50 dark:bg-slate-950/50 backdrop-blur-sm border-y border-slate-200/60 dark:border-white/[0.05]"
+        className="relative z-10 bg-slate-100/50 dark:bg-slate-950/55 backdrop-blur-sm border-y border-slate-200/60 dark:border-white/[0.05]"
       >
-        <div
-          className={`max-w-6xl mx-auto ${
-            visibleSections.tecnologias ? 'animate-fadeInUp' : 'opacity-0'
-          }`}
-        >
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              03 // Tech Stack
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
-              {currentPortfolioData.technologiesTitle.title}
-            </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-              {currentPortfolioData.technologiesTitle.subtitle}
-            </p>
-          </div>
-
-          {/* Barra de Píldoras Interactiva estilo Apple */}
-          <div className="flex justify-center mb-14">
-            <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-lg overflow-x-auto no-scrollbar max-w-full">
-              <button
-                type="button"
-                onClick={() => setSelectedTechCategory(-1)}
-                className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all duration-300 ${
-                  selectedTechCategory === -1
-                    ? 'bg-emerald-500 text-slate-950 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
-                }`}
-              >
-                {language === 'es' ? 'Todas' : 'All'}
-              </button>
-
-              {nonEmptyCategories.map((categoryGroup, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setSelectedTechCategory(idx)}
-                  className={`px-4 py-2 rounded-xl text-xs font-mono font-medium whitespace-nowrap transition-all duration-300 ${
-                    selectedTechCategory === idx
-                      ? 'bg-emerald-500 text-slate-950 font-semibold shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06]'
-                  }`}
-                >
-                  {categoryGroup.category}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-14">
-            {currentPortfolioData.tecnologiasCategorizadas.map((categoryGroup, index) => {
-              const nonEmptyIdx = nonEmptyCategories.indexOf(categoryGroup);
-              if (
-                selectedTechCategory !== -1 &&
-                categoryGroup.items.length > 0 &&
-                nonEmptyIdx !== selectedTechCategory
-              ) {
-                return null;
-              }
-
-              return (
-                <div key={index} className="animate-fadeInUp">
-                  <div className="flex items-center gap-4 mb-6">
-                    <h3 className="text-lg sm:text-xl font-bold font-heading text-slate-800 dark:text-slate-200">
-                      {categoryGroup.category}
-                    </h3>
-                    <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-300 dark:from-white/15 to-transparent" />
-                  </div>
-
-                  {categoryGroup.items.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {categoryGroup.items.map((tech, techIndex) => (
-                        <TechCard key={techIndex} tech={tech} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {currentPortfolioData.quantumItems && (
-            <div className="mt-14 flex flex-col items-center">
-              {currentPortfolioData.quantumItems.map((tech, techIndex) => (
-                <QuantumMisteryCard key={techIndex} tech={tech} />
-              ))}
-            </div>
-          )}
-        </div>
+        <TechScrollStage
+          title={currentPortfolioData.technologiesTitle.title}
+          subtitle={currentPortfolioData.technologiesTitle.subtitle}
+          categories={currentPortfolioData.tecnologiasCategorizadas}
+          quantumItems={currentPortfolioData.quantumItems}
+          language={language}
+        />
       </section>
 
-      {/* ////////////////////////// CHAPTER 04: Projects Section ////////////////////////// */}
+      {/* ////////////////////////// CHAPTER 04: Projects Scroll-Stopping Product Showcase ////////////////////////// */}
       <section
         id="proyectos"
         ref={sectionRefs.proyectos}
-        className="relative z-10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8"
+        className="relative z-10"
       >
-        <div
-          className={`max-w-6xl mx-auto ${
-            visibleSections.proyectos ? 'animate-fadeInUp' : 'opacity-0'
-          }`}
-        >
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-4">
-              04 // Featured Work
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold font-heading text-slate-900 dark:text-white mb-4">
-              {currentPortfolioData.projectsSettings.title}
-            </h2>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
-              {currentPortfolioData.projectsSettings.subtitle}
-            </p>
-          </div>
+        <ProjectScrollShowcase
+          proyectos={currentPortfolioData.proyectos}
+          currentPortfolioData={currentPortfolioData}
+          language={language}
+        />
 
+        {/* Galería Interactiva Completa con Quick Look debajo del Showcase Anclado */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-6">
+          <div className="flex items-center gap-4 mb-8">
+            <span className="text-xs font-mono uppercase tracking-widest text-emerald-500 font-bold">
+              ALL FEATURED RELEASES ({currentPortfolioData.proyectos.length})
+            </span>
+            <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-300 dark:from-white/15 to-transparent" />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch">
             {currentPortfolioData.proyectos.map(proyecto => (
               <ProjectCard
