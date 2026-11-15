@@ -30,11 +30,16 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
 
     useEffect(() => {
         if (!isQuickLookOpen) return;
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") setIsQuickLookOpen(false);
         };
         window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
+        return () => {
+            document.body.style.overflow = prevOverflow;
+            window.removeEventListener("keydown", handleKeyDown);
+        };
     }, [isQuickLookOpen]);
 
     const isCompleted =
@@ -98,7 +103,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                             setIsQuickLookOpen(true);
                         }}
                         aria-label={`Ampliar vista de ${proyecto.titulo}`}
-                        className="absolute top-3.5 left-3.5 z-10 w-8 h-8 rounded-full bg-slate-950/60 hover:bg-slate-950/85 text-white/90 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
+                        className="absolute top-3.5 left-3.5 z-10 w-8 h-8 rounded-full bg-slate-950/65 hover:bg-slate-950/90 text-white/95 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-90 lg:opacity-0 lg:translate-y-1 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 transition-all duration-300 shadow-lg"
                     >
                         <Maximize2 className="w-3.5 h-3.5" />
                     </button>

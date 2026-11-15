@@ -43,13 +43,18 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
@@ -197,6 +202,17 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                     <span>{item.displayText}</span>
                   </button>
                 ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onScrollToSection('dispositivo-isometrico');
+                    onClose();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 dark:bg-emerald-500/15 hover:bg-emerald-500 hover:text-slate-950 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25 transition-colors"
+                >
+                  <Smartphone className="w-3 h-3" />
+                  <span>{isEs ? 'Laboratorio Isométrico' : 'Isometric Device Lab'}</span>
+                </button>
               </div>
             </div>
           )}

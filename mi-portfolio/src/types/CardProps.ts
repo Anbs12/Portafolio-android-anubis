@@ -12,6 +12,7 @@ export interface ProjectCardProps {
 
 export interface TechCardProps {
   tech: TechnologyItem;
+  compact?: boolean;
 }
 
 export interface EducationCardProps {

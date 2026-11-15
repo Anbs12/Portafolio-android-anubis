@@ -36,6 +36,11 @@ export const ScrollyCanvas: React.FC<ScrollyCanvasProps> = ({ scrollProgress, th
     if (!ctx) return;
 
     let animationFrameId: number;
+    let isPaused = document.visibilityState === 'hidden';
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -50,11 +55,19 @@ export const ScrollyCanvas: React.FC<ScrollyCanvasProps> = ({ scrollProgress, th
       mouseRef.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
     };
 
+    const handleVisibilityChange = () => {
+      isPaused = document.visibilityState === 'hidden';
+      if (!isPaused && !prefersReducedMotion) {
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
     window.addEventListener('resize', handleResize, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Create 3D architectural nodes (representing Kotlin coroutines, reactive flows & quantum states)
-    const NODE_COUNT = 135;
+    // Adaptive node count: lighter on mobile for 60fps & battery efficiency
+    const NODE_COUNT = window.innerWidth < 768 ? 65 : 135;
     const nodes: Node3D[] = Array.from({ length: NODE_COUNT }, (_, i) => {
       const goldenRatio = (1 + Math.sqrt(5)) / 2;
       const theta = (2 * Math.PI * i) / goldenRatio;
@@ -246,15 +259,20 @@ export const ScrollyCanvas: React.FC<ScrollyCanvasProps> = ({ scrollProgress, th
         ctx.fill();
       }
 
-      animationFrameId = requestAnimationFrame(render);
+      if (!isPaused && !prefersReducedMotion) {
+        animationFrameId = requestAnimationFrame(render);
+      }
     };
 
-    animationFrameId = requestAnimationFrame(render);
+    if (!isPaused) {
+      animationFrameId = requestAnimationFrame(render);
+    }
 
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 

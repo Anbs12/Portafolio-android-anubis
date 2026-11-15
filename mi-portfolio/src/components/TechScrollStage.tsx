@@ -38,7 +38,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!trackRef.current || showAllGrid) return;
+      if (!trackRef.current || showAllGrid || window.innerWidth < 1024) return;
       const rect = trackRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const scrollableDistance = rect.height - windowHeight;
@@ -84,7 +84,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
   const jumpToCategory = (index: number) => {
     setActiveIndex(index);
-    if (!trackRef.current || showAllGrid) return;
+    if (!trackRef.current || showAllGrid || window.innerWidth < 1024) return;
 
     const rect = trackRef.current.getBoundingClientRect();
     const absoluteTrackTop = window.scrollY + rect.top;
@@ -96,19 +96,21 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
   };
 
   const activeCategory = nonEmptyCategories[activeIndex] || nonEmptyCategories[0];
+  const formatIndex = (idx: number) => String(idx + 1).padStart(2, '0');
+  const isDenseCategory = activeCategory.items.length > 4;
 
   return (
     <div className="w-full">
-      {/* ==================== CONTENEDOR SCROLL-STOPPING CALIBRADO (260vh) ==================== */}
+      {/* ==================== CONTENEDOR SCROLL-STOPPING EN DESKTOP (lg:260vh) Y FLUIDO EN MOBILE ==================== */}
       <div
         ref={trackRef}
-        className={showAllGrid ? 'relative py-20' : 'relative min-h-[260vh]'}
+        className={showAllGrid ? 'relative py-20' : 'relative py-20 lg:py-0 lg:min-h-[260vh]'}
       >
         <div
           className={
             showAllGrid
               ? 'relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'
-              : 'sticky top-0 min-h-screen flex flex-col justify-between py-20 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden'
+              : 'lg:sticky lg:top-0 lg:min-h-screen flex flex-col justify-between lg:py-16 xl:py-20 px-4 sm:px-6 lg:px-8 lg:overflow-x-clip'
           }
         >
           {/* Luz ambiental reactiva */}
@@ -121,9 +123,9 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
           <div className="relative z-10 w-full max-w-6xl mx-auto flex-1 flex flex-col justify-center">
             {/* Cabecera + Controles Interactivos (Simular Petición UDF / Expandir / Saltar) */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-5 lg:mb-6">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono uppercase tracking-widest bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2.5">
                   <Sparkles className="w-3 h-3" />
                   <span>
                     {isEs
@@ -155,8 +157,8 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                     <span>
                       {isSimulatingFlow
                         ? isEs
-                          ? `Ejecutando Capa 0${simStep + 1}...`
-                          : `Running Layer 0${simStep + 1}...`
+                          ? `Ejecutando Capa ${formatIndex(simStep)}...`
+                          : `Running Layer ${formatIndex(simStep)}...`
                         : isEs
                         ? 'Simular Flujo de App'
                         : 'Simulate App Flow'}
@@ -196,16 +198,16 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
             {!showAllGrid ? (
               /* ==================== ESCENARIO INTERACTIVO ANCLADO (SCROLL-STOPPING) ==================== */
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-7 items-start">
                 {/* Columna Izquierda (5 cols): El "Reactor de Arquitectura" SVG + Selector de Capas */}
-                <div className="lg:col-span-5 flex flex-col gap-5">
-                  <div className="relative rounded-3xl p-6 bg-white/80 dark:bg-slate-900/65 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-[0_12px_40px_rgb(0,0,0,0.05)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.45)] overflow-hidden">
+                <div className="lg:col-span-5 flex flex-col gap-4">
+                  <div className="relative rounded-3xl p-5 bg-white/80 dark:bg-slate-900/65 backdrop-blur-2xl border border-slate-200/80 dark:border-white/10 shadow-[0_12px_40px_rgb(0,0,0,0.05)] dark:shadow-[0_20px_60px_rgb(0,0,0,0.45)] overflow-hidden">
                     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
 
                     {/* Indicador de progreso del pin */}
-                    <div className="flex items-center justify-between text-xs font-mono mb-4">
+                    <div className="flex items-center justify-between text-xs font-mono mb-3">
                       <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        {isEs ? 'CAPA' : 'LAYER'} 0{activeIndex + 1} / 0{totalSteps}
+                        {isEs ? 'CAPA' : 'LAYER'} {formatIndex(activeIndex)} / {formatIndex(totalSteps - 1)}
                       </span>
                       <span className="inline-flex items-center gap-1 text-slate-400 dark:text-slate-500">
                         {isSimulatingFlow ? (
@@ -224,7 +226,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                     </div>
 
                     {/* Visualizador Vectorial de Capas de Arquitectura */}
-                    <div className="relative h-44 flex items-center justify-center my-1">
+                    <div className="relative h-36 xl:h-40 flex items-center justify-center my-1">
                       <svg
                         viewBox="0 0 360 180"
                         className="w-full h-full overflow-visible"
@@ -261,7 +263,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                         {/* Discos apilados representando cada categoría */}
                         {nonEmptyCategories.map((_, idx) => {
                           const isCurrent = idx === activeIndex;
-                          const yPos = 26 + idx * 18;
+                          const yPos = 22 + idx * 19;
                           return (
                             <g
                               key={idx}
@@ -305,7 +307,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                     </div>
 
                     {/* Lista rápida de categorías sincronizadas con el scroll */}
-                    <div className="space-y-1.5 mt-2">
+                    <div className="space-y-1 mt-1.5">
                       {nonEmptyCategories.map((cat, idx) => {
                         const isCurrent = idx === activeIndex;
                         return (
@@ -313,14 +315,14 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                             key={idx}
                             type="button"
                             onClick={() => jumpToCategory(idx)}
-                            className={`w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-left text-xs font-mono transition-all duration-300 ${
+                            className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-left text-xs font-mono transition-all duration-300 ${
                               isCurrent
                                 ? 'bg-emerald-500 text-slate-950 font-bold shadow-[0_0_20px_rgba(16,185,129,0.35)] translate-x-1'
                                 : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.05]'
                             }`}
                           >
                             <span className="truncate pr-2">
-                              0{idx + 1}. {cat.category}
+                              {formatIndex(idx)}. {cat.category}
                             </span>
                             <span
                               className={`px-1.5 py-0.5 rounded text-[10px] ${
@@ -342,36 +344,50 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                 <div className="lg:col-span-7">
                   <div
                     key={activeIndex}
-                    className="animate-fadeInUp rounded-3xl p-6 sm:p-8 bg-white/60 dark:bg-slate-900/45 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] shadow-xl"
+                    className="animate-fadeInUp rounded-3xl p-5 sm:p-6 bg-white/60 dark:bg-slate-900/45 backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.08] shadow-xl"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-200/70 dark:border-white/10">
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200/70 dark:border-white/10">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400">
-                          <Cpu className="w-5 h-5" />
+                        <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400">
+                          <Cpu className="w-4 h-4" />
                         </div>
                         <div>
                           <div className="text-[10px] font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
                             {isEs
-                              ? `MÓDULO DE ARQUITECTURA ACTIVO // 0${activeIndex + 1}`
-                              : `ACTIVE ARCHITECTURE MODULE // 0${activeIndex + 1}`}
+                              ? `MÓDULO DE ARQUITECTURA ACTIVO // ${formatIndex(activeIndex)}`
+                              : `ACTIVE ARCHITECTURE MODULE // ${formatIndex(activeIndex)}`}
                           </div>
-                          <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-slate-900 dark:text-white">
+                          <h3 className="text-lg sm:text-xl font-extrabold font-heading text-slate-900 dark:text-white">
                             {activeCategory.category}
                           </h3>
                         </div>
                       </div>
 
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>
-                          {isEs ? 'Desliza para cambiar capa ↓' : 'Scroll to switch layer ↓'}
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                          {activeCategory.items.length}{' '}
+                          {isEs ? 'módulos' : 'modules'}
                         </span>
-                      </span>
+                        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>
+                            {isEs ? 'Desliza para cambiar capa ↓' : 'Scroll to switch layer ↓'}
+                          </span>
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div
+                      className={`grid grid-cols-1 sm:grid-cols-2 ${
+                        isDenseCategory ? 'xl:grid-cols-3 gap-3' : 'gap-4'
+                      } lg:max-h-[calc(100vh-17.5rem)] lg:overflow-y-auto lg:pr-1`}
+                    >
                       {activeCategory.items.map((tech, techIndex) => (
-                        <TechCard key={techIndex} tech={tech} />
+                        <TechCard
+                          key={techIndex}
+                          tech={tech}
+                          compact={isDenseCategory}
+                        />
                       ))}
                     </div>
                   </div>
@@ -384,7 +400,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                   <div key={index}>
                     <div className="flex items-center gap-4 mb-5">
                       <span className="text-xs font-mono text-emerald-500 font-bold">
-                        0{index + 1}
+                        {formatIndex(index)}
                       </span>
                       <h3 className="text-lg sm:text-xl font-bold font-heading text-slate-800 dark:text-slate-200">
                         {categoryGroup.category}
@@ -404,7 +420,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
           {/* Cinta Cinética de Telemetría en la base del escenario Scroll-Stopping */}
           {!showAllGrid && (
-            <div className="relative z-10 max-w-6xl w-full mx-auto mt-8 pt-4 border-t border-slate-200/60 dark:border-white/[0.06] overflow-hidden">
+            <div className="relative z-10 max-w-6xl w-full mx-auto mt-5 pt-3 border-t border-slate-200/60 dark:border-white/[0.06] overflow-hidden">
               <div
                 style={{
                   transform: `translateX(${(-stageProgress * 420).toFixed(1)}px)`,

@@ -11,11 +11,13 @@ import {
   Compass,
   Eye,
   Search,
+  Smartphone,
+  ArrowUpRight,
 } from 'lucide-react';
 import type { PortfolioDataType } from '../types/Portfolio';
 import { portfolioDataEs } from '../data/portfolioDataEs';
 import { portfolioDataEn } from '../data/portfolioDataEn';
-import { ExplodedPhoneHero } from '../components/ExplodedPhoneHero';
+import { IsometricDeviceLab } from '../components/IsometricDeviceLab';
 import { TechScrollStage } from '../components/TechScrollStage';
 import { ProjectScrollShowcase } from '../components/ProjectScrollShowcase';
 import { HorizontalSubProjectsDeck } from '../components/HorizontalSubProjectsDeck';
@@ -88,6 +90,7 @@ const Portfolio: React.FC = () => {
   const sectionRefs = {
     inicio: useRef<HTMLElement>(null),
     sobreMi: useRef<HTMLElement>(null),
+    dispositivo: useRef<HTMLElement>(null),
     tecnologias: useRef<HTMLElement>(null),
     proyectos: useRef<HTMLElement>(null),
     subProyectos: useRef<HTMLElement>(null),
@@ -142,6 +145,7 @@ const Portfolio: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({
     inicio: true,
     sobreMi: false,
+    dispositivo: false,
     tecnologias: false,
     proyectos: false,
     subProyectos: false,
@@ -168,7 +172,7 @@ const Portfolio: React.FC = () => {
               revealObserver.unobserve(entry.target);
             }
           },
-          { threshold: 0.06 }
+          { threshold: 0.01, rootMargin: '0px 0px -20px 0px' }
         );
         revealObserver.observe(ref.current);
         observers.push(revealObserver);
@@ -188,6 +192,7 @@ const Portfolio: React.FC = () => {
 
     createObserver(sectionRefs.inicio, 'inicio', 'inicio');
     createObserver(sectionRefs.sobreMi, 'sobreMi', 'sobre-mi');
+    createObserver(sectionRefs.dispositivo, 'dispositivo', 'dispositivo-isometrico');
     createObserver(sectionRefs.tecnologias, 'tecnologias', 'tecnologias');
     createObserver(sectionRefs.proyectos, 'proyectos', 'proyectos');
     createObserver(sectionRefs.subProyectos, 'subProyectos', 'proyectos');
@@ -226,6 +231,9 @@ const Portfolio: React.FC = () => {
   };
 
   const getActiveSectionLabel = (): string => {
+    if (activeSection === 'dispositivo-isometrico') {
+      return language === 'es' ? 'Laboratorio Isométrico' : 'Isometric Lab';
+    }
     for (const item of currentPortfolioData.navItems) {
       if (item.id === activeSection) return item.displayText;
       if (item.subItems) {
@@ -245,6 +253,7 @@ const Portfolio: React.FC = () => {
   const scrollyChapters = [
     { id: 'inicio', code: '01' },
     { id: 'sobre-mi', code: '02' },
+    { id: 'dispositivo-isometrico', code: '02.B' },
     { id: 'tecnologias', code: '03' },
     { id: 'proyectos', code: '04' },
     { id: 'experiencia', code: '05' },
@@ -500,7 +509,7 @@ const Portfolio: React.FC = () => {
 
           {/* Menú Móvil Desplegable */}
           {isMenuOpen && (
-            <div className="lg:hidden mt-3 pt-3 border-t border-slate-200/60 dark:border-white/10 space-y-1">
+            <div className="lg:hidden mt-3 pt-3 border-t border-slate-200/60 dark:border-white/10 space-y-1 max-h-[72vh] overflow-y-auto">
               {currentPortfolioData.navItems.map(item =>
                 item.subItems ? (
                   <div key={item.id}>
@@ -546,15 +555,76 @@ const Portfolio: React.FC = () => {
         </nav>
       </header>
 
-      {/* ////////////////////////// CHAPTER 01: Exploded 3D Android Phone Hero (Scroll-Stopping) ////////////////////////// */}
-      <section id="inicio" ref={sectionRefs.inicio} className="relative z-10">
-        <ExplodedPhoneHero
-          currentPortfolioData={currentPortfolioData}
-          currentDynamicPhraseIndex={currentDynamicPhraseIndex}
-          language={language}
-          isXRay={isXRay}
-          onScrollToSection={scrollToSection}
-        />
+      {/* ////////////////////////// CHAPTER 01: Minimalist Hero Section ////////////////////////// */}
+      <section
+        id="inicio"
+        ref={sectionRefs.inicio}
+        className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16 overflow-hidden"
+      >
+        {/* Halo volumétrico sutil de fondo */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] sm:w-[740px] sm:h-[740px] rounded-full bg-gradient-to-tr from-emerald-500/18 via-cyan-500/10 to-purple-500/14 blur-[120px]" />
+
+        <div className="relative z-10 max-w-4xl w-full mx-auto text-center">
+          {/* Pill minimalista de rol */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/85 dark:bg-white/[0.07] backdrop-blur-xl border border-slate-200/80 dark:border-white/15 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-mono mb-7 shadow-[0_0_25px_rgba(16,185,129,0.16)]">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
+            </span>
+            <Smartphone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>{currentPortfolioData.personal.titulo}</span>
+          </div>
+
+          {/* Nombre y Apellido Monumental */}
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold font-hero-name tracking-tight bg-gradient-to-b from-slate-950 via-slate-800 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 bg-clip-text text-transparent mb-7 drop-shadow-sm">
+            {currentPortfolioData.personal.nombre}
+          </h1>
+
+          {/* Frase Principal + Palabras Dinámicas Cambiantes */}
+          <div className="space-y-2 mb-11">
+            <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
+              {currentPortfolioData.hero.staticHeroTitlePartOne}
+            </p>
+
+            <div className="h-12 sm:h-16 flex items-center justify-center">
+              <span
+                key={currentDynamicPhraseIndex}
+                className="inline-block px-5 py-1.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 dark:border-emerald-400/30 backdrop-blur-md text-2xl sm:text-4xl md:text-5xl font-bold font-heading bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 bg-clip-text text-transparent animate-fade-in-out-single"
+              >
+                {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
+              </span>
+            </div>
+
+            <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
+              {currentPortfolioData.hero.staticHeroTitlePartTwo}
+            </p>
+          </div>
+
+          {/* Los dos botones principales: Ver Proyectos y Contactar */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={() => scrollToSection('proyectos')}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-950 font-semibold px-8 py-4 rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.35)] hover:shadow-[0_0_45px_rgba(16,185,129,0.65)] transition-all duration-300 hover:-translate-y-0.5"
+            >
+              <span>{currentPortfolioData.hero.buttonProjects}</span>
+              <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+            </button>
+
+            <button
+              onClick={() => scrollToSection('contacto')}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-2xl font-semibold text-slate-800 dark:text-white bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 backdrop-blur-md border border-slate-300/80 dark:border-white/20 transition-all duration-300 hover:-translate-y-0.5"
+            >
+              <span>{currentPortfolioData.hero.buttonContact}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Indicador minimalista de scroll */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
+          <div className="w-5 h-8 rounded-full border-2 border-slate-400 dark:border-slate-500 flex justify-center p-1">
+            <div className="w-1 h-2 rounded-full bg-emerald-400 animate-bounce" />
+          </div>
+        </div>
       </section>
 
       {/* ////////////////////////// CHAPTER 02: "Sobre mí" + Escultura SVG Android + Pilares Ejecutivos ////////////////////////// */}
@@ -634,6 +704,24 @@ const Portfolio: React.FC = () => {
             projectsCount={currentPortfolioData.proyectos.length}
             subProjectsCount={currentPortfolioData.subProyectos.length}
             techCount={nonEmptyCategories.reduce((acc, c) => acc + c.items.length, 0)}
+          />
+        </div>
+      </section>
+
+      {/* ////////////////////////// CHAPTER 02.B: Interactive Isometric Android Device Lab (Hardware & Software) ////////////////////////// */}
+      <section
+        id="dispositivo-isometrico"
+        ref={sectionRefs.dispositivo}
+        className="relative z-10 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-slate-200/60 dark:border-white/[0.05] overflow-x-clip"
+      >
+        <div
+          className={
+            visibleSections.dispositivo ? 'animate-fadeInUp' : 'opacity-0'
+          }
+        >
+          <IsometricDeviceLab
+            currentPortfolioData={currentPortfolioData}
+            language={language}
           />
         </div>
       </section>
@@ -886,18 +974,18 @@ const Portfolio: React.FC = () => {
 
       {/* ////////////////////////// Apple Dynamic Island Action Bar (Flotante Inferior) ////////////////////////// */}
       <div
-        className={`fixed bottom-5 inset-x-0 z-40 flex justify-center px-4 pointer-events-none transition-all duration-500 ${
+        className={`fixed bottom-4 sm:bottom-5 inset-x-0 z-40 flex justify-center px-3 sm:px-4 pointer-events-none transition-all duration-500 ${
           scrollProgress > 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}
       >
-        <div className="pointer-events-auto inline-flex items-center gap-2.5 sm:gap-3 px-4 py-2 rounded-full bg-slate-950/85 dark:bg-slate-900/90 text-white backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
+        <div className="pointer-events-auto max-w-[calc(100vw-1.5rem)] overflow-x-auto no-scrollbar inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 rounded-full bg-slate-950/90 dark:bg-slate-900/90 text-white backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.65)] whitespace-nowrap">
           {/* Indicador de capítulo y sección actual */}
-          <div className="flex items-center gap-2 pr-2 border-r border-white/15">
+          <div className="flex items-center gap-1.5 sm:gap-2 pr-2 border-r border-white/15">
             <Compass
-              className="w-3.5 h-3.5 text-emerald-400 animate-spin"
+              className="w-3.5 h-3.5 text-emerald-400 animate-spin flex-shrink-0"
               style={{ animationDuration: '10s' }}
             />
-            <span className="text-xs font-mono font-medium tracking-wide text-slate-200">
+            <span className="text-[11px] sm:text-xs font-mono font-medium tracking-wide text-slate-200 truncate max-w-[95px] sm:max-w-none">
               {getActiveSectionLabel()}
             </span>
           </div>
@@ -916,7 +1004,7 @@ const Portfolio: React.FC = () => {
           <button
             type="button"
             onClick={() => scrollToSection('proyectos')}
-            className="text-xs font-semibold px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            className="text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
           >
             {currentPortfolioData.hero.buttonProjects}
           </button>
@@ -925,7 +1013,7 @@ const Portfolio: React.FC = () => {
           <button
             type="button"
             onClick={() => scrollToSection('contacto')}
-            className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors"
+            className="text-[11px] sm:text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors"
           >
             {currentPortfolioData.hero.buttonContact}
           </button>
@@ -934,8 +1022,8 @@ const Portfolio: React.FC = () => {
           <button
             type="button"
             onClick={() => scrollToSection('inicio')}
-            aria-label="Volver arriba"
-            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+            aria-label={language === 'es' ? 'Volver arriba' : 'Back to top'}
+            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors flex-shrink-0"
           >
             <ArrowUp className="w-3.5 h-3.5" />
           </button>

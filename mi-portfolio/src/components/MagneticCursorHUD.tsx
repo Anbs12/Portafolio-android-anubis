@@ -11,11 +11,22 @@ interface RippleItem {
 }
 
 export const MagneticCursorHUD: React.FC<MagneticCursorHUDProps> = ({ isXRay }) => {
+  const [enabled, setEnabled] = useState<boolean>(false);
   const [pos, setPos] = useState<{ x: number; y: number }>({ x: -100, y: -100 });
   const [isHoveringInteractive, setIsHoveringInteractive] = useState<boolean>(false);
   const [ripples, setRipples] = useState<RippleItem[]>([]);
 
   useEffect(() => {
+    const mq = window.matchMedia('(pointer: fine) and (min-width: 1024px)');
+    const updateEnabled = () => setEnabled(mq.matches);
+    updateEnabled();
+    mq.addEventListener('change', updateEnabled);
+    return () => mq.removeEventListener('change', updateEnabled);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setPos({ x: e.clientX, y: e.clientY });
       const target = e.target as HTMLElement | null;
@@ -37,10 +48,12 @@ export const MagneticCursorHUD: React.FC<MagneticCursorHUDProps> = ({ isXRay }) 
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[120] overflow-hidden hidden lg:block">
+    <div className="pointer-events-none fixed inset-0 z-[120] overflow-hidden">
       {/* Ondas hápticas visuales Material 3 al hacer clic */}
       {ripples.map(r => (
         <span
@@ -58,7 +71,7 @@ export const MagneticCursorHUD: React.FC<MagneticCursorHUDProps> = ({ isXRay }) 
           }px, 0)`,
           transition: 'width 0.2s ease, height 0.2s ease, border-color 0.2s ease',
         }}
-        className={` rounded-full border flex items-center justify-center ${
+        className={`rounded-full border flex items-center justify-center ${
           isHoveringInteractive
             ? 'w-11 h-11 border-emerald-400/80 bg-emerald-400/10 shadow-[0_0_20px_rgba(16,185,129,0.35)]'
             : 'w-7 h-7 border-emerald-400/35 bg-transparent'

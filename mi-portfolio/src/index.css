@@ -7,6 +7,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
@@ -219,4 +220,19 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fadeInUp,
+  .animate-fadeInLeft,
+  .animate-fade-in-out-single,
+  .silicon-beam-spin {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }

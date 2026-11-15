@@ -10,26 +10,41 @@ export const AndroidBootSplash: React.FC<AndroidBootSplashProps> = ({
   nombre,
   language = 'es',
 }) => {
-  const [visible, setVisible] = useState<boolean>(true);
+  const [visible, setVisible] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return false;
+    }
+    return true;
+  });
   const [fadingOut, setFadingOut] = useState<boolean>(false);
   const [step, setStep] = useState<number>(0);
   const isEs = language === 'es';
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStep(1), 260);
-    const t2 = setTimeout(() => setStep(2), 580);
-    const t3 = setTimeout(() => setStep(3), 900);
-    const t4 = setTimeout(() => setFadingOut(true), 1250);
-    const t5 = setTimeout(() => setVisible(false), 1650);
+    if (!visible) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        setVisible(false);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+
+    const t1 = setTimeout(() => setStep(1), 220);
+    const t2 = setTimeout(() => setStep(2), 480);
+    const t3 = setTimeout(() => setStep(3), 760);
+    const t4 = setTimeout(() => setFadingOut(true), 1100);
+    const t5 = setTimeout(() => setVisible(false), 1450);
 
     return () => {
+      window.removeEventListener('keydown', handleKey);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
       clearTimeout(t4);
       clearTimeout(t5);
     };
-  }, []);
+  }, [visible]);
 
   if (!visible) return null;
 

@@ -38,10 +38,10 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
     setPhoneScreenTab(isXRay ? 'arch' : 'ui');
   }, [isXRay]);
 
-  // Scroll-Stopping (Sticky Pinning) para la galería de proyectos principales
+  // Scroll-Stopping (Sticky Pinning) en Desktop (lg+); fluido e interactivo en Mobile para evitar recortes verticales
   useEffect(() => {
     const handleScroll = () => {
-      if (!trackRef.current || totalProjects === 0) return;
+      if (!trackRef.current || totalProjects === 0 || window.innerWidth < 1024) return;
       const rect = trackRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const scrollableDistance = rect.height - windowHeight;
@@ -65,13 +65,14 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
   }, [totalProjects]);
 
   const jumpToProject = (index: number) => {
-    setActiveIndex(index);
-    if (!trackRef.current) return;
+    const clamped = (index + totalProjects) % totalProjects;
+    setActiveIndex(clamped);
+    if (!trackRef.current || window.innerWidth < 1024) return;
     const rect = trackRef.current.getBoundingClientRect();
     const absoluteTrackTop = window.scrollY + rect.top;
     const scrollableDistance = rect.height - window.innerHeight;
     const targetScrollY =
-      absoluteTrackTop + ((index + 0.35) / totalProjects) * scrollableDistance;
+      absoluteTrackTop + ((clamped + 0.35) / totalProjects) * scrollableDistance;
     window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
   };
 
@@ -104,8 +105,8 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
   );
 
   return (
-    <div ref={trackRef} className="relative min-h-[280vh] w-full">
-      <div className="sticky top-0 min-h-screen flex flex-col justify-center py-20 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div ref={trackRef} className="relative py-20 lg:py-0 lg:min-h-[280vh] w-full">
+      <div className="lg:sticky lg:top-0 lg:min-h-screen flex flex-col justify-center lg:py-16 xl:py-20 px-4 sm:px-6 lg:px-8 lg:overflow-x-clip">
         {/* Halo de luz detrás del dispositivo */}
         <div
           style={{
