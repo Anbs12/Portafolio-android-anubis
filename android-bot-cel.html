@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Android Bot 3D — Cel-Shader WebGL</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #canvas-host {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    #canvas-host.hovering-bot {
+      cursor: pointer;
+    }
+
+    #canvas-host:active {
+      cursor: grabbing;
+    }
+
+    /* Cute floating speech bubble on wave */
+    .wave-bubble {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px) scale(0.85);
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.86);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(61, 220, 132, 0.55);
+      color: #a7f3d0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 18px rgba(61, 220, 132, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .wave-bubble.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+
+    /* Bottom minimalist interaction hint pill */
+    .hint-pill {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    .hint-pill:hover {
+      border-color: rgba(61, 220, 132, 0.65);
+      background: rgba(16, 185, 129, 0.2);
+      color: #ffffff;
+    }
+
+    .hint-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3ddc84;
+      box-shadow: 0 0 8px #3ddc84;
+    }
+  </style>
+
+  <!-- ES Modules Import Map for Three.js r186 -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="canvas-host"></div>
+
+  <div id="wave-bubble" class="wave-bubble">¡Hola! Kotlin + Compose ⚡</div>
+
+  <button id="wave-btn" class="hint-pill" type="button">
+    <span class="hint-dot"></span>
+    <span id="hint-text">Toca para saludar • Arrastra 360°</span>
+  </button>
+
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    // =========================================================================
+    // 0. LOCALIZATION (ES / EN)
+    // =========================================================================
+    const params = new URLSearchParams(window.location.search);
+    let currentLang = params.get("lang") === "en" ? "en" : "es";
+
+    const I18N = {
+      es: {
+        hint: "Toca para saludar • Arrastra 360°",
+        greetings: [
+          "¡Hola! 👋 Kotlin & Compose",
+          "¡Listo para crear apps Android! 🚀",
+          "¡Clean Arch & 60 FPS! ⚡"
+        ]
+      },
+      en: {
+        hint: "Tap to wave • Drag 360°",
+        greetings: [
+          "Hello! 👋 Kotlin & Compose",
+          "Ready to build Android apps! 🚀",
+          "Clean Arch & 60 FPS! ⚡"
+        ]
+      }
+    };
+
+    const hintTextEl = document.getElementById("hint-text");
+    const bubbleEl = document.getElementById("wave-bubble");
+    const waveBtn = document.getElementById("wave-btn");
+    let greetingIndex = 0;
+
+    function syncLangText() {
+      hintTextEl.textContent = I18N[currentLang].hint;
+    }
+    syncLangText();
+
+    // =========================================================================
+    // 1. RENDERER, SCENE & CAMERA
+    // =========================================================================
+    const host = document.getElementById("canvas-host");
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+    host.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    function getResponsiveFov(w, h) {
+      const a = w / Math.max(1, h);
+      return a < 0.85 ? Math.min(50, 34 / Math.max(0.65, a)) : 34;
+    }
+
+    const camera = new THREE.PerspectiveCamera(
+      getResponsiveFov(window.innerWidth, window.innerHeight),
+      window.innerWidth / Math.max(1, window.innerHeight),
+      0.1,
+      50
+    );
+    camera.position.set(0.25, 1.15, 6.0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, -0.08, 0);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.enableZoom = false; // Never hijack page scroll inside About Me
+    controls.enablePan = false;
+    controls.minPolarAngle = Math.PI * 0.28;
+    controls.maxPolarAngle = Math.PI * 0.56;
+
+    // =========================================================================
+    // 2. STUDIO LIGHTING (Hemisphere + 2048x2048 Directional + Accent PointLights)
+    // =========================================================================
+    const hemiLight = new THREE.HemisphereLight(0xd1fae5, 0x064e3b, 0.42);
+    scene.add(hemiLight);
+
+    const keyDirLight = new THREE.DirectionalLight(0xffffff, 2.1);
+    keyDirLight.position.set(-3.4, 5.8, 3.8);
+    keyDirLight.castShadow = true;
+    keyDirLight.shadow.mapSize.set(2048, 2048);
+    keyDirLight.shadow.camera.left = -3.4;
+    keyDirLight.shadow.camera.right = 3.4;
+    keyDirLight.shadow.camera.top = 3.4;
+    keyDirLight.shadow.camera.bottom = -3.4;
+    keyDirLight.shadow.camera.near = 0.5;
+    keyDirLight.shadow.camera.far = 18;
+    keyDirLight.shadow.normalBias = 0.025;
+    keyDirLight.shadow.bias = -0.0002;
+    scene.add(keyDirLight);
+
+    // Accent PointLights illuminating metallic & emissive elements
+    const emeraldAccent = new THREE.PointLight(0x3ddc84, 24, 12, 2);
+    emeraldAccent.position.set(-2.4, 1.3, 2.0);
+    scene.add(emeraldAccent);
+
+    const cyanAccent = new THREE.PointLight(0x38bdf8, 22, 12, 2);
+    cyanAccent.position.set(2.5, 1.0, -1.8);
+    scene.add(cyanAccent);
+
+    // =========================================================================
+    // 3. CUSTOM GLSL CEL-SHADER MATERIAL
+    // =========================================================================
+    function createCelShaderMaterial(baseHex, shadowHex, rimHex, specStrength = 0.26) {
+      return new THREE.ShaderMaterial({
+        uniforms: {
+          uBaseColor: { value: new THREE.Color(baseHex) },
+          uShadowColor: { value: new THREE.Color(shadowHex) },
+          uRimColor: { value: new THREE.Color(rimHex) },
+          uKeyDir: { value: keyDirLight.position.clone().normalize() },
+          uAccentPos1: { value: emeraldAccent.position.clone() },
+          uAccentCol1: { value: emeraldAccent.color.clone() },
+          uAccentPos2: { value: cyanAccent.position.clone() },
+          uAccentCol2: { value: cyanAccent.color.clone() },
+          uSpecStrength: { value: specStrength },
+          uHoverBoost: { value: 0.0 },
+          uTime: { value: 0.0 }
+        },
+        vertexShader: /* glsl */ `
+          varying vec3 vWorldNormal;
+          varying vec3 vWorldPos;
+
+          void main() {
+            vWorldNormal = normalize(mat3(modelMatrix) * normal);
+            vec4 worldPos = modelMatrix * vec4(position, 1.0);
+            vWorldPos = worldPos.xyz;
+            gl_Position = projectionMatrix * viewMatrix * worldPos;
+          }
+        `,
+        fragmentShader: /* glsl */ `
+          uniform vec3 uBaseColor;
+          uniform vec3 uShadowColor;
+          uniform vec3 uRimColor;
+          uniform vec3 uKeyDir;
+          uniform vec3 uAccentPos1;
+          uniform vec3 uAccentCol1;
+          uniform vec3 uAccentPos2;
+          uniform vec3 uAccentCol2;
+          uniform float uSpecStrength;
+          uniform float uHoverBoost;
+          uniform float uTime;
+
+          varying vec3 vWorldNormal;
+          varying vec3 vWorldPos;
+
+          void main() {
+            vec3 N = normalize(vWorldNormal);
+            vec3 V = normalize(cameraPosition - vWorldPos);
+            vec3 L = normalize(uKeyDir);
+
+            // 1) Crisp 3-band Cel / Toon shading with saturated emerald shadow ramp
+            float NdotL = dot(N, L) * 0.5 + 0.5;
+            float midBand = smoothstep(0.36, 0.39, NdotL);
+            float litBand = smoothstep(0.64, 0.67, NdotL);
+
+            vec3 midColor = mix(uShadowColor, uBaseColor, 0.62);
+            vec3 color = mix(uShadowColor, midColor, midBand);
+            color = mix(color, uBaseColor, litBand);
+
+            // 2) Subtle upper crown cel highlight band (never washes out base green)
+            float crownBand = smoothstep(0.87, 0.90, NdotL);
+            color = mix(color, uBaseColor * 1.12, crownBand * 0.65);
+
+            // 3) Stylized crisp Cel Specular (upper-left studio key, clear of the eyes)
+            vec3 H = normalize(L + V);
+            float NdotH = max(dot(N, H), 0.0);
+            float spec = smoothstep(0.86, 0.89, pow(NdotH, 38.0)) * uSpecStrength;
+
+            // 4) Studio PointLight rim accents quantized into toon edge bands
+            vec3 toA1 = uAccentPos1 - vWorldPos;
+            float d1 = length(toA1);
+            float att1 = 1.0 / (1.0 + 0.25 * d1 * d1);
+            float celA1 = smoothstep(0.35, 0.45, max(dot(N, normalize(toA1)), 0.0)) * att1;
+
+            vec3 toA2 = uAccentPos2 - vWorldPos;
+            float d2 = length(toA2);
+            float att2 = 1.0 / (1.0 + 0.22 * d2 * d2);
+            float celA2 = smoothstep(0.30, 0.42, max(dot(N, normalize(toA2)), 0.0)) * att2;
+
+            // 5) Crisp Cel Fresnel Rim Outline
+            float fresnel = 1.0 - max(dot(N, V), 0.0);
+            float celRim = smoothstep(0.70, 0.75, fresnel);
+
+            color += vec3(0.88, 1.0, 0.94) * spec;
+            color += uAccentCol1 * celA1 * 0.14;
+            color += uAccentCol2 * celA2 * 0.22;
+            color += uRimColor * celRim * (0.28 + uHoverBoost * 0.35);
+            color *= (1.0 + uHoverBoost * 0.08);
+
+            gl_FragColor = vec4(color, 1.0);
+            #include <tonemapping_fragment>
+            #include <colorspace_fragment>
+          }
+        `
+      });
+    }
+
+    // Classic Google Android Bugdroid Green (#3DDC84) with rich emerald toon shadow (#15804d)
+    const androidCelMat = createCelShaderMaterial(0x3ddc84, 0x15804d, 0x86efac, 0.24);
+    const outlineMat = new THREE.MeshBasicMaterial({
+      color: 0x052014,
+      side: THREE.BackSide
+    });
+
+    // Metallic & Emissive Accent Materials illuminated by studio lights
+    const chromeRingMat = new THREE.MeshStandardMaterial({
+      color: 0xdbeafe,
+      metalness: 0.92,
+      roughness: 0.16
+    });
+
+    const darkJointMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      metalness: 0.75,
+      roughness: 0.32
+    });
+
+    const eyeEmissiveMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0xffffff,
+      emissiveIntensity: 0.9,
+      roughness: 0.12
+    });
+
+    const eyeOutlineMat = new THREE.MeshBasicMaterial({
+      color: 0x052014,
+      side: THREE.BackSide
+    });
+
+    /**
+     * Attaches the BackSide cel-ink outline directly as a child of `mesh`
+     * so any position, rotation, or scale applied to `mesh` always keeps
+     * the outline locked in place with zero offset drift.
+     */
+    function addCelPart(parent, geometry, material, outlineScale = [1.03, 1.03, 1.03]) {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      parent.add(mesh);
+
+      const outline = new THREE.Mesh(geometry, outlineMat);
+      if (Array.isArray(outlineScale)) {
+        outline.scale.set(outlineScale[0], outlineScale[1], outlineScale[2]);
+      } else {
+        outline.scale.setScalar(outlineScale);
+      }
+      outline.castShadow = false;
+      outline.receiveShadow = false;
+      mesh.add(outline);
+
+      return mesh;
+    }
+
+    // =========================================================================
+    // 4. BUILD THE GOOGLE ANDROID MASCOT (BUGDROID)
+    // =========================================================================
+    const botRoot = new THREE.Group();
+    botRoot.position.y = 0.08;
+    scene.add(botRoot);
+
+    const bodyBounceGroup = new THREE.Group();
+    botRoot.add(bodyBounceGroup);
+
+    // --- Torso (Rounded cylinder body) ---
+    const torsoGroup = new THREE.Group();
+    bodyBounceGroup.add(torsoGroup);
+
+    const torsoBodyGeo = new THREE.CylinderGeometry(0.84, 0.84, 1.02, 48);
+    const torsoBody = addCelPart(torsoGroup, torsoBodyGeo, androidCelMat, [1.028, 1.018, 1.028]);
+    torsoBody.position.y = -0.1;
+
+    // Rounded bottom skirt cap
+    const torsoBottomGeo = new THREE.SphereGeometry(0.84, 48, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);
+    const torsoBottom = addCelPart(torsoGroup, torsoBottomGeo, androidCelMat, [1.028, 1.08, 1.028]);
+    torsoBottom.scale.y = 0.28;
+    torsoBottom.position.y = -0.61;
+
+    // Flat top shoulder cap
+    const torsoTopCap = new THREE.Mesh(new THREE.CircleGeometry(0.84, 48), androidCelMat);
+    torsoTopCap.rotation.x = -Math.PI / 2;
+    torsoTopCap.position.y = 0.41;
+    torsoGroup.add(torsoTopCap);
+
+    // Sleek metallic neck collar accent (illuminated by studio lights)
+    const collarRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.74, 0.024, 16, 48),
+      chromeRingMat
+    );
+    collarRing.rotation.x = Math.PI / 2;
+    collarRing.position.y = 0.445;
+    collarRing.castShadow = true;
+    torsoGroup.add(collarRing);
+
+    // --- Head Group (Dome + Eyes + Spring Antennae) ---
+    const headPivot = new THREE.Group();
+    headPivot.position.y = 0.49;
+    bodyBounceGroup.add(headPivot);
+
+    const domeGeo = new THREE.SphereGeometry(0.84, 48, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+    addCelPart(headPivot, domeGeo, androidCelMat, [1.028, 1.028, 1.028]);
+
+    const headBottomDisc = new THREE.Mesh(new THREE.CircleGeometry(0.84, 48), androidCelMat);
+    headBottomDisc.rotation.x = Math.PI / 2;
+    headPivot.add(headBottomDisc);
+
+    // Eyes with crisp thin dark ring so white eyes pop cleanly
+    const eyeGeo = new THREE.SphereGeometry(0.082, 24, 16);
+    function createEye(xPos) {
+      const eye = new THREE.Mesh(eyeGeo, eyeEmissiveMat);
+      eye.position.set(xPos, 0.34, 0.725);
+      eye.scale.set(1, 1, 0.65);
+
+      const eyeRim = new THREE.Mesh(eyeGeo, eyeOutlineMat);
+      eyeRim.scale.setScalar(1.16);
+      eye.add(eyeRim);
+
+      headPivot.add(eye);
+      return eye;
+    }
+
+    const leftEye = createEye(-0.33);
+    const rightEye = createEye(0.33);
+
+    // Antennae with pivots for secondary spring wiggle
+    const antGeo = new THREE.CapsuleGeometry(0.052, 0.32, 8, 16);
+
+    const leftAntPivot = new THREE.Group();
+    leftAntPivot.position.set(-0.42, 0.7, 0);
+    leftAntPivot.rotation.z = 0.48;
+    headPivot.add(leftAntPivot);
+    const leftAnt = addCelPart(leftAntPivot, antGeo, androidCelMat, [1.22, 1.05, 1.22]);
+    leftAnt.position.y = 0.16;
+
+    const rightAntPivot = new THREE.Group();
+    rightAntPivot.position.set(0.42, 0.7, 0);
+    rightAntPivot.rotation.z = -0.48;
+    headPivot.add(rightAntPivot);
+    const rightAnt = addCelPart(rightAntPivot, antGeo, androidCelMat, [1.22, 1.05, 1.22]);
+    rightAnt.position.y = 0.16;
+
+    // --- Articulated Arms (Shoulder Pivots + Clean Horizontal Connector Pins) ---
+    const armGeo = new THREE.CapsuleGeometry(0.185, 0.56, 12, 24);
+    const pinGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.24, 16);
+
+    // Left Arm
+    const leftArmPivot = new THREE.Group();
+    leftArmPivot.position.set(-1.08, 0.22, 0);
+    bodyBounceGroup.add(leftArmPivot);
+    const leftArm = addCelPart(leftArmPivot, armGeo, androidCelMat, [1.065, 1.03, 1.065]);
+    leftArm.position.y = -0.28;
+
+    const leftPin = new THREE.Mesh(pinGeo, darkJointMat);
+    leftPin.rotation.z = Math.PI / 2;
+    leftPin.position.set(-0.91, 0.22, 0);
+    bodyBounceGroup.add(leftPin);
+
+    // Right Arm (waves cheerfully on click!)
+    const rightArmPivot = new THREE.Group();
+    rightArmPivot.position.set(1.08, 0.22, 0);
+    bodyBounceGroup.add(rightArmPivot);
+    const rightArm = addCelPart(rightArmPivot, armGeo, androidCelMat, [1.065, 1.03, 1.065]);
+    rightArm.position.y = -0.28;
+
+    const rightPin = new THREE.Mesh(pinGeo, darkJointMat);
+    rightPin.rotation.z = Math.PI / 2;
+    rightPin.position.set(0.91, 0.22, 0);
+    bodyBounceGroup.add(rightPin);
+
+    // --- Articulated Legs ---
+    const legGeo = new THREE.CapsuleGeometry(0.19, 0.44, 12, 24);
+
+    const leftLegPivot = new THREE.Group();
+    leftLegPivot.position.set(-0.36, -0.74, 0);
+    bodyBounceGroup.add(leftLegPivot);
+    const leftLeg = addCelPart(leftLegPivot, legGeo, androidCelMat, [1.065, 1.032, 1.065]);
+    leftLeg.position.y = -0.22;
+
+    const rightLegPivot = new THREE.Group();
+    rightLegPivot.position.set(0.36, -0.74, 0);
+    bodyBounceGroup.add(rightLegPivot);
+    const rightLeg = addCelPart(rightLegPivot, legGeo, androidCelMat, [1.065, 1.032, 1.065]);
+    rightLeg.position.y = -0.22;
+
+    // =========================================================================
+    // 5. STUDIO SHADOW PEDESTAL DISC (2048x2048 SOFT SHADOW RECEIVER)
+    // =========================================================================
+    const shadowFloor = new THREE.Mesh(
+      new THREE.PlaneGeometry(9, 9),
+      new THREE.ShadowMaterial({ opacity: 0.28 })
+    );
+    shadowFloor.rotation.x = -Math.PI / 2;
+    shadowFloor.position.y = -1.32;
+    shadowFloor.receiveShadow = true;
+    scene.add(shadowFloor);
+
+    const baseRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.16, 1.22, 64),
+      chromeRingMat
+    );
+    baseRing.rotation.x = -Math.PI / 2;
+    baseRing.position.y = -1.315;
+    scene.add(baseRing);
+
+    const glowRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.04, 1.11, 64),
+      new THREE.MeshBasicMaterial({
+        color: 0x3ddc84,
+        transparent: true,
+        opacity: 0.45,
+        side: THREE.DoubleSide
+      })
+    );
+    glowRing.rotation.x = -Math.PI / 2;
+    glowRing.position.y = -1.31;
+    scene.add(glowRing);
+
+    // =========================================================================
+    // 6. SPRING-DAMPING PHYSICS + CLICK TO WAVE ("SALUDO SIMPÁTICO")
+    // =========================================================================
+    function stepSpring(state, target, stiffness, damping, dt) {
+      const clampedDt = Math.min(dt, 0.05);
+      const force = -stiffness * (state.value - target) - damping * state.vel;
+      state.vel += force * clampedDt;
+      state.value += state.vel * clampedDt;
+      return state.value;
+    }
+
+    const hoverSpring = { value: 0, vel: 0 };
+    const hopSpring = { value: 0, vel: 0 };
+    const armRaiseSpring = { value: 0, vel: 0 };
+    const headTiltSpring = { value: 0, vel: 0 };
+    const bodyTurnSpring = { value: 0, vel: 0 };
+    const squashSpring = { value: 1, vel: 0 };
+
+    let isHovered = false;
+    let waveTimer = 0; // > 0 while waving
+    let bubbleTimeout = null;
+
+    function triggerWave() {
+      waveTimer = 2.35;
+      // Kick upward velocity on the hop & squash springs for tactile juice!
+      hopSpring.vel = 3.2;
+      squashSpring.vel = -2.4;
+
+      const list = I18N[currentLang].greetings;
+      bubbleEl.textContent = list[greetingIndex % list.length];
+      greetingIndex += 1;
+      bubbleEl.classList.add("visible");
+
+      if (bubbleTimeout) clearTimeout(bubbleTimeout);
+      bubbleTimeout = setTimeout(() => {
+        bubbleEl.classList.remove("visible");
+      }, 2200);
+    }
+
+    // Raycaster with drag threshold so 360° orbiting doesn't fire click
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0 };
+
+    function setPointer(e) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.set(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        -((e.clientY - rect.top) / rect.height) * 2 + 1
+      );
+    }
+
+    renderer.domElement.addEventListener("pointerdown", (e) => {
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+    });
+
+    renderer.domElement.addEventListener("pointermove", (e) => {
+      setPointer(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(botRoot, true);
+      isHovered = hits.length > 0;
+      host.classList.toggle("hovering-bot", isHovered);
+    });
+
+    renderer.domElement.addEventListener("pointerup", (e) => {
+      const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+      if (dist > 6) return;
+
+      setPointer(e);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(botRoot, true);
+      if (hits.length > 0) {
+        triggerWave();
+      }
+    });
+
+    waveBtn.addEventListener("click", triggerWave);
+
+    window.addEventListener("message", (event) => {
+      if (event.data?.type === "SET_LANG" && (event.data.language === "es" || event.data.language === "en")) {
+        currentLang = event.data.language;
+        syncLangText();
+      }
+    });
+
+    // =========================================================================
+    // 7. ANIMATION LOOP (THREE.Timer, Spring Physics, Cyclic Motion)
+    // =========================================================================
+    const timer = new THREE.Timer();
+    timer.connect(document);
+
+    function animate() {
+      timer.update();
+      const dt = timer.getDelta();
+      const elapsed = timer.getElapsed();
+
+      const isWaving = waveTimer > 0;
+      const waveElapsed = 2.35 - waveTimer;
+      if (isWaving) waveTimer = Math.max(0, waveTimer - dt);
+
+      // Update Cel-Shader Uniforms
+      const hoverVal = stepSpring(hoverSpring, isHovered || isWaving ? 1.0 : 0.0, 180, 16, dt);
+      androidCelMat.uniforms.uHoverBoost.value = hoverVal;
+      androidCelMat.uniforms.uTime.value = elapsed;
+
+      // Cyclic idle breathing & gentle bobbing
+      const idleFloat = Math.sin(elapsed * 2.1) * 0.055;
+      const idleSway = Math.sin(elapsed * 1.15) * 0.08;
+
+      // Phase-aligned spring targets during greeting wave vs idle
+      const hopTarget = isWaving ? Math.abs(Math.sin(waveElapsed * 7.5)) * 0.22 : 0.0;
+      const hopY = stepSpring(hopSpring, hopTarget, 190, 13, dt);
+
+      const squashTarget = isWaving ? 1.0 + Math.sin(waveElapsed * 15.0) * 0.045 : 1.0;
+      const squashY = stepSpring(squashSpring, squashTarget, 220, 14, dt);
+      const squashXZ = 1.0 / Math.sqrt(Math.max(0.75, squashY));
+
+      bodyBounceGroup.position.y = idleFloat + hopY;
+      bodyBounceGroup.scale.set(squashXZ, squashY, squashXZ);
+
+      // Friendly head tilt & turn toward viewer when waving
+      const headTiltTarget = isWaving ? 0.16 : Math.sin(elapsed * 1.3) * 0.045;
+      headPivot.rotation.z = stepSpring(headTiltSpring, headTiltTarget, 150, 12, dt);
+      headPivot.rotation.y = Math.sin(elapsed * 0.9) * 0.12;
+
+      const bodyTurnTarget = isWaving ? -0.18 : idleSway;
+      botRoot.rotation.y = stepSpring(bodyTurnSpring, bodyTurnTarget, 110, 14, dt);
+
+      // Right Arm Cheerful Wave (phase-aligned from 0 on every click!)
+      const raiseTarget = isWaving ? 2.45 + Math.sin(waveElapsed * 14.5) * 0.42 : 0.06 + Math.sin(elapsed * 2.1) * 0.04;
+      rightArmPivot.rotation.z = stepSpring(armRaiseSpring, raiseTarget, 210, 14, dt);
+      rightArmPivot.rotation.x = isWaving ? -0.28 : Math.sin(elapsed * 2.1) * 0.05;
+
+      // Left arm subtle counter-balance swing
+      leftArmPivot.rotation.z = isWaving ? -0.25 : -0.06 - Math.sin(elapsed * 2.1) * 0.04;
+      leftArmPivot.rotation.x = isWaving ? 0.18 : -Math.sin(elapsed * 2.1) * 0.05;
+
+      // Legs playful kick during hop
+      leftLegPivot.rotation.x = isWaving ? Math.sin(waveElapsed * 11.0) * 0.18 : 0;
+      rightLegPivot.rotation.x = isWaving ? -Math.sin(waveElapsed * 11.0) * 0.18 : 0;
+
+      // Antennae secondary spring-like wiggle
+      leftAntPivot.rotation.z = 0.48 + Math.sin(elapsed * 4.5) * (isWaving ? 0.14 : 0.03);
+      rightAntPivot.rotation.z = -0.48 - Math.cos(elapsed * 4.5) * (isWaving ? 0.14 : 0.03);
+
+      // Cute periodic blink (every ~3.8s) or happy squint during wave
+      const blinkCycle = elapsed % 3.8;
+      const isBlinking = blinkCycle > 3.66;
+      const eyeScaleY = isWaving ? 0.55 : isBlinking ? 0.12 : 1.0;
+      leftEye.scale.y = THREE.MathUtils.damp(leftEye.scale.y, eyeScaleY, 24, dt);
+      rightEye.scale.y = THREE.MathUtils.damp(rightEye.scale.y, eyeScaleY, 24, dt);
+
+      // Subtle cyclic shimmer on pedestal ring & accent lights
+      glowRing.material.opacity = 0.35 + Math.sin(elapsed * 2.5) * 0.15 + hoverVal * 0.25;
+      emeraldAccent.intensity = 24 + Math.sin(elapsed * 2.0) * 4;
+
+      controls.update(dt);
+      renderer.render(scene, camera);
+    }
+
+    renderer.setAnimationLoop(animate);
+
+    // =========================================================================
+    // 8. RESPONSIVE RESIZE
+    // =========================================================================
+    window.addEventListener("resize", () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.fov = getResponsiveFov(w, h);
+      camera.aspect = w / Math.max(1, h);
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+  </script>
+</body>
+</html>
