@@ -205,42 +205,44 @@
   animation: siliconBeam 8s linear infinite;
 }
 
-@keyframes orbitSpin {
+@keyframes orbitEllipseCW {
   0% {
-    transform: rotate(0deg);
+    offset-distance: 0%;
   }
   100% {
-    transform: rotate(360deg);
+    offset-distance: 100%;
   }
 }
 
-@keyframes orbitCounterSpin {
+@keyframes orbitEllipseCCW {
   0% {
-    transform: rotate(0deg);
+    offset-distance: 100%;
   }
   100% {
-    transform: rotate(-360deg);
+    offset-distance: 0%;
   }
 }
 
-.hero-orbit-cw {
-  animation: orbitSpin 42s linear infinite;
-  will-change: transform;
+.hero-ellipse-cw {
+  position: absolute;
+  top: 0;
+  left: 0;
+  offset-path: ellipse(50% 50% at 50% 50%);
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  animation: orbitEllipseCW 44s linear infinite;
+  will-change: offset-distance;
 }
 
-.hero-orbit-cw-counter {
-  animation: orbitCounterSpin 42s linear infinite;
-  will-change: transform;
-}
-
-.hero-orbit-ccw {
-  animation: orbitCounterSpin 28s linear infinite;
-  will-change: transform;
-}
-
-.hero-orbit-ccw-counter {
-  animation: orbitSpin 28s linear infinite;
-  will-change: transform;
+.hero-ellipse-ccw {
+  position: absolute;
+  top: 0;
+  left: 0;
+  offset-path: ellipse(50% 50% at 50% 50%);
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  animation: orbitEllipseCCW 32s linear infinite;
+  will-change: offset-distance;
 }
 
 /* Subtle architectural grid background */
@@ -270,10 +272,8 @@
   .animate-quicklook,
   .animate-ripple,
   .silicon-beam-spin,
-  .hero-orbit-cw,
-  .hero-orbit-cw-counter,
-  .hero-orbit-ccw,
-  .hero-orbit-ccw-counter {
+  .hero-ellipse-cw,
+  .hero-ellipse-ccw {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

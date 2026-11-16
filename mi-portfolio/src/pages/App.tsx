@@ -579,9 +579,9 @@ const Portfolio: React.FC = () => {
         {/* Órbita minimalista con dispositivos Samsung, Android y Kotlin */}
         <HeroOrbitBackdrop />
 
-        <div className="relative z-10 max-w-4xl w-full mx-auto text-center">
+        <div className="relative z-10 max-w-2xl w-full mx-auto text-center">
           {/* Pill minimalista de rol */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/85 dark:bg-white/[0.07] backdrop-blur-xl border border-slate-200/80 dark:border-white/15 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-mono mb-7 shadow-[0_0_25px_rgba(16,185,129,0.16)]">
+          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/85 dark:bg-white/[0.07] backdrop-blur-xl border border-slate-200/80 dark:border-white/15 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-mono mb-6 shadow-[0_0_25px_rgba(16,185,129,0.16)]">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 dark:bg-emerald-400" />
@@ -591,26 +591,26 @@ const Portfolio: React.FC = () => {
           </div>
 
           {/* Nombre y Apellido Monumental */}
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold font-hero-name tracking-tight bg-gradient-to-b from-slate-950 via-slate-800 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 bg-clip-text text-transparent mb-7 drop-shadow-sm">
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-extrabold font-hero-name tracking-tight bg-gradient-to-b from-slate-950 via-slate-800 to-slate-500 dark:from-white dark:via-white dark:to-slate-400 bg-clip-text text-transparent mb-6 drop-shadow-sm">
             {currentPortfolioData.personal.nombre}
           </h1>
 
           {/* Frase Principal + Palabras Dinámicas Cambiantes */}
-          <div className="space-y-2 mb-11">
-            <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
+          <div className="space-y-2 mb-9 max-w-xl mx-auto">
+            <p className="text-lg sm:text-2xl md:text-[1.65rem] font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-snug">
               {currentPortfolioData.hero.staticHeroTitlePartOne}
             </p>
 
-            <div className="h-12 sm:h-16 flex items-center justify-center">
+            <div className="h-12 sm:h-14 flex items-center justify-center">
               <span
                 key={currentDynamicPhraseIndex}
-                className="inline-block px-5 py-1.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 dark:border-emerald-400/30 backdrop-blur-md text-2xl sm:text-4xl md:text-5xl font-bold font-heading bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 bg-clip-text text-transparent animate-fade-in-out-single"
+                className="inline-block px-5 py-1.5 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 dark:border-emerald-400/30 backdrop-blur-md text-2xl sm:text-4xl md:text-[2.75rem] font-bold font-heading bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 dark:from-emerald-300 dark:via-teal-200 dark:to-cyan-300 bg-clip-text text-transparent animate-fade-in-out-single"
               >
                 {currentPortfolioData.hero.dynamicPhrases[currentDynamicPhraseIndex]}
               </span>
             </div>
 
-            <p className="text-lg sm:text-2xl md:text-3xl font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-relaxed">
+            <p className="text-lg sm:text-2xl md:text-[1.65rem] font-hero-title text-slate-700 dark:text-slate-200/90 font-normal leading-snug">
               {currentPortfolioData.hero.staticHeroTitlePartTwo}
             </p>
           </div>
