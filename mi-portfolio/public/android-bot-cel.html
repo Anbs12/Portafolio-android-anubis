@@ -186,9 +186,14 @@
 
     const scene = new THREE.Scene();
 
+    function getResponsiveFov(w, h) {
+      const a = w / Math.max(1, h);
+      return a < 0.85 ? Math.min(50, 34 / Math.max(0.65, a)) : 34;
+    }
+
     const camera = new THREE.PerspectiveCamera(
-      34,
-      window.innerWidth / window.innerHeight,
+      getResponsiveFov(window.innerWidth, window.innerHeight),
+      window.innerWidth / Math.max(1, window.innerHeight),
       0.1,
       50
     );
@@ -645,6 +650,7 @@
       const elapsed = timer.getElapsed();
 
       const isWaving = waveTimer > 0;
+      const waveElapsed = 2.35 - waveTimer;
       if (isWaving) waveTimer = Math.max(0, waveTimer - dt);
 
       // Update Cel-Shader Uniforms
@@ -656,11 +662,11 @@
       const idleFloat = Math.sin(elapsed * 2.1) * 0.055;
       const idleSway = Math.sin(elapsed * 1.15) * 0.08;
 
-      // Spring targets during greeting wave vs idle
-      const hopTarget = isWaving ? Math.abs(Math.sin(elapsed * 7.5)) * 0.22 : 0.0;
+      // Phase-aligned spring targets during greeting wave vs idle
+      const hopTarget = isWaving ? Math.abs(Math.sin(waveElapsed * 7.5)) * 0.22 : 0.0;
       const hopY = stepSpring(hopSpring, hopTarget, 190, 13, dt);
 
-      const squashTarget = isWaving ? 1.0 + Math.sin(elapsed * 15.0) * 0.045 : 1.0;
+      const squashTarget = isWaving ? 1.0 + Math.sin(waveElapsed * 15.0) * 0.045 : 1.0;
       const squashY = stepSpring(squashSpring, squashTarget, 220, 14, dt);
       const squashXZ = 1.0 / Math.sqrt(Math.max(0.75, squashY));
 
@@ -675,8 +681,8 @@
       const bodyTurnTarget = isWaving ? -0.18 : idleSway;
       botRoot.rotation.y = stepSpring(bodyTurnSpring, bodyTurnTarget, 110, 14, dt);
 
-      // Right Arm Cheerful Wave (raised high + friendly back-and-forth oscillation!)
-      const raiseTarget = isWaving ? 2.45 + Math.sin(elapsed * 14.5) * 0.42 : 0.06 + Math.sin(elapsed * 2.1) * 0.04;
+      // Right Arm Cheerful Wave (phase-aligned from 0 on every click!)
+      const raiseTarget = isWaving ? 2.45 + Math.sin(waveElapsed * 14.5) * 0.42 : 0.06 + Math.sin(elapsed * 2.1) * 0.04;
       rightArmPivot.rotation.z = stepSpring(armRaiseSpring, raiseTarget, 210, 14, dt);
       rightArmPivot.rotation.x = isWaving ? -0.28 : Math.sin(elapsed * 2.1) * 0.05;
 
@@ -685,8 +691,8 @@
       leftArmPivot.rotation.x = isWaving ? 0.18 : -Math.sin(elapsed * 2.1) * 0.05;
 
       // Legs playful kick during hop
-      leftLegPivot.rotation.x = isWaving ? Math.sin(elapsed * 11.0) * 0.18 : 0;
-      rightLegPivot.rotation.x = isWaving ? -Math.sin(elapsed * 11.0) * 0.18 : 0;
+      leftLegPivot.rotation.x = isWaving ? Math.sin(waveElapsed * 11.0) * 0.18 : 0;
+      rightLegPivot.rotation.x = isWaving ? -Math.sin(waveElapsed * 11.0) * 0.18 : 0;
 
       // Antennae secondary spring-like wiggle
       leftAntPivot.rotation.z = 0.48 + Math.sin(elapsed * 4.5) * (isWaving ? 0.14 : 0.03);
@@ -715,7 +721,8 @@
     window.addEventListener("resize", () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      camera.aspect = w / h;
+      camera.fov = getResponsiveFov(w, h);
+      camera.aspect = w / Math.max(1, h);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     });

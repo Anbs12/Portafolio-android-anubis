@@ -57,6 +57,7 @@ export const ScrollyCanvas: React.FC<ScrollyCanvasProps> = ({ scrollProgress, th
 
     const handleVisibilityChange = () => {
       isPaused = document.visibilityState === 'hidden';
+      cancelAnimationFrame(animationFrameId);
       if (!isPaused && !prefersReducedMotion) {
         animationFrameId = requestAnimationFrame(render);
       }

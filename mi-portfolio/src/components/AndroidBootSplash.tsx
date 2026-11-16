@@ -25,6 +25,7 @@ export const AndroidBootSplash: React.FC<AndroidBootSplashProps> = ({
     if (!visible) return;
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        if (e.key === ' ') e.preventDefault();
         setVisible(false);
       }
     };

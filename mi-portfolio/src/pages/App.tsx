@@ -75,12 +75,14 @@ const Portfolio: React.FC = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
-  // Atajo global Ctrl+K / Cmd+K para abrir el Command Palette
+  // Atajo global Ctrl+K / Cmd+K para abrir el Command Palette y Escape para cerrar menú móvil
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsCommandOpen(prev => !prev);
+      } else if (e.key === 'Escape') {
+        setIsMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleGlobalKeyDown);
@@ -109,7 +111,7 @@ const Portfolio: React.FC = () => {
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.scrollHeight - windowHeight;
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
 
       setScrollProgress(progress);
       setIsScrolled(scrollTop > 30);
@@ -139,21 +141,30 @@ const Portfolio: React.FC = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, []);
 
-  const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>({
-    inicio: true,
-    sobreMi: false,
-    dispositivo: false,
-    tecnologias: false,
-    proyectos: false,
-    subProyectos: false,
-    experiencia: false,
-    educacion: false,
-    habilidadesPersonales: false,
-    contacto: false,
+  const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>(() => {
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return {
+      inicio: true,
+      sobreMi: reduced,
+      dispositivo: reduced,
+      tecnologias: reduced,
+      proyectos: reduced,
+      subProyectos: reduced,
+      experiencia: reduced,
+      educacion: reduced,
+      habilidadesPersonales: reduced,
+      contacto: reduced,
+    };
   });
 
   // Intersection Observer para animaciones de entrada y detección de capítulo activo

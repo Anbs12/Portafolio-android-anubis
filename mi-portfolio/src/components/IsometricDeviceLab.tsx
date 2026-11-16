@@ -51,6 +51,9 @@ export const IsometricDeviceLab: React.FC<IsometricDeviceLabProps> = ({
   }, [language]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (typeof window !== 'undefined' && !window.matchMedia('(pointer: fine)').matches) {
+      return;
+    }
     const rect = e.currentTarget.getBoundingClientRect();
     const nx = (e.clientX - rect.left) / rect.width - 0.5;
     const ny = (e.clientY - rect.top) / rect.height - 0.5;
@@ -328,7 +331,7 @@ export const IsometricDeviceLab: React.FC<IsometricDeviceLabProps> = ({
                 ? 'Laboratorio Isométrico 3D WebGL Samsung Galaxy'
                 : 'Samsung Galaxy 3D WebGL Isometric Lab'
             }
-            className="w-full h-[540px] sm:h-[640px] border-0 block"
+            className="w-full h-[480px] sm:h-[600px] lg:h-[640px] border-0 block"
           />
         </div>
       ) : (

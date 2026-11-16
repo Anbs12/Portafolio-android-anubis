@@ -371,6 +371,8 @@
     <div class="hud-controls">
       <button id="btn-explode" class="btn active" type="button">Vista Explotada</button>
       <button id="btn-orbit" class="btn" type="button">Auto-Órbita</button>
+      <button id="btn-zoom-out" class="btn" type="button" title="Zoom Out">−</button>
+      <button id="btn-zoom-in" class="btn" type="button" title="Zoom In">+</button>
       <button id="btn-reset" class="btn" type="button">Reset Iso</button>
     </div>
   </div>
@@ -553,18 +555,25 @@
 
     // True Isometric Angle: 45° around Y, 35.264° elevation around X
     // Camera vector along normalized (1, 1, 1) satisfies atan2(x, z) = 45° and asin(y / r) = 35.26439°
+    const isEmbedded = window.self !== window.top;
     const ISO_DIR = new THREE.Vector3(1, 1, 1).normalize();
     const ISO_DISTANCE = 15;
     const DEFAULT_CAM_POS = ISO_DIR.clone().multiplyScalar(ISO_DISTANCE);
     const DEFAULT_TARGET = new THREE.Vector3(0, 0.25, 0);
     const FRUSTUM_HEIGHT = 8.4;
 
-    const aspect = window.innerWidth / window.innerHeight;
+    function getEffectiveFrustumHeight(w, h) {
+      const a = w / Math.max(1, h);
+      return a < 0.9 ? FRUSTUM_HEIGHT * (0.9 / Math.max(0.45, a)) : FRUSTUM_HEIGHT;
+    }
+
+    const initH = getEffectiveFrustumHeight(window.innerWidth, window.innerHeight);
+    const aspect = window.innerWidth / Math.max(1, window.innerHeight);
     const camera = new THREE.OrthographicCamera(
-      (-FRUSTUM_HEIGHT * aspect) / 2,
-      (FRUSTUM_HEIGHT * aspect) / 2,
-      FRUSTUM_HEIGHT / 2,
-      -FRUSTUM_HEIGHT / 2,
+      (-initH * aspect) / 2,
+      (initH * aspect) / 2,
+      initH / 2,
+      -initH / 2,
       0.1,
       100
     );
@@ -575,6 +584,7 @@
     controls.target.copy(DEFAULT_TARGET);
     controls.enableDamping = true;
     controls.dampingFactor = 0.065;
+    controls.enableZoom = !isEmbedded; // Prevent hijacking parent page scroll inside iframe; + / - buttons remain active
     controls.minZoom = 0.68;
     controls.maxZoom = 3.1;
     controls.minPolarAngle = 0.2;
@@ -1443,6 +1453,8 @@
     // UI Elements
     const btnExplode = document.getElementById("btn-explode");
     const btnOrbit = document.getElementById("btn-orbit");
+    const btnZoomIn = document.getElementById("btn-zoom-in");
+    const btnZoomOut = document.getElementById("btn-zoom-out");
     const btnReset = document.getElementById("btn-reset");
     const btnClosePanel = document.getElementById("btn-close-panel");
     const telemetryPanel = document.getElementById("telemetry-panel");
@@ -1452,6 +1464,14 @@
     const telMetrics = document.getElementById("tel-metrics");
     const telTags = document.getElementById("tel-tags");
     const moduleBar = document.getElementById("module-bar");
+
+    const TARGET_LOCAL_Z = {
+      display: 1.51,
+      pcb: 0.54,
+      battery: -0.47,
+      chassis: -1.33,
+      camera: -1.99
+    };
 
     function updateLocalizedText() {
       const t = I18N[currentLang];
@@ -1502,13 +1522,23 @@
         return;
       }
 
-      // Compute world center of the clicked module to focus camera cleanly
-      const grp = moduleGroups[key];
-      const worldCenter = new THREE.Vector3();
-      new THREE.Box3().setFromObject(grp).getCenter(worldCenter);
+      // Automatically open Exploded View when inspecting an internal module while assembled
+      if (!isExploded && (key === "pcb" || key === "battery" || key === "camera")) {
+        isExploded = true;
+        btnExplode.classList.add("active");
+        updateLocalizedText();
+      }
+
+      // Compute target world center using final exploded position so focus never lags behind spring
+      const localCenter = new THREE.Vector3(
+        key === "camera" ? -0.35 : 0,
+        key === "camera" ? 1.25 : 0,
+        isExploded ? (TARGET_LOCAL_Z[key] ?? 0) : 0
+      );
+      deviceRoot.updateMatrixWorld(true);
+      const worldCenter = localCenter.applyMatrix4(deviceRoot.matrixWorld);
 
       desiredTarget.copy(worldCenter);
-      // Preserve isometric offset direction from target
       const currentOffset = camera.position.clone().sub(controls.target);
       if (currentOffset.lengthSq() < 0.01) currentOffset.copy(DEFAULT_CAM_POS);
       desiredCamPos.copy(worldCenter).add(currentOffset);
@@ -1545,6 +1575,22 @@
       controls.autoRotate = !controls.autoRotate;
       btnOrbit.classList.toggle("active-cyan", controls.autoRotate);
     });
+
+    function adjustZoom(delta) {
+      desiredZoom = THREE.MathUtils.clamp(
+        (cameraFocusActive ? desiredZoom : camera.zoom) + delta,
+        controls.minZoom,
+        controls.maxZoom
+      );
+      desiredTarget.copy(controls.target);
+      desiredCamPos.copy(camera.position);
+      camZoomSpring.value = camera.zoom;
+      camZoomSpring.vel = 0;
+      cameraFocusActive = true;
+    }
+
+    btnZoomIn.addEventListener("click", () => adjustZoom(0.32));
+    btnZoomOut.addEventListener("click", () => adjustZoom(-0.32));
 
     btnReset.addEventListener("click", () => {
       selectedModule = null;
@@ -1720,11 +1766,12 @@
     window.addEventListener("resize", () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const newAspect = w / h;
-      camera.left = (-FRUSTUM_HEIGHT * newAspect) / 2;
-      camera.right = (FRUSTUM_HEIGHT * newAspect) / 2;
-      camera.top = FRUSTUM_HEIGHT / 2;
-      camera.bottom = -FRUSTUM_HEIGHT / 2;
+      const newAspect = w / Math.max(1, h);
+      const effH = getEffectiveFrustumHeight(w, h);
+      camera.left = (-effH * newAspect) / 2;
+      camera.right = (effH * newAspect) / 2;
+      camera.top = effH / 2;
+      camera.bottom = -effH / 2;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     });

@@ -3,6 +3,9 @@ import type { TechCardProps } from "../types/CardProps";
 
 export const TechCard: React.FC<TechCardProps> = ({ tech, compact = false }) => {
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (typeof window !== "undefined" && !window.matchMedia("(pointer: fine)").matches) {
+            return;
+        }
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;

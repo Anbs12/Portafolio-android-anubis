@@ -35,14 +35,21 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({
         if (!ctx) return;
 
         let animId: number;
-        let width = (canvas.width = canvas.offsetWidth || 800);
-        let height = (canvas.height = canvas.offsetHeight || 450);
+        let isPaused = document.visibilityState === "hidden";
+        let width = (canvas.width = Math.max(1, canvas.offsetWidth || 800));
+        let height = (canvas.height = Math.max(1, canvas.offsetHeight || 450));
 
         const handleResize = () => {
             if (!canvas) return;
-            width = canvas.width = canvas.offsetWidth || 800;
-            height = canvas.height = canvas.offsetHeight || 450;
+            width = canvas.width = Math.max(1, canvas.offsetWidth || 800);
+            height = canvas.height = Math.max(1, canvas.offsetHeight || 450);
         };
+
+        const ro =
+            typeof ResizeObserver !== "undefined" && containerRef.current
+                ? new ResizeObserver(handleResize)
+                : null;
+        if (ro && containerRef.current) ro.observe(containerRef.current);
 
         window.addEventListener("resize", handleResize, { passive: true });
 
@@ -122,23 +129,47 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({
                 ctx.fillText(mouseRef.current.active ? q.bit : idx % 3 === 0 ? "Ψ" : q.bit, px, py);
             });
 
-            animId = requestAnimationFrame(draw);
+            if (!isPaused) {
+                animId = requestAnimationFrame(draw);
+            }
         };
 
-        animId = requestAnimationFrame(draw);
+        const handleVisibilityChange = () => {
+            isPaused = document.visibilityState === "hidden";
+            cancelAnimationFrame(animId);
+            if (!isPaused) {
+                animId = requestAnimationFrame(draw);
+            }
+        };
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        if (!isPaused) {
+            animId = requestAnimationFrame(draw);
+        }
         return () => {
             cancelAnimationFrame(animId);
             window.removeEventListener("resize", handleResize);
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            ro?.disconnect();
         };
     }, []);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const updateCollapseFromClientX = (clientX: number, clientY: number) => {
         if (!containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width;
-        const ny = (e.clientY - rect.top) / rect.height;
+        const nx = (clientX - rect.left) / Math.max(1, rect.width);
+        const ny = (clientY - rect.top) / Math.max(1, rect.height);
         mouseRef.current = { x: nx, y: ny, active: true };
         setCollapsedSide(nx < 0.5 ? "0" : "1");
+    };
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        updateCollapseFromClientX(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        const touch = e.touches[0];
+        if (touch) updateCollapseFromClientX(touch.clientX, touch.clientY);
     };
 
     const handleMouseLeave = () => {
@@ -151,6 +182,9 @@ export const QuantumMisteryCard: React.FC<QuantumMisteryCardProps> = ({
             ref={containerRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
+            onTouchStart={handleTouchMove}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleMouseLeave}
             className="relative w-full max-w-5xl rounded-[32px] p-[1.5px] overflow-hidden shadow-[0_25px_80px_-15px_rgba(16,185,129,0.3)] group cursor-crosshair"
         >
             {/* Haz de luz perimetral en rotación continua */}

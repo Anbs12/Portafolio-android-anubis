@@ -7,6 +7,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
     const [isQuickLookOpen, setIsQuickLookOpen] = useState(false);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+        if (typeof window !== "undefined" && !window.matchMedia("(pointer: fine)").matches) {
+            return;
+        }
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -195,6 +198,9 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                 createPortal(
                     <div
                         onClick={() => setIsQuickLookOpen(false)}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={proyecto.titulo}
                         className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-10 bg-slate-950/80 backdrop-blur-2xl"
                     >
                         <div
@@ -279,6 +285,13 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ proyecto, currentPortf
                                                 </span>
                                             </a>
                                         ))}
+
+                                        {proyecto.makingVideo && (
+                                            <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                                                <CircleEllipsis className="w-4 h-4" />
+                                                {currentPortfolioData.projectsSettings.buttonViewMakingVideo}
+                                            </span>
+                                        )}
                                     </div>
                                 )}
                             </div>

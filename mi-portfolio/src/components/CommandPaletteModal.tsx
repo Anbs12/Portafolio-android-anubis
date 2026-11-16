@@ -43,6 +43,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) return;
+    setQuery('');
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -85,6 +86,9 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   return (
     <div
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={isEs ? 'Paleta de comandos' : 'Command Palette'}
       className="fixed inset-0 z-[110] flex items-start justify-center pt-16 sm:pt-24 px-4 bg-slate-950/75 backdrop-blur-2xl"
     >
       <div
@@ -226,7 +230,7 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                   : `PROJECTS (${allProjects.length})`}
               </div>
               <div className="space-y-1.5">
-                {allProjects.slice(0, 6).map(p => (
+                {(q ? allProjects : allProjects.slice(0, 6)).map(p => (
                   <button
                     key={`${p.group}-${p.id}`}
                     type="button"

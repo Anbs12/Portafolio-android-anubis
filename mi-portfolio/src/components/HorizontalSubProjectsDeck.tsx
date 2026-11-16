@@ -23,8 +23,7 @@ export const HorizontalSubProjectsDeck: React.FC<HorizontalSubProjectsDeckProps>
   const [maxScrollPx, setMaxScrollPx] = useState<number>(0);
   const [showGrid, setShowGrid] = useState<boolean>(false);
 
-  // Medición exacta en píxeles (scrollWidth - clientWidth) para que en cualquier pantalla
-  // (móvil de 375px o monitor 4K) el 100% del scroll muestre hasta la última tarjeta sin cortar ninguna.
+  // Medición exacta en píxeles (scrollWidth - clientWidth) con ResizeObserver
   useEffect(() => {
     const updateWidths = () => {
       if (!stripRef.current) return;
@@ -36,7 +35,16 @@ export const HorizontalSubProjectsDeck: React.FC<HorizontalSubProjectsDeckProps>
 
     updateWidths();
     window.addEventListener('resize', updateWidths, { passive: true });
-    return () => window.removeEventListener('resize', updateWidths);
+    const ro =
+      typeof ResizeObserver !== 'undefined' && stripRef.current
+        ? new ResizeObserver(updateWidths)
+        : null;
+    if (ro && stripRef.current) ro.observe(stripRef.current);
+
+    return () => {
+      window.removeEventListener('resize', updateWidths);
+      ro?.disconnect();
+    };
   }, [subProyectos.length, showGrid]);
 
   useEffect(() => {
@@ -52,9 +60,15 @@ export const HorizontalSubProjectsDeck: React.FC<HorizontalSubProjectsDeckProps>
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, [showGrid]);
+
+  if (subProyectos.length === 0) return null;
 
   const currentTranslatePx = -(deckProgress * maxScrollPx);
 
@@ -67,7 +81,7 @@ export const HorizontalSubProjectsDeck: React.FC<HorizontalSubProjectsDeckProps>
         className={
           showGrid
             ? 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'
-            : 'sticky top-0 min-h-screen flex flex-col justify-center py-20 overflow-hidden'
+            : 'sticky top-0 min-h-screen flex flex-col justify-center py-14 lg:py-16 overflow-x-clip'
         }
       >
         <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">

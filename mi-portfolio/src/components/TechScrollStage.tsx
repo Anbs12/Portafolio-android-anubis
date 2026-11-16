@@ -29,16 +29,25 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
   const [stageProgress, setStageProgress] = useState<number>(0);
   const [showAllGrid, setShowAllGrid] = useState<boolean>(false);
 
-  // Simulador interactivo "Run Request Flow (UDF)"
+  // Simulador interactivo "Run Request Flow (UDF)" con limpieza segura de timers
   const [isSimulatingFlow, setIsSimulatingFlow] = useState<boolean>(false);
   const [simStep, setSimStep] = useState<number>(0);
+  const simIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const simTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const allTechNames = nonEmptyCategories.flatMap(c => c.items.map(i => i.name));
   const isEs = language === 'es';
 
   useEffect(() => {
+    return () => {
+      if (simIntervalRef.current) clearInterval(simIntervalRef.current);
+      if (simTimeoutRef.current) clearTimeout(simTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
-      if (!trackRef.current || showAllGrid || window.innerWidth < 1024) return;
+      if (!trackRef.current || showAllGrid || window.innerWidth < 1024 || totalSteps === 0) return;
       const rect = trackRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const scrollableDistance = rect.height - windowHeight;
@@ -57,25 +66,33 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, [totalSteps, showAllGrid]);
 
   // Ejecutar simulación de petición unidireccional (UDF) a través de las capas
   const triggerFlowSimulation = () => {
-    if (isSimulatingFlow) return;
+    if (isSimulatingFlow || totalSteps === 0) return;
+    if (simIntervalRef.current) clearInterval(simIntervalRef.current);
+    if (simTimeoutRef.current) clearTimeout(simTimeoutRef.current);
+
     setIsSimulatingFlow(true);
     setSimStep(0);
+    setActiveIndex(0);
 
     let current = 0;
-    const interval = setInterval(() => {
+    simIntervalRef.current = setInterval(() => {
       current += 1;
       if (current < totalSteps) {
         setSimStep(current);
         setActiveIndex(current);
       } else {
-        clearInterval(interval);
-        setTimeout(() => {
+        if (simIntervalRef.current) clearInterval(simIntervalRef.current);
+        simTimeoutRef.current = setTimeout(() => {
           setIsSimulatingFlow(false);
         }, 600);
       }
@@ -84,7 +101,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
   const jumpToCategory = (index: number) => {
     setActiveIndex(index);
-    if (!trackRef.current || showAllGrid || window.innerWidth < 1024) return;
+    if (!trackRef.current || showAllGrid || window.innerWidth < 1024 || totalSteps === 0) return;
 
     const rect = trackRef.current.getBoundingClientRect();
     const absoluteTrackTop = window.scrollY + rect.top;
@@ -94,6 +111,8 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
 
     window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
   };
+
+  if (totalSteps === 0) return null;
 
   const activeCategory = nonEmptyCategories[activeIndex] || nonEmptyCategories[0];
   const formatIndex = (idx: number) => String(idx + 1).padStart(2, '0');
@@ -368,7 +387,7 @@ export const TechScrollStage: React.FC<TechScrollStageProps> = ({
                           {activeCategory.items.length}{' '}
                           {isEs ? 'módulos' : 'modules'}
                         </span>
-                        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
+                        <span className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                           <span>
                             {isEs ? 'Desliza para cambiar capa ↓' : 'Scroll to switch layer ↓'}

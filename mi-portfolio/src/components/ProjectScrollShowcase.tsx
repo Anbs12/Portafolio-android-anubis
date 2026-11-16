@@ -60,8 +60,12 @@ export const ProjectScrollShowcase: React.FC<ProjectScrollShowcaseProps> = ({
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
   }, [totalProjects]);
 
   const jumpToProject = (index: number) => {
@@ -329,10 +333,15 @@ class ${activeProject.titulo.replace(/[^a-zA-Z0-9]/g, '')}VM @Inject constructor
               {/* Pie de telemetría del dispositivo */}
               <div className="mt-4 inline-flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
                 <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
-                <span>
+                <span className="hidden lg:inline">
                   {language === 'es'
                     ? 'TOCA LOS BOTONES DEL TELÉFONO O HAZ SCROLL ↓'
                     : 'TAP PHONE BUTTONS OR SCROLL TO INSPECT ↓'}
+                </span>
+                <span className="lg:hidden">
+                  {language === 'es'
+                    ? 'TOCA LOS BOTONES DEL TELÉFONO O 01–07 ↑'
+                    : 'TAP PHONE BUTTONS OR 01–07 ABOVE ↑'}
                 </span>
               </div>
             </div>
